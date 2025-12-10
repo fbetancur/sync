@@ -16,6 +16,7 @@ import { ChangeTracker } from './sync/change-tracker';
 import { StorageManager } from './storage/storage-manager';
 import { AuditLogger } from './audit/audit-logger';
 import { EncryptionService } from './security/encryption-service';
+import { AuthService } from './auth/auth-service';
 
 // ============================================================================
 // INTERFACES DE CONFIGURACIÓN
@@ -23,6 +24,10 @@ import { EncryptionService } from './security/encryption-service';
 
 export interface SyncAppConfig {
   appName: string;
+  supabase?: {
+    url: string;
+    anonKey: string;
+  };
   supabaseUrl?: string;
   supabaseKey?: string;
   encryptionEnabled?: boolean;
@@ -30,6 +35,23 @@ export interface SyncAppConfig {
   syncInterval?: number;
   databaseName?: string;
   logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  offline?: {
+    enabled: boolean;
+    syncInterval: number;
+    maxRetries: number;
+    retryDelay: number;
+  };
+  sync?: {
+    pauseOnActivity: boolean;
+    activityTimeout: number;
+    forceOnReconnect: boolean;
+    maxSyncInterval: number;
+  };
+  security?: {
+    encryption: boolean;
+    auditLog: boolean;
+    sessionTimeout: number;
+  };
 }
 
 export interface SyncAppServices {
@@ -42,6 +64,7 @@ export interface SyncAppServices {
   storage: StorageManager;
   audit: AuditLogger;
   encryption: EncryptionService;
+  auth: AuthService;
 }
 
 export interface SyncApp {
@@ -106,6 +129,22 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
   const storageManager = new StorageManager(db);
   const auditLogger = AuditLogger.getInstance(db);
   const encryptionService = EncryptionService.getInstance();
+  
+  // Crear servicio de autenticación si hay configuración de Supabase
+  let authService: AuthService;
+  if (finalConfig.supabase?.url && finalConfig.supabase?.anonKey) {
+    authService = new AuthService({
+      supabaseUrl: finalConfig.supabase.url,
+      supabaseKey: finalConfig.supabase.anonKey
+    });
+  } else if (finalConfig.supabaseUrl && finalConfig.supabaseKey) {
+    authService = new AuthService({
+      supabaseUrl: finalConfig.supabaseUrl,
+      supabaseKey: finalConfig.supabaseKey
+    });
+  } else {
+    throw new Error('Configuración de Supabase requerida para el servicio de autenticación');
+  }
 
   // Configurar dependencias
   syncManager.setDatabase(db);
@@ -121,7 +160,8 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
     changeTracker,
     storage: storageManager,
     audit: auditLogger,
-    encryption: encryptionService
+    encryption: encryptionService,
+    auth: authService
   };
 
   let isStarted = false;
@@ -145,18 +185,22 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
         await db.initialize();
         console.log('✅ Base de datos inicializada');
 
-        // 2. Configurar encriptación si está habilitada
+        // 2. Inicializar servicio de autenticación
+        await authService.initialize();
+        console.log('✅ Servicio de autenticación inicializado');
+
+        // 3. Configurar encriptación si está habilitada
         if (finalConfig.encryptionEnabled) {
           console.log('🔐 Encriptación habilitada (requiere PIN del usuario)');
         }
 
-        // 3. Configurar auditoría si está habilitada
+        // 4. Configurar auditoría si está habilitada
         if (finalConfig.auditEnabled) {
           console.log('📋 Sistema de auditoría habilitado');
         }
 
-        // 4. Iniciar sincronización periódica si hay configuración de servidor
-        if (finalConfig.supabaseUrl && finalConfig.syncInterval) {
+        // 5. Iniciar sincronización periódica si hay configuración de servidor
+        if ((finalConfig.supabase?.url || finalConfig.supabaseUrl) && finalConfig.syncInterval) {
           syncInterval = setInterval(async () => {
             try {
               if (syncManager.isOnline() && !syncManager.isCurrentlySyncing()) {

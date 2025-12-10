@@ -66,11 +66,14 @@
   - ✅ Create temporary dashboard page for testing
   - _Requirements: 1.1, 1.4_
 
-- [ ] 2.6 Test login functionality manually
-  - Verify login page matches reference exactly
-  - Test authentication with existing Supabase credentials
-  - Verify responsive design on mobile (390x844)
-  - Test error handling for invalid credentials
+- [x] 2.6 Test login functionality manually
+  - ✅ Verify login page matches reference exactly
+  - ✅ Test authentication with existing Supabase credentials
+  - ✅ Verify responsive design on mobile (390x844)
+  - ✅ Test error handling for invalid credentials
+  - ✅ Fix AuthService integration with @sync/core
+  - ✅ Resolve initialization issues
+  - ✅ Update tests to pass (8/8 passing)
   - _Requirements: 1.1, 1.2, 1.3, 9.1, 9.2_
 
 ## FASE 3: Dashboard and Route System

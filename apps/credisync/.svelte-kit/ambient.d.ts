@@ -38,7 +38,6 @@ declare module '$env/static/private' {
 	export const VITE_DEBUG_ENABLED: string;
 	export const ALLUSERSPROFILE: string;
 	export const APPDATA: string;
-	export const BASE_URL: string;
 	export const CHROME_CRASHPAD_PIPE_NAME: string;
 	export const COLORTERM: string;
 	export const CommonProgramFiles: string;
@@ -46,7 +45,6 @@ declare module '$env/static/private' {
 	export const COMPUTERNAME: string;
 	export const ComSpec: string;
 	export const CURL_CA_BUNDLE: string;
-	export const DEV: string;
 	export const DriverData: string;
 	export const EFC_13508_1262719628: string;
 	export const EFC_13508_1592913036: string;
@@ -61,10 +59,10 @@ declare module '$env/static/private' {
 	export const HOMEDRIVE: string;
 	export const HOMEPATH: string;
 	export const INIT_CWD: string;
+	export const KIRO_BACKGROUND_COMMAND: string;
 	export const LANG: string;
 	export const LOCALAPPDATA: string;
 	export const LOGONSERVER: string;
-	export const MODE: string;
 	export const NODE: string;
 	export const NODE_ENV: string;
 	export const NODE_PATH: string;
@@ -103,7 +101,6 @@ declare module '$env/static/private' {
 	export const PROCESSOR_IDENTIFIER: string;
 	export const PROCESSOR_LEVEL: string;
 	export const PROCESSOR_REVISION: string;
-	export const PROD: string;
 	export const ProgramData: string;
 	export const ProgramFiles: string;
 	export const ProgramW6432: string;
@@ -120,13 +117,11 @@ declare module '$env/static/private' {
 	export const TEMP: string;
 	export const TERM_PROGRAM: string;
 	export const TERM_PROGRAM_VERSION: string;
-	export const TEST: string;
 	export const TMP: string;
 	export const USERDOMAIN: string;
 	export const USERDOMAIN_ROAMINGPROFILE: string;
 	export const USERNAME: string;
 	export const USERPROFILE: string;
-	export const VITEST: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 	export const VSCODE_GIT_ASKPASS_MAIN: string;
 	export const VSCODE_GIT_ASKPASS_NODE: string;
@@ -177,7 +172,6 @@ declare module '$env/dynamic/private' {
 		VITE_DEBUG_ENABLED: string;
 		ALLUSERSPROFILE: string;
 		APPDATA: string;
-		BASE_URL: string;
 		CHROME_CRASHPAD_PIPE_NAME: string;
 		COLORTERM: string;
 		CommonProgramFiles: string;
@@ -185,7 +179,6 @@ declare module '$env/dynamic/private' {
 		COMPUTERNAME: string;
 		ComSpec: string;
 		CURL_CA_BUNDLE: string;
-		DEV: string;
 		DriverData: string;
 		EFC_13508_1262719628: string;
 		EFC_13508_1592913036: string;
@@ -200,10 +193,10 @@ declare module '$env/dynamic/private' {
 		HOMEDRIVE: string;
 		HOMEPATH: string;
 		INIT_CWD: string;
+		KIRO_BACKGROUND_COMMAND: string;
 		LANG: string;
 		LOCALAPPDATA: string;
 		LOGONSERVER: string;
-		MODE: string;
 		NODE: string;
 		NODE_ENV: string;
 		NODE_PATH: string;
@@ -242,7 +235,6 @@ declare module '$env/dynamic/private' {
 		PROCESSOR_IDENTIFIER: string;
 		PROCESSOR_LEVEL: string;
 		PROCESSOR_REVISION: string;
-		PROD: string;
 		ProgramData: string;
 		ProgramFiles: string;
 		ProgramW6432: string;
@@ -259,13 +251,11 @@ declare module '$env/dynamic/private' {
 		TEMP: string;
 		TERM_PROGRAM: string;
 		TERM_PROGRAM_VERSION: string;
-		TEST: string;
 		TMP: string;
 		USERDOMAIN: string;
 		USERDOMAIN_ROAMINGPROFILE: string;
 		USERNAME: string;
 		USERPROFILE: string;
-		VITEST: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
 		VSCODE_GIT_ASKPASS_MAIN: string;
 		VSCODE_GIT_ASKPASS_NODE: string;

@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { goto } from '$app/navigation';
-import { crediSyncApp } from '$lib/app-config';
+import { crediSyncApp, initializeCrediSync } from '$lib/app-config';
 
 // Store para el estado de autenticación
 export const user = writable(null);
@@ -12,6 +12,12 @@ export const auth = {
 	async initialize() {
 		loading.set(true);
 		try {
+			// Primero inicializar CrediSync si no está iniciado
+			if (!crediSyncApp.isStarted) {
+				console.log('🔄 Inicializando CrediSync...');
+				await initializeCrediSync();
+			}
+			
 			const authService = crediSyncApp.services.auth;
 			const currentUser = await authService.getCurrentUser();
 			user.set(currentUser);
@@ -25,6 +31,11 @@ export const auth = {
 
 	// Iniciar sesión
 	async signIn(email, password) {
+		// Asegurar que CrediSync esté inicializado
+		if (!crediSyncApp.isStarted) {
+			await initializeCrediSync();
+		}
+		
 		const authService = crediSyncApp.services.auth;
 		const result = await authService.signIn(email, password);
 		
@@ -37,6 +48,11 @@ export const auth = {
 
 	// Registrarse
 	async signUp(email, password) {
+		// Asegurar que CrediSync esté inicializado
+		if (!crediSyncApp.isStarted) {
+			await initializeCrediSync();
+		}
+		
 		const authService = crediSyncApp.services.auth;
 		const result = await authService.signUp(email, password);
 		
@@ -49,6 +65,11 @@ export const auth = {
 
 	// Cerrar sesión
 	async signOut() {
+		// Asegurar que CrediSync esté inicializado
+		if (!crediSyncApp.isStarted) {
+			await initializeCrediSync();
+		}
+		
 		const authService = crediSyncApp.services.auth;
 		const result = await authService.signOut();
 		

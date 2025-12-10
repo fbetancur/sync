@@ -45,7 +45,7 @@ export async function initializeCrediSync(): Promise<void> {
     console.log('🚀 Inicializando CrediSync con @sync/core...');
     
     // Inicializar la aplicación
-    await crediSyncApp.initialize();
+    await crediSyncApp.start();
     
     // Configurar detección de actividad para sync inteligente
     setupActivityDetection();
@@ -65,20 +65,24 @@ function setupActivityDetection(): void {
   ];
   
   let activityTimer: NodeJS.Timeout | null = null;
+  let isUserActive = false;
   
   function onActivity() {
-    // Pausar sincronización durante actividad
-    crediSyncApp.services.sync.pauseAutoSync();
+    isUserActive = true;
     
     // Reiniciar timer
     if (activityTimer) {
       clearTimeout(activityTimer);
     }
     
-    // Reanudar sync después de inactividad
+    // Marcar como inactivo después del timeout
     activityTimer = setTimeout(() => {
-      crediSyncApp.services.sync.resumeAutoSync();
-    }, crediSyncConfig.sync.activityTimeout);
+      isUserActive = false;
+      // Trigger sync cuando el usuario esté inactivo
+      if (navigator.onLine) {
+        crediSyncApp.services.sync.sync({ force: false });
+      }
+    }, crediSyncConfig.sync?.activityTimeout || 50000);
   }
   
   // Agregar listeners de actividad
@@ -88,16 +92,25 @@ function setupActivityDetection(): void {
   
   // Sync forzado al recuperar conexión
   window.addEventListener('online', () => {
-    crediSyncApp.services.sync.syncNow();
+    if (!isUserActive) {
+      crediSyncApp.services.sync.sync({ force: true });
+    }
   });
+  
+  // Sync inicial después de un delay
+  setTimeout(() => {
+    if (navigator.onLine && !isUserActive) {
+      crediSyncApp.services.sync.sync({ force: false });
+    }
+  }, 5000);
 }
 
 // Obtener estado de la aplicación
-export function getAppStatus() {
+export async function getAppStatus() {
   return {
     isInitialized: crediSyncApp.isStarted,
     isOnline: navigator.onLine,
-    syncStatus: crediSyncApp.services.sync.getStatus(),
-    queueSize: crediSyncApp.services.sync.getQueueSize()
+    syncStatus: crediSyncApp.services.sync.isCurrentlySyncing(),
+    queueSize: await crediSyncApp.services.sync.getQueueSize()
   };
 }

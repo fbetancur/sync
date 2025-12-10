@@ -5,6 +5,7 @@ C:\Users\code\Desktop\sync\README.md
 y seguir sus instrucciones al pie de la letra y si se requiere salirse de lo planeado no proceder sin autorización del usuario explicar detalladamente y de forma simple explicando el impacto y repercusiones de esa decisión
 También revisar exhaustivamente C:\Users\code\Desktop\sync\.kiro\specs\credisync-complete
 y despues de realizada cada fase en las tasks actualizar las tasks y el estado actual del desarrollo de esta app en el archivo correspondiente a esta app C:\Users\code\Desktop\sync\apps\credisync\README.md
+Antes de realizar cualquier push se debe  iniciar el servidor de desarrollo e indicar al usuario que debe revisar para garantizar que todo esta funcionando ok y pedir confirmacion al usuario  
 continua con la task 2.5
 
 > **Monorepo modular para aplicaciones offline-first de recolección de datos**

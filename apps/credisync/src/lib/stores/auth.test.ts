@@ -21,6 +21,7 @@ vi.mock('$app/navigation', () => ({
 // Mock del módulo app-config - debe estar antes de los imports
 vi.mock('$lib/app-config', () => ({
   crediSyncApp: {
+    isStarted: true, // Mock como ya iniciado para evitar llamadas a initializeCrediSync
     services: {
       auth: {
         getCurrentUser: vi.fn(),
@@ -29,15 +30,17 @@ vi.mock('$lib/app-config', () => ({
         signOut: vi.fn()
       }
     }
-  }
+  },
+  initializeCrediSync: vi.fn() // Mock de la función de inicialización
 }));
 
 // Importar después de los mocks
 import { auth, user, loading } from './auth';
 import { goto } from '$app/navigation';
-import { crediSyncApp } from '$lib/app-config';
+import { crediSyncApp, initializeCrediSync } from '$lib/app-config';
 
 // Referencias a los mocks para uso en tests
+const mockInitializeCrediSync = vi.mocked(initializeCrediSync);
 const mockGoto = vi.mocked(goto);
 const mockAuthService = vi.mocked(crediSyncApp.services.auth);
 
@@ -49,6 +52,9 @@ describe('Auth Store - Property-Based Tests', () => {
     // Reset stores to initial state
     user.set(null);
     loading.set(true);
+    
+    // Reset mock state
+    mockInitializeCrediSync.mockResolvedValue();
   });
 
   afterEach(() => {

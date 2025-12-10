@@ -23,6 +23,10 @@ export { AuditLogger } from './audit';
 // Security services
 export { EncryptionService } from './security';
 
+// Authentication services
+export { AuthService } from './auth';
+export type { AuthConfig, AuthResult, SignInCredentials, SignUpCredentials } from './auth';
+
 // Validation schemas
 export * from './validation';
 
