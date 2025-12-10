@@ -6,7 +6,7 @@
  * como stores reactivos de Svelte.
  */
 
-import { writable, derived, readable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 import type { User, Session } from '@supabase/supabase-js';
 import { crediSyncApp, getAppStatus } from '../app-config';
 import { supabase } from '../supabase';
@@ -33,9 +33,9 @@ export const appStatus = writable({
   isOnline: false,
   isSyncing: false,
   queueSize: 0,
-  lastSync: null,
+  lastSync: null as number | null,
   encryptionReady: false,
-  dbStats: null
+  dbStats: null as any
 });
 
 // Derived stores para UI

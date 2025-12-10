@@ -2,7 +2,7 @@
 Antes de iniciar revisar EXHAUSTIVAMENTE C:\Users\code\Desktop\sync\docs\development\session-onboarding.md 
 y
 C:\Users\code\Desktop\sync\README.md
-y seguir sus instrucciones.
+y seguir sus instrucciones al pie de la letra y si se requiere salirse de lo planeado no proceder sin autorización del usuario explicar detalladamente y de forma simple explicando el impacto y repercusiones de esa decisión
 
 
 > **Monorepo modular para aplicaciones offline-first de recolección de datos**

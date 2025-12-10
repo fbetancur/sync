@@ -40,6 +40,7 @@
   
   <button 
     class="btn btn-sm btn-ghost btn-circle"
+    aria-label="Cerrar notificación"
     on:click={() => app.removeNotification(notification.id)}
   >
     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
