@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "name": "credisync",
   "buildCommand": "cd ../.. && pnpm build:credisync",
   "outputDirectory": "dist",
