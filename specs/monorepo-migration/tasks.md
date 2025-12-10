@@ -144,10 +144,15 @@
 
 
 
+
 - [x] 14. Optimizar dependencias y builds
   - Configurar build pipeline para packages con orden de dependencias
   - Implementar scripts granulares (build:packages, build:apps, clean:packages)
   - Optimizar filtros de pnpm para packages scoped (@sync/*)
+
+
+
+
   - Corregir errores de TypeScript en packages
   - Configurar builds secuenciales: @sync/types → @sync/core → @sync/ui
   - _Requirements: 6.4, 6.5, 12.3_
