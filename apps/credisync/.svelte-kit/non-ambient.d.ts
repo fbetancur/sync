@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/(app)" | "/" | "/(app)/balance" | "/(app)/clientes" | "/(app)/clientes/nuevo" | "/(app)/clientes/[id]" | "/(app)/configuracion" | "/login" | "/(app)/ruta";
+		RouteId(): "/(app)" | "/" | "/(app)/balance" | "/(app)/clientes" | "/(app)/clientes/nuevo" | "/(app)/clientes/[id]" | "/(app)/configuracion" | "/login" | "/(app)/ruta" | "/(app)/test-clientes";
 		RouteParams(): {
 			"/(app)/clientes/[id]": { id: string }
 		};
@@ -40,10 +40,11 @@ declare module "$app/types" {
 			"/(app)/clientes/[id]": { id: string };
 			"/(app)/configuracion": Record<string, never>;
 			"/login": Record<string, never>;
-			"/(app)/ruta": Record<string, never>
+			"/(app)/ruta": Record<string, never>;
+			"/(app)/test-clientes": Record<string, never>
 		};
-		Pathname(): "/" | "/balance" | "/balance/" | "/clientes" | "/clientes/" | "/clientes/nuevo" | "/clientes/nuevo/" | `/clientes/${string}` & {} | `/clientes/${string}/` & {} | "/configuracion" | "/configuracion/" | "/login" | "/login/" | "/ruta" | "/ruta/";
+		Pathname(): "/" | "/balance" | "/balance/" | "/clientes" | "/clientes/" | "/clientes/nuevo" | "/clientes/nuevo/" | `/clientes/${string}` & {} | `/clientes/${string}/` & {} | "/configuracion" | "/configuracion/" | "/login" | "/login/" | "/ruta" | "/ruta/" | "/test-clientes" | "/test-clientes/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/icon-192.png" | "/icon-512.png" | "/icon.svg" | "/manifest.json" | string & {};
+		Asset(): "/favicon.ico" | "/icon-192.png" | "/icon-512.png" | "/icon.svg" | "/manifest.webmanifest" | "/sw-dev.js" | "/test-cliente-creation.js" | "/test-universal-structure.js" | string & {};
 	}
 }

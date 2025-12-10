@@ -11,6 +11,16 @@
 	onMount(async () => {
 		// Inicializar autenticación si no está inicializada
 		await auth.initialize();
+		
+		// Cargar herramientas de debug PWA en desarrollo
+		if (import.meta.env.DEV) {
+			try {
+				await import('$lib/debug/pwa-test.js');
+				console.log('🔧 PWA Debug Tools cargadas');
+			} catch (error) {
+				console.warn('⚠️ No se pudieron cargar las herramientas de debug PWA:', error);
+			}
+		}
 	});
 
 	// Reactive statement para manejar redirecciones

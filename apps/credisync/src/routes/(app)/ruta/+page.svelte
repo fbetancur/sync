@@ -58,90 +58,14 @@
 		try {
 			loading = true;
 			
-			// Por ahora, crear datos de ejemplo hasta que @sync/core esté completamente integrado
-			// En las próximas fases esto usará crediSyncApp.services.clientes.getAll()
-			const clientesEjemplo = [
-				{
-					id: '1',
-					nombre: 'María González',
-					telefono: '555-0123',
-					numero_documento: '12345678',
-					resumen: {
-						creditos_activos: 2,
-						total_adeudado: 1500,
-						cuotas_atrasadas: 3,
-						dias_atraso_max: 5
-					},
-					estado: 'MORA',
-					creditos: [
-						{
-							id: 'c1',
-							numero: 'CR-001',
-							tipo: 'Personal',
-							adeudado: 800,
-							cuotas_atrasadas: 2,
-							dias_atraso: 5
-						},
-						{
-							id: 'c2',
-							numero: 'CR-002',
-							tipo: 'Comercial',
-							adeudado: 700,
-							cuotas_atrasadas: 1,
-							dias_atraso: 3
-						}
-					]
-				},
-				{
-					id: '2',
-					nombre: 'Carlos Rodríguez',
-					telefono: '555-0456',
-					numero_documento: '87654321',
-					resumen: {
-						creditos_activos: 1,
-						total_adeudado: 500,
-						cuotas_atrasadas: 0,
-						dias_atraso_max: 0
-					},
-					estado: 'AL_DIA',
-					creditos: [
-						{
-							id: 'c3',
-							numero: 'CR-003',
-							tipo: 'Personal',
-							adeudado: 500,
-							cuotas_atrasadas: 0,
-							dias_atraso: 0
-						}
-					]
-				},
-				{
-					id: '3',
-					nombre: 'Ana Martínez',
-					telefono: '555-0789',
-					numero_documento: '11223344',
-					resumen: {
-						creditos_activos: 1,
-						total_adeudado: 1200,
-						cuotas_atrasadas: 1,
-						dias_atraso_max: 2
-					},
-					estado: 'MORA',
-					creditos: [
-						{
-							id: 'c4',
-							numero: 'CR-004',
-							tipo: 'Comercial',
-							adeudado: 1200,
-							cuotas_atrasadas: 1,
-							dias_atraso: 2
-						}
-					]
-				}
-			];
+			// TODO: Usar @sync/core cuando esté completamente integrado
+			// const clientesReales = await crediSyncApp.services.clientes.getAll();
 			
-			clientes = clientesEjemplo;
-			clientesFiltrados = clientesEjemplo;
+			// Por ahora, usar lista vacía hasta implementar clientes reales
+			const clientesReales = [];
+			
+			clientes = clientesReales;
+			clientesFiltrados = clientesReales;
 			
 			// Ordenar por prioridad (mora primero)
 			ordenarClientes();

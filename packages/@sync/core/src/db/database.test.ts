@@ -5,13 +5,13 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { MicrocreditosDB, createDatabase } from './database';
+import { SyncDB, MicrocreditosDB, createDatabase } from './database';
 
-describe('MicrocreditosDB', () => {
-  let db: MicrocreditosDB;
+describe('SyncDB (Universal Database)', () => {
+  let db: SyncDB;
 
   beforeEach(async () => {
-    db = new MicrocreditosDB();
+    db = new SyncDB('sync');
     await db.initialize();
     await db.clearAll();
   });
@@ -23,25 +23,28 @@ describe('MicrocreditosDB', () => {
 
   describe('initialize', () => {
     it('debería inicializar la base de datos exitosamente', async () => {
-      const newDb = new MicrocreditosDB();
+      const newDb = new SyncDB('sync');
       await expect(newDb.initialize()).resolves.not.toThrow();
       await newDb.close();
     });
 
     it('debería abrir todas las tablas requeridas', async () => {
+      // Tablas universales
       expect(db.tenants).toBeDefined();
       expect(db.users).toBeDefined();
-      expect(db.rutas).toBeDefined();
-      expect(db.productos_credito).toBeDefined();
-      expect(db.clientes).toBeDefined();
-      expect(db.creditos).toBeDefined();
-      expect(db.cuotas).toBeDefined();
-      expect(db.pagos).toBeDefined();
       expect(db.sync_queue).toBeDefined();
       expect(db.audit_log).toBeDefined();
       expect(db.change_log).toBeDefined();
       expect(db.checksums).toBeDefined();
       expect(db.app_state).toBeDefined();
+      
+      // Tablas de CrediSync con prefijo
+      expect(db.credisync_rutas).toBeDefined();
+      expect(db.credisync_productos_credito).toBeDefined();
+      expect(db.credisync_clientes).toBeDefined();
+      expect(db.credisync_creditos).toBeDefined();
+      expect(db.credisync_cuotas).toBeDefined();
+      expect(db.credisync_pagos).toBeDefined();
     });
   });
 
@@ -50,19 +53,22 @@ describe('MicrocreditosDB', () => {
       const stats = await db.getStats();
 
       expect(stats).toEqual({
+        // Tablas universales
         tenants: 0,
         users: 0,
-        rutas: 0,
-        productos_credito: 0,
-        clientes: 0,
-        creditos: 0,
-        cuotas: 0,
-        pagos: 0,
         sync_queue: 0,
         audit_log: 0,
         change_log: 0,
         checksums: 0,
-        app_state: 0
+        app_state: 0,
+        
+        // Tablas de CrediSync
+        credisync_rutas: 0,
+        credisync_productos_credito: 0,
+        credisync_clientes: 0,
+        credisync_creditos: 0,
+        credisync_cuotas: 0,
+        credisync_pagos: 0
       });
     });
 
@@ -190,15 +196,20 @@ describe('MicrocreditosDB', () => {
 });
 
 describe('createDatabase', () => {
-  it('debería crear una instancia de base de datos por defecto', () => {
+  it('debería crear una instancia de base de datos universal por defecto', () => {
     const db = createDatabase();
-    expect(db).toBeInstanceOf(MicrocreditosDB);
-    expect(db.name).toBe('microcreditos_db');
+    expect(db).toBeInstanceOf(SyncDB);
+    expect(db.name).toBe('sync');
   });
 
   it('debería crear una instancia de base de datos con nombre personalizado', () => {
-    const db = createDatabase('custom_db');
-    expect(db).toBeInstanceOf(MicrocreditosDB);
-    expect(db.name).toBe('custom_db');
+    const db = createDatabase('custom_sync');
+    expect(db).toBeInstanceOf(SyncDB);
+    expect(db.name).toBe('custom_sync');
+  });
+
+  it('debería mantener compatibilidad con MicrocreditosDB', () => {
+    const db = createDatabase();
+    expect(db).toBeInstanceOf(MicrocreditosDB); // Alias para compatibilidad
   });
 });

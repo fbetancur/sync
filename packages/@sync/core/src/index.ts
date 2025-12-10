@@ -5,11 +5,13 @@
  * offline-first applications in the Sync Platform.
  */
 
-// Core types and interfaces
-export * from './types';
+// Core types and interfaces (solo tipos TypeScript, no runtime exports)
+export type * from './types';
 
 // Database layer
 export { createDatabase, MicrocreditosDB } from './db';
+// Alias para compatibilidad
+export { MicrocreditosDB as SyncDB } from './db';
 
 // Sync system
 export { SyncManager, ConflictResolver, ChangeTracker } from './sync';

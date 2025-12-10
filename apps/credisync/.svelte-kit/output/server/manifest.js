@@ -7,17 +7,23 @@ function __memo(fn) {
 return {
 	appDir: "_app",
 	appPath: "_app",
-	assets: new Set(["icon-192.png","icon-512.png","icon.svg","manifest.json"]),
-	mimeTypes: {".png":"image/png",".svg":"image/svg+xml",".json":"application/json"},
+	assets: new Set(["favicon.ico","icon-192.png","icon-512.png","icon.svg","manifest.webmanifest","sw-dev.js","test-cliente-creation.js","test-universal-structure.js"]),
+	mimeTypes: {".png":"image/png",".svg":"image/svg+xml",".webmanifest":"application/manifest+json",".js":"text/javascript"},
 	_: {
-		client: {start:"_app/immutable/entry/start.BSctB0sH.js",app:"_app/immutable/entry/app.CHHjiuu5.js",imports:["_app/immutable/entry/start.BSctB0sH.js","_app/immutable/chunks/BbElh3b5.js","_app/immutable/chunks/DWhC0Ggg.js","_app/immutable/entry/app.CHHjiuu5.js","_app/immutable/chunks/DWhC0Ggg.js","_app/immutable/chunks/DsnmJJEf.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
+		client: {start:"_app/immutable/entry/start.ClT3SJQU.js",app:"_app/immutable/entry/app.mOLSIzg0.js",imports:["_app/immutable/entry/start.ClT3SJQU.js","_app/immutable/chunks/Dj_5MnEQ.js","_app/immutable/chunks/C5jdwYbG.js","_app/immutable/entry/app.mOLSIzg0.js","_app/immutable/chunks/PPVm8Dsz.js","_app/immutable/chunks/C5jdwYbG.js","_app/immutable/chunks/DsnmJJEf.js"],stylesheets:[],fonts:[],uses_env_dynamic_public:false},
 		nodes: [
 			__memo(() => import('./nodes/0.js')),
 			__memo(() => import('./nodes/1.js')),
 			__memo(() => import('./nodes/2.js')),
 			__memo(() => import('./nodes/3.js')),
 			__memo(() => import('./nodes/4.js')),
-			__memo(() => import('./nodes/5.js'))
+			__memo(() => import('./nodes/5.js')),
+			__memo(() => import('./nodes/6.js')),
+			__memo(() => import('./nodes/7.js')),
+			__memo(() => import('./nodes/8.js')),
+			__memo(() => import('./nodes/9.js')),
+			__memo(() => import('./nodes/10.js')),
+			__memo(() => import('./nodes/11.js'))
 		],
 		remotes: {
 			
@@ -31,17 +37,59 @@ return {
 				endpoint: null
 			},
 			{
+				id: "/(app)/balance",
+				pattern: /^\/balance\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 4 },
+				endpoint: null
+			},
+			{
+				id: "/(app)/clientes",
+				pattern: /^\/clientes\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 5 },
+				endpoint: null
+			},
+			{
+				id: "/(app)/clientes/nuevo",
+				pattern: /^\/clientes\/nuevo\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 6 },
+				endpoint: null
+			},
+			{
+				id: "/(app)/clientes/[id]",
+				pattern: /^\/clientes\/([^/]+?)\/?$/,
+				params: [{"name":"id","optional":false,"rest":false,"chained":false}],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 7 },
+				endpoint: null
+			},
+			{
+				id: "/(app)/configuracion",
+				pattern: /^\/configuracion\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 8 },
+				endpoint: null
+			},
+			{
 				id: "/login",
 				pattern: /^\/login\/?$/,
 				params: [],
-				page: { layouts: [0,], errors: [1,], leaf: 5 },
+				page: { layouts: [0,], errors: [1,], leaf: 11 },
 				endpoint: null
 			},
 			{
 				id: "/(app)/ruta",
 				pattern: /^\/ruta\/?$/,
 				params: [],
-				page: { layouts: [0,2,], errors: [1,,], leaf: 4 },
+				page: { layouts: [0,2,], errors: [1,,], leaf: 9 },
+				endpoint: null
+			},
+			{
+				id: "/(app)/test-clientes",
+				pattern: /^\/test-clientes\/?$/,
+				params: [],
+				page: { layouts: [0,2,], errors: [1,,], leaf: 10 },
 				endpoint: null
 			}
 		],

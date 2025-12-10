@@ -5,6 +5,7 @@
 	import { syncCounter } from '$lib/stores/sync.js';
 	import { formatearMoneda, formatearFecha } from '$lib/utils/creditos.js';
 	import { crediSyncApp } from '$lib/app-config.js';
+	import ModalOtorgarCredito from '$lib/components/ModalOtorgarCredito.svelte';
 	
 	const clienteId = $derived($page.params.id);
 	
@@ -13,6 +14,7 @@
 	let loading = $state(true);
 	let creditoExpandido = $state(null);
 	let modalCobrarOpen = $state(false);
+	let modalOtorgarOpen = $state(false);
 	let cuotasDelDia = $state([]);
 	let cuotasVencidas = $state([]);
 	
@@ -43,120 +45,25 @@
 		try {
 			loading = true;
 			
-			// Por ahora, datos de ejemplo hasta que @sync/core esté completamente integrado
-			const clientesEjemplo = {
-				'1': {
-					id: '1',
-					nombre: 'María González',
-					telefono: '555-0123',
-					telefono_2: '',
-					numero_documento: '12345678',
-					tipo_documento: 'CURP',
-					direccion: 'Calle Principal #123',
-					barrio: 'Centro',
-					referencia: 'Frente a la farmacia',
-					creditos_activos: 2,
-					saldo_total: 1500,
-					dias_atraso_max: 5,
-					estado: 'EN_MORA',
-					score: 'RIESGOSO'
-				},
-				'2': {
-					id: '2',
-					nombre: 'Carlos Rodríguez',
-					telefono: '555-0456',
-					telefono_2: '555-0457',
-					numero_documento: '87654321',
-					tipo_documento: 'INE',
-					direccion: 'Avenida Secundaria #456',
-					barrio: 'Norte',
-					referencia: '',
-					creditos_activos: 1,
-					saldo_total: 500,
-					dias_atraso_max: 0,
-					estado: 'AL_DIA',
-					score: 'CONFIABLE'
-				},
-				'3': {
-					id: '3',
-					nombre: 'Ana Martínez',
-					telefono: '555-0789',
-					telefono_2: '',
-					numero_documento: '11223344',
-					tipo_documento: 'CURP',
-					direccion: 'Calle Tercera #789',
-					barrio: 'Sur',
-					referencia: 'Casa azul',
-					creditos_activos: 1,
-					saldo_total: 1200,
-					dias_atraso_max: 2,
-					estado: 'EN_MORA',
-					score: 'REGULAR'
-				}
-			};
+			// Obtener cliente real desde @sync/core
+			console.log('👤 [DETALLE-CLIENTE] Cargando cliente:', clienteId);
 			
-			cliente = clientesEjemplo[clienteId];
+			// Importar el servicio de clientes
+			const { getClienteById } = await import('$lib/services/clientes.js');
+			
+			// Obtener cliente desde la base de datos
+			cliente = await getClienteById(clienteId);
 			
 			if (!cliente) {
+				console.log('❌ [DETALLE-CLIENTE] Cliente no encontrado:', clienteId);
 				goto('/clientes');
 				return;
 			}
 			
-			// Créditos de ejemplo para cada cliente
-			const creditosEjemplo = {
-				'1': [
-					{
-						id: 'c1',
-						numero_credito: 'CR-001',
-						frecuencia: 'DIARIO',
-						numero_cuotas: 20,
-						total_a_pagar: 1000,
-						saldo_pendiente: 800,
-						cuotas_pagadas: 4,
-						dias_atraso: 5,
-						fecha_desembolso: '2024-11-01'
-					},
-					{
-						id: 'c2',
-						numero_credito: 'CR-002',
-						frecuencia: 'SEMANAL',
-						numero_cuotas: 15,
-						total_a_pagar: 1500,
-						saldo_pendiente: 700,
-						cuotas_pagadas: 8,
-						dias_atraso: 3,
-						fecha_desembolso: '2024-10-15'
-					}
-				],
-				'2': [
-					{
-						id: 'c3',
-						numero_credito: 'CR-003',
-						frecuencia: 'DIARIO',
-						numero_cuotas: 10,
-						total_a_pagar: 800,
-						saldo_pendiente: 500,
-						cuotas_pagadas: 3,
-						dias_atraso: 0,
-						fecha_desembolso: '2024-11-15'
-					}
-				],
-				'3': [
-					{
-						id: 'c4',
-						numero_credito: 'CR-004',
-						frecuencia: 'QUINCENAL',
-						numero_cuotas: 12,
-						total_a_pagar: 1200,
-						saldo_pendiente: 1200,
-						cuotas_pagadas: 0,
-						dias_atraso: 2,
-						fecha_desembolso: '2024-11-20'
-					}
-				]
-			};
+			console.log('✅ [DETALLE-CLIENTE] Cliente cargado:', cliente.nombre);
 			
-			creditosActivos = creditosEjemplo[clienteId] || [];
+			// Por ahora, créditos vacíos hasta implementar el módulo de créditos
+			creditosActivos = [];
 			creditosConEstado = creditosActivos;
 			
 			// Estado financiero del cliente
@@ -180,8 +87,12 @@
 	}
 	
 	function otorgarCredito() {
-		// Funcionalidad pendiente para próximas fases
-		alert('Funcionalidad de otorgar crédito pendiente para próximas fases');
+		modalOtorgarOpen = true;
+	}
+	
+	function onCreditoCreado() {
+		// Recargar datos después de crear crédito
+		cargarDatos();
 	}
 	
 	async function registrarPago() {
@@ -422,14 +333,15 @@
 			</button>
 		</div>
 		
-		<!-- Nota sobre funcionalidad -->
-		<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mx-4 mb-4">
-			<p class="text-sm text-yellow-800">
-				<strong>Nota:</strong> Esta es la página de detalle del cliente con datos de ejemplo. 
-				Las funcionalidades de edición y gestión de créditos serán implementadas en las próximas fases.
-			</p>
-		</div>
+
 	</div>
+	
+	<!-- Modal Otorgar Crédito -->
+	<ModalOtorgarCredito 
+		bind:open={modalOtorgarOpen}
+		{cliente}
+		onSuccess={onCreditoCreado}
+	/>
 {:else}
 	<div class="error-container">
 		<p>Cliente no encontrado</p>

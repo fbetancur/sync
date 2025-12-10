@@ -7,64 +7,50 @@ export default defineConfig({
 		sveltekit(),
 		VitePWA({
 			registerType: 'autoUpdate',
+			injectRegister: 'auto',
 			includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png', 'icon.svg'],
 			manifest: {
-				name: 'CrediSyncApp',
+				name: 'CrediSync - Gestión de Microcréditos',
 				short_name: 'CrediSync',
-				description: 'Progressive Web App para gestión de microcréditos y cobranza en campo',
+				description: 'Aplicación offline-first para gestión de microcréditos',
 				theme_color: '#1e40af',
 				background_color: '#ffffff',
 				display: 'standalone',
-				orientation: 'portrait',
 				scope: '/',
 				start_url: '/',
+				orientation: 'portrait',
 				icons: [
 					{
 						src: '/icon-192.png',
 						sizes: '192x192',
 						type: 'image/png',
-						purpose: 'any'
+						purpose: 'any maskable'
 					},
 					{
 						src: '/icon-512.png',
 						sizes: '512x512',
 						type: 'image/png',
-						purpose: 'any'
-					},
-					{
-						src: '/icon-512.png',
-						sizes: '512x512',
-						type: 'image/png',
-						purpose: 'maskable'
+						purpose: 'any maskable'
 					}
 				]
 			},
 			workbox: {
-				globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
+				globPatterns: ['**/*.{js,css,ico,png,svg,woff,woff2}'],
+				globIgnores: ['**/node_modules/**/*'],
+				navigateFallback: '/',
+				navigateFallbackDenylist: [/^\/_app\//, /^\/api\//],
+				cleanupOutdatedCaches: true,
+				skipWaiting: true,
+				clientsClaim: true,
 				runtimeCaching: [
 					{
 						urlPattern: /^https:\/\/hmnlriywocnpiktflehr\.supabase\.co\/.*$/,
 						handler: 'NetworkFirst',
 						options: {
 							cacheName: 'supabase-api',
-							expiration: {
-								maxEntries: 100,
-								maxAgeSeconds: 60 * 60 * 24 // 24 hours
-							},
+							networkTimeoutSeconds: 10,
 							cacheableResponse: {
 								statuses: [0, 200]
-							},
-							networkTimeoutSeconds: 10
-						}
-					},
-					{
-						urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-						handler: 'CacheFirst',
-						options: {
-							cacheName: 'google-fonts-cache',
-							expiration: {
-								maxEntries: 10,
-								maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
 							}
 						}
 					},
@@ -72,21 +58,26 @@ export default defineConfig({
 						urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
 						handler: 'CacheFirst',
 						options: {
-							cacheName: 'images-cache',
+							cacheName: 'images',
 							expiration: {
 								maxEntries: 100,
-								maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
+								maxAgeSeconds: 30 * 24 * 60 * 60 // 30 días
 							}
 						}
+					},
+					{
+						urlPattern: /\.(?:js|css)$/,
+						handler: 'StaleWhileRevalidate',
+						options: {
+							cacheName: 'static-resources'
+						}
 					}
-				],
-				cleanupOutdatedCaches: true,
-				skipWaiting: true,
-				clientsClaim: true
+				]
 			},
 			devOptions: {
 				enabled: true,
-				type: 'module'
+				type: 'module',
+				navigateFallback: '/'
 			}
 		})
 	],

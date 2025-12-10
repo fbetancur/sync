@@ -7,5 +7,6 @@
 	"/(app)/clientes/[id]": [],
 	"/(app)/configuracion": [],
 	"/login": [],
-	"/(app)/ruta": []
+	"/(app)/ruta": [],
+	"/(app)/test-clientes": []
 }

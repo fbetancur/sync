@@ -13,4 +13,4 @@
  */
 
 export * from './database';
-export * from './types';
+export type * from './types';

@@ -1,0 +1,208 @@
+{
+  "app": "credisync",
+  "timestamp": "2025-12-10T21:19:11.155Z",
+  "client": {
+    "size": 1122853,
+    "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client"
+  },
+  "server": {
+    "size": 262962,
+    "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\server"
+  },
+  "prerendered": {
+    "size": 19,
+    "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\prerendered"
+  },
+  "total": 1385834,
+  "assets": {
+    "js": [
+      {
+        "name": "_app\\immutable\\chunks\\DeuNT0YN.js",
+        "size": 326441,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\DeuNT0YN.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\5.h0u7EH6O.js",
+        "size": 63563,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\5.h0u7EH6O.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\DCl8Mruz.js",
+        "size": 41903,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\DCl8Mruz.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\-wEcyVrk.js",
+        "size": 25813,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\-wEcyVrk.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\7.C9v7zIpP.js",
+        "size": 24597,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\7.C9v7zIpP.js"
+      },
+      {
+        "name": "workbox-f69717da.js",
+        "size": 23136,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\workbox-f69717da.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\4.CTJqKqkl.js",
+        "size": 13367,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\4.CTJqKqkl.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\9.2CUe-yq5.js",
+        "size": 12041,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\9.2CUe-yq5.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\6.D5ZYf3Ul.js",
+        "size": 10382,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\6.D5ZYf3Ul.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\8.urOqFX9S.js",
+        "size": 8984,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\8.urOqFX9S.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\2.DrZCl6-X.js",
+        "size": 8822,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\2.DrZCl6-X.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\BIl4cyR9.js",
+        "size": 5761,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\BIl4cyR9.js"
+      },
+      {
+        "name": "_app\\immutable\\entry\\app.M-NtRs5D.js",
+        "size": 5042,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\entry\\app.M-NtRs5D.js"
+      },
+      {
+        "name": "sw.js",
+        "size": 4923,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\sw.js"
+      },
+      {
+        "name": "sw-dev.js",
+        "size": 3652,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\sw-dev.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\11.Ci-KghD0.js",
+        "size": 3486,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\11.Ci-KghD0.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\CanLVora.js",
+        "size": 1314,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\CanLVora.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\0.D2p-GkVu.js",
+        "size": 1307,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\0.D2p-GkVu.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\Be5qoVR8.js",
+        "size": 1264,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\Be5qoVR8.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\PPVm8Dsz.js",
+        "size": 1232,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\PPVm8Dsz.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\CyAB14hl.js",
+        "size": 869,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\CyAB14hl.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\3.BmYwj3WL.js",
+        "size": 867,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\3.BmYwj3WL.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\RPnKBoCH.js",
+        "size": 718,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\RPnKBoCH.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\1.D2Gk0ZOC.js",
+        "size": 511,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\1.D2Gk0ZOC.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\NwYeZyG2.js",
+        "size": 447,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\NwYeZyG2.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\BzNnuRht.js",
+        "size": 227,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\BzNnuRht.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\lzHmMwI_.js",
+        "size": 224,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\lzHmMwI_.js"
+      },
+      {
+        "name": "_app\\immutable\\nodes\\10.DFm25qYM.js",
+        "size": 99,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\nodes\\10.DFm25qYM.js"
+      },
+      {
+        "name": "_app\\immutable\\entry\\start.CSdDllsD.js",
+        "size": 83,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\entry\\start.CSdDllsD.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\DsnmJJEf.js",
+        "size": 66,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\DsnmJJEf.js"
+      },
+      {
+        "name": "_app\\immutable\\chunks\\DXw65HuV.js",
+        "size": 39,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\chunks\\DXw65HuV.js"
+      }
+    ],
+    "css": [
+      {
+        "name": "_app\\immutable\\assets\\0.il84O_5Y.css",
+        "size": 25834,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\assets\\0.il84O_5Y.css"
+      },
+      {
+        "name": "_app\\immutable\\assets\\7.BJTp2rll.css",
+        "size": 12001,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\assets\\7.BJTp2rll.css"
+      },
+      {
+        "name": "_app\\immutable\\assets\\4.COaGyom_.css",
+        "size": 8655,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\assets\\4.COaGyom_.css"
+      },
+      {
+        "name": "_app\\immutable\\assets\\8.DYbSHogl.css",
+        "size": 6744,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\assets\\8.DYbSHogl.css"
+      },
+      {
+        "name": "_app\\immutable\\assets\\2.Dn7urlKv.css",
+        "size": 3747,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\assets\\2.Dn7urlKv.css"
+      },
+      {
+        "name": "_app\\immutable\\assets\\5.DHrSRg7o.css",
+        "size": 3566,
+        "path": "C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\\client\\_app\\immutable\\assets\\5.DHrSRg7o.css"
+      }
+    ]
+  }
+}

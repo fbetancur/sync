@@ -3,6 +3,9 @@
 	import { user } from '$lib/stores/auth.js';
 	import { isOnline } from '$lib/stores/sync.js';
 	import { crediSyncApp } from '$lib/app-config.js';
+	import { createCliente } from '$lib/services/clientes.js';
+	import CountrySelector from '$lib/components/CountrySelector.svelte';
+	import { validatePhone, formatPhone, getCountryConfig } from '$lib/utils/countries.js';
 	
 	// Datos del formulario
 	let formData = $state({
@@ -19,6 +22,16 @@
 		latitud: null,
 		longitud: null
 	});
+	
+	// País seleccionado (se detectará automáticamente)
+	let selectedCountry = $state('MX');
+	
+	// Configuración del país actual
+	let countryConfig = $derived(getCountryConfig(selectedCountry));
+	
+	// Validación de teléfono en tiempo real
+	let phoneValidation = $derived(validatePhone(formData.telefono, selectedCountry));
+	let phoneFormatted = $derived(formatPhone(formData.telefono, selectedCountry));
 	
 	let loading = $state(false);
 	let error = $state('');
@@ -37,12 +50,18 @@
 		success = false;
 		
 		try {
+			// Validación simple solo para teléfono
+			if (!phoneValidation.valid) {
+				error = `Teléfono inválido: ${phoneValidation.error}`;
+				return;
+			}
+			
 			// Preparar datos para insertar (offline-first)
 			const clienteData = {
 				nombre: formData.nombre.trim(),
 				tipo_documento: formData.tipo_documento,
 				numero_documento: formData.numero_documento.trim(),
-				telefono: formData.telefono.trim(),
+				telefono: phoneValidation.formatted, // Usar teléfono validado
 				telefono_2: formData.telefono_2?.trim() || '',
 				direccion: formData.direccion.trim(),
 				barrio: formData.barrio?.trim() || '',
@@ -50,15 +69,17 @@
 				nombre_fiador: formData.nombre_fiador?.trim() || '',
 				telefono_fiador: formData.telefono_fiador?.trim() || '',
 				latitud: formData.latitud,
-				longitud: formData.longitud
+				longitud: formData.longitud,
+				pais: selectedCountry // Agregar país para WhatsApp futuro
 			};
 			
-			// Por ahora simular guardado hasta que @sync/core esté completamente integrado
-			// En las próximas fases esto usará crediSyncApp.services.clientes.create(clienteData)
-			console.log('📝 [NUEVO-CLIENTE] Guardando cliente:', clienteData);
+			// USAR UNIVERSAL INFRASTRUCTURE REAL
+			console.log('📝 [NUEVO-CLIENTE] Guardando cliente con Universal Infrastructure:', clienteData);
 			
-			// Simular procesamiento
-			await new Promise(resolve => setTimeout(resolve, 1000));
+			// Crear cliente usando @sync/core con toda la infraestructura empresarial
+			const clienteCreado = await createCliente(clienteData);
+			
+			console.log('✅ [NUEVO-CLIENTE] Cliente creado exitosamente:', clienteCreado.id);
 			
 			success = true;
 			
@@ -124,6 +145,11 @@
 						📋 Información Personal
 					</h2>
 					
+					<!-- Selector de País -->
+					<div class="mb-6">
+						<CountrySelector bind:selectedCountry />
+					</div>
+					
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<div class="md:col-span-2">
 							<label for="nombre" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -180,8 +206,18 @@
 								bind:value={formData.telefono}
 								required
 								class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-								placeholder="555-1234"
+								class:border-red-300={formData.telefono && !phoneValidation.valid}
+								class:border-green-300={formData.telefono && phoneValidation.valid}
+								placeholder="{countryConfig.phone.example}"
 							/>
+							<div class="mt-1 text-xs text-gray-600">
+								{countryConfig.phone.digits} dígitos • Formato: {countryConfig.phone.code}
+								{#if formData.telefono && phoneValidation.valid}
+									<span class="text-green-600">✓ {phoneFormatted}</span>
+								{:else if formData.telefono && !phoneValidation.valid}
+									<span class="text-red-600">✗ {phoneValidation.error}</span>
+								{/if}
+							</div>
 						</div>
 
 						<div>
@@ -208,14 +244,13 @@
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 						<div class="md:col-span-2">
 							<label for="direccion" class="block text-sm font-semibold text-gray-700 mb-2">
-								Dirección <span class="text-red-500">*</span>
+								Dirección
 							</label>
 							<input
 								id="direccion"
 								type="text"
 								inputmode="text"
 								bind:value={formData.direccion}
-								required
 								class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
 								placeholder="Calle Principal #123"
 							/>
@@ -300,13 +335,7 @@
 					</div>
 				</div>
 
-				<!-- Nota sobre funcionalidad -->
-				<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-					<p class="text-sm text-yellow-800">
-						<strong>Nota:</strong> Esta es una versión funcional del formulario de nuevo cliente. 
-						Los datos se guardarán usando @sync/core en las próximas fases de desarrollo.
-					</p>
-				</div>
+
 
 				<!-- Mensajes -->
 				{#if error}
@@ -317,7 +346,7 @@
 				
 				{#if success}
 					<div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl">
-						✅ Cliente guardado {$isOnline ? 'y sincronizado' : 'localmente. Se sincronizará cuando tengas internet'} (simulado)
+						✅ Cliente guardado {$isOnline ? 'y sincronizado' : 'localmente. Se sincronizará cuando tengas internet'}
 					</div>
 				{/if}
 
@@ -342,7 +371,7 @@
 								Guardando...
 							</span>
 						{:else}
-							Guardar Cliente (Simulado)
+							Guardar Cliente
 						{/if}
 					</button>
 				</div>

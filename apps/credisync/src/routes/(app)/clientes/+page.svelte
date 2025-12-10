@@ -4,6 +4,7 @@
 	import { syncCounter, isOnline } from '$lib/stores/sync.js';
 	import { formatearFecha } from '$lib/utils/creditos.js';
 	import { crediSyncApp } from '$lib/app-config.js';
+	import { getClientes, limpiarDatos } from '$lib/services/clientes.js';
 	
 	let clientesConEstado = $state([]);
 	let clientesFiltrados = $state([]);
@@ -116,120 +117,14 @@
 			loading = true;
 			error = '';
 			
-			console.log('📋 [CLIENTES-UI] Cargando clientes...');
+			console.log('📋 [CLIENTES-UI] Cargando clientes desde Universal Infrastructure...');
 			
-			// Por ahora, crear datos de ejemplo hasta que @sync/core esté completamente integrado
-			// En las próximas fases esto usará crediSyncApp.services.clientes.getAll()
-			const clientesEjemplo = [
-				{
-					id: '1',
-					nombre: 'María González Pérez',
-					telefono: '555-0123',
-					numero_documento: '12345678',
-					creditos_activos: 2,
-					saldo_total: 1500,
-					dias_atraso_max: 5,
-					estado: 'EN_MORA',
-					score: 'RIESGOSO',
-					updated_at: new Date().toISOString(),
-					creditosActivos: 2,
-					saldoTotal: 1500,
-					diasAtraso: 5,
-					proximoPago: {
-						monto: 250,
-						fecha: '2024-12-15'
-					}
-				},
-				{
-					id: '2',
-					nombre: 'Carlos Rodríguez',
-					telefono: '555-0456',
-					numero_documento: '87654321',
-					creditos_activos: 1,
-					saldo_total: 500,
-					dias_atraso_max: 0,
-					estado: 'AL_DIA',
-					score: 'CONFIABLE',
-					updated_at: new Date().toISOString(),
-					creditosActivos: 1,
-					saldoTotal: 500,
-					diasAtraso: 0,
-					proximoPago: {
-						monto: 125,
-						fecha: '2024-12-12'
-					}
-				},
-				{
-					id: '3',
-					nombre: 'Ana Martínez Hernández',
-					telefono: '555-0789',
-					numero_documento: '11223344',
-					creditos_activos: 1,
-					saldo_total: 1200,
-					dias_atraso_max: 2,
-					estado: 'EN_MORA',
-					score: 'REGULAR',
-					updated_at: new Date().toISOString(),
-					creditosActivos: 1,
-					saldoTotal: 1200,
-					diasAtraso: 2,
-					proximoPago: null
-				},
-				{
-					id: '4',
-					nombre: 'Luis Hernández',
-					telefono: '555-0321',
-					numero_documento: '55667788',
-					creditos_activos: 0,
-					saldo_total: 0,
-					dias_atraso_max: 0,
-					estado: 'SIN_CREDITOS',
-					score: 'REGULAR',
-					updated_at: new Date().toISOString(),
-					creditosActivos: 0,
-					saldoTotal: 0,
-					diasAtraso: 0,
-					proximoPago: null
-				},
-				{
-					id: '5',
-					nombre: 'Patricia López Sánchez',
-					telefono: '555-0654',
-					numero_documento: '99887766',
-					creditos_activos: 3,
-					saldo_total: 2800,
-					dias_atraso_max: 0,
-					estado: 'AL_DIA',
-					score: 'CONFIABLE',
-					updated_at: new Date().toISOString(),
-					creditosActivos: 3,
-					saldoTotal: 2800,
-					diasAtraso: 0,
-					proximoPago: {
-						monto: 350,
-						fecha: '2024-12-11'
-					}
-				},
-				{
-					id: '6',
-					nombre: 'José Ángel Ramírez',
-					telefono: '555-0987',
-					numero_documento: '44556677',
-					creditos_activos: 1,
-					saldo_total: 800,
-					dias_atraso_max: 0,
-					estado: 'AL_DIA',
-					score: 'CONFIABLE',
-					updated_at: new Date().toISOString(),
-					creditosActivos: 1,
-					saldoTotal: 800,
-					diasAtraso: 0,
-					proximoPago: {
-						monto: 200,
-						fecha: '2024-12-13'
-					}
-				}
-			];
+			// Cargar clientes reales desde @sync/core
+			const clientesReales = await getClientes();
+			console.log('📋 [CLIENTES-UI] Clientes desde DB:', clientesReales.length);
+			
+			// Si no hay clientes, usar lista vacía
+			const clientesEjemplo = clientesReales.length > 0 ? clientesReales : [];
 			
 			console.log(`📋 [CLIENTES-UI] ${clientesEjemplo.length} clientes cargados`);
 			
@@ -351,13 +246,7 @@
 				</div>
 			{/each}
 			
-			<!-- Nota sobre datos de ejemplo -->
-			<div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
-				<p class="text-sm text-yellow-800">
-					<strong>Nota:</strong> Estos son datos de ejemplo para demostrar la funcionalidad de la lista de clientes. 
-					En las próximas fases se integrará completamente con @sync/core para datos reales.
-				</p>
-			</div>
+
 		{/if}
 	</div>
 </div>

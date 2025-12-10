@@ -1,0 +1,1 @@
+import{w as i}from"./C5jdwYbG.js";import"./CanLVora.js";const t=i(navigator.onLine),a=i(0);function n(){t.set(navigator.onLine)}window.addEventListener("online",n),window.addEventListener("offline",n);export{t as i,a as s};

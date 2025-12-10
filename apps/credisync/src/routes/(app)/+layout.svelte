@@ -1,17 +1,67 @@
 <script>
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { user } from '$lib/stores/auth.js';
+	import { user, auth } from '$lib/stores/auth.js';
 	import { isOnline } from '$lib/stores/sync.js';
 	import { onMount } from 'svelte';
 	
 	// Importar sincronización global (se auto-configura)
 	import '$lib/sync/index.js';
 	
+	// Importar herramientas de verificación de almacenamiento (solo en desarrollo)
+	if (import.meta.env.DEV) {
+		import('$lib/debug/verify-storage.js');
+		import('$lib/debug/migrate-to-universal.js');
+		
+		// Cargar scripts de prueba
+		const scripts = [
+			'/test-cliente-creation.js',
+			'/test-universal-structure.js'
+		];
+		
+		scripts.forEach(src => {
+			const script = document.createElement('script');
+			script.src = src;
+			script.type = 'module';
+			document.head.appendChild(script);
+		});
+	}
+	
+	// Variable para el registro del Service Worker
+	let registerSW;
+	
 	// Redirigir a login si no está autenticado
-	onMount(() => {
+	onMount(async () => {
 		if (!$user) {
 			goto('/login');
+		}
+		
+		// Registrar Service Worker
+		try {
+			if (import.meta.env.PROD) {
+				// En producción, usar VitePWA
+				const { registerSW: vitePWARegister } = await import('virtual:pwa-register');
+				const updateSW = vitePWARegister({
+					onNeedRefresh() {
+						console.log('🔄 Nueva versión disponible');
+					},
+					onOfflineReady() {
+						console.log('✅ PWA lista para offline');
+					},
+					onRegistered(registration) {
+						console.log('✅ Service Worker registrado:', registration?.scope);
+					},
+					onRegisterError(error) {
+						console.error('❌ Error en Service Worker:', error);
+					}
+				});
+			} else {
+				// En desarrollo, VitePWA maneja el registro automáticamente
+				const { registerServiceWorker } = await import('$lib/pwa-register.js');
+				await registerServiceWorker();
+			}
+		} catch (error) {
+			console.warn('⚠️ Error registrando Service Worker:', error);
 		}
 	});
 	
@@ -77,6 +127,16 @@
 		// TODO: Implementar menú contextual
 		console.log('Menú');
 	}
+	
+	// Función para cerrar sesión
+	async function handleLogout() {
+		try {
+			console.log('🚪 Cerrando sesión...');
+			await auth.signOut();
+		} catch (error) {
+			console.error('❌ Error al cerrar sesión:', error);
+		}
+	}
 </script>
 
 {#if $user}
@@ -101,9 +161,13 @@
 						<h1 class="section-title">{sectionTitle}</h1>
 					{/if}
 				</div>				
-				<!-- Derecha: Sin acciones (se movieron a la página de clientes) -->
+				<!-- Derecha: Botón de logout -->
 				<div class="header-right">
-					<!-- Espacio vacío para balance visual -->
+					<button onclick={handleLogout} class="logout-btn" title="Cerrar sesión">
+						<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+						</svg>
+					</button>
 				</div>
 			</div>
 		</header>
@@ -281,6 +345,37 @@
 	
 	.header-btn:active {
 		transform: scale(0.95);
+	}
+	
+	.logout-btn {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: transparent;
+		border: none;
+		border-radius: 8px;
+		color: rgba(255, 255, 255, 0.9);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		position: relative;
+	}
+	
+	.logout-btn:hover {
+		background: rgba(255, 255, 255, 0.15);
+		color: #ffffff;
+		transform: translateY(-1px);
+	}
+	
+	.logout-btn:active {
+		transform: scale(0.95) translateY(0);
+		background: rgba(255, 255, 255, 0.2);
+	}
+	
+	.logout-btn:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 	}
 	
 	.icon {
