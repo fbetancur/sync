@@ -1,4 +1,5 @@
 import { supabase } from '../supabase';
+import { encryptionService } from '../security/encryption.service';
 import type { User } from '../../types/database';
 
 export interface LoginCredentials {
@@ -75,10 +76,14 @@ export class AuthService {
 
   /**
    * Sign out current user
+   * Requirements: 17.5
    */
   async signOut() {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
+
+    // Clear encryption key from memory (Requirement 17.5)
+    encryptionService.clearEncryptionKey();
 
     // Clear any local storage data
     localStorage.clear();
