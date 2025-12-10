@@ -55,47 +55,73 @@ export interface ProductoCredito {
 
 // Syncable entities (support CRDT synchronization)
 export interface Cliente extends SyncableEntity {
-  created_by: string;
+  created_by?: string;
   nombre: string;
   numero_documento: string;
-  tipo_documento: 'CC' | 'CE' | 'TI' | 'NIT' | 'PASAPORTE';
+  tipo_documento?: 'CC' | 'CE' | 'TI' | 'NIT' | 'PASAPORTE';
   telefono: string;
-  telefono_2: string | null;
+  telefono_2?: string | null;
   direccion: string;
-  barrio: string | null;
-  referencia: string | null;
-  ruta_id: string;
-  latitud: number | null;
-  longitud: number | null;
-  nombre_fiador: string | null;
-  telefono_fiador: string | null;
-  creditos_activos: number;
-  saldo_total: number;
-  dias_atraso_max: number;
-  estado: 'activo' | 'inactivo' | 'bloqueado';
-  score: number | null;
+  barrio?: string | null;
+  referencia?: string | null;
+  ruta_id?: string;
+  latitud?: number | null;
+  longitud?: number | null;
+  nombre_fiador?: string | null;
+  telefono_fiador?: string | null;
+  creditos_activos?: number;
+  saldo_total?: number;
+  dias_atraso_max?: number;
+  estado: 'AL_DIA' | 'MORA' | 'PROXIMO' | 'SIN_CREDITOS';
+  score?: number | null;
+  
+  // Campos calculados para la UI (como en la app de referencia)
+  resumen?: {
+    creditos_activos: number;
+    total_adeudado: number;
+    cuotas_atrasadas: number;
+    dias_atraso_max: number;
+  };
+  
+  // Créditos enriquecidos para la vista de ruta
+  creditos?: Array<{
+    id: string;
+    numero: string;
+    tipo: string;
+    adeudado: number;
+    cuotas_a_cobrar: number;
+    cuotas_atrasadas: number;
+    dias_atraso: number;
+  }>;
 }
 
 export interface Credito extends SyncableEntity {
   cliente_id: string;
+  cliente_nombre?: string; // Campo calculado para UI
   producto_id: string;
-  cobrador_id: string;
-  ruta_id: string;
-  monto_original: number;
-  interes_porcentaje: number;
-  total_a_pagar: number;
+  cobrador_id?: string;
+  ruta_id?: string;
+  monto_solicitado: number;
+  monto_aprobado: number;
+  monto_original?: number; // Alias para compatibilidad
+  tasa_interes: number; // Alias para interes_porcentaje
+  interes_porcentaje?: number; // Mantener para compatibilidad
+  total_a_pagar?: number;
   numero_cuotas: number;
   valor_cuota: number;
-  frecuencia: 'diario' | 'semanal' | 'quincenal' | 'mensual';
-  fecha_desembolso: string;
-  fecha_primera_cuota: string;
-  fecha_ultima_cuota: string;
-  estado: 'activo' | 'pagado' | 'vencido' | 'cancelado';
+  frecuencia?: 'diario' | 'semanal' | 'quincenal' | 'mensual';
+  fecha_otorgamiento: number; // Timestamp
+  fecha_vencimiento: number; // Timestamp
+  fecha_desembolso?: string; // Mantener para compatibilidad
+  fecha_primera_cuota?: string;
+  fecha_ultima_cuota?: string;
+  estado: 'ACTIVO' | 'PAGADO' | 'VENCIDO' | 'CANCELADO';
   saldo_pendiente: number;
   cuotas_pagadas: number;
-  dias_atraso: number;
-  excluir_domingos: boolean;
-  created_by: string;
+  dias_atraso?: number;
+  excluir_domingos?: boolean;
+  observaciones?: string;
+  created_by?: string;
 }
 
 export interface Cuota extends SyncableEntity {

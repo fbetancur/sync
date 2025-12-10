@@ -1,0 +1,1 @@
+import{g as p,e as t}from"../../chunks/vendor.js";import"clsx";import{s as a}from"../../chunks/client.js";a.updated.check;function e(){return p("__request__")}const n={get error(){return e().page.error},get status(){return e().page.status}},r=n;function h(s,u){s.component(o=>{o.push(`<h1>${t(r.status)}</h1> <p>${t(r.error?.message)}</p>`)})}export{h as default};

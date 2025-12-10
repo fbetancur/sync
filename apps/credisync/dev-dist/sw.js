@@ -67,9 +67,8 @@ if (!self.define) {
     });
   };
 }
-define(['./workbox-193af733'], (function (workbox) { 'use strict';
+define(['./workbox-7595b6cf'], (function (workbox) { 'use strict';
 
-  importScripts("sw-sync.js");
   self.skipWaiting();
   workbox.clientsClaim();
 
@@ -83,12 +82,11 @@ define(['./workbox-193af733'], (function (workbox) { 'use strict';
     "revision": "3ca0b8505b4bec776b69afdba2768812"
   }, {
     "url": "index.html",
-    "revision": "0.044iqudqabg"
+    "revision": "0.qfiqfon00vg"
   }], {});
   workbox.cleanupOutdatedCaches();
   workbox.registerRoute(new workbox.NavigationRoute(workbox.createHandlerBoundToURL("index.html"), {
-    allowlist: [/^\/$/],
-    denylist: [/^\/api/]
+    allowlist: [/^\/$/]
   }));
   workbox.registerRoute(/^https:\/\/hmnlriywocnpiktflehr\.supabase\.co\/.*$/, new workbox.NetworkFirst({
     "cacheName": "supabase-api",
@@ -105,17 +103,6 @@ define(['./workbox-193af733'], (function (workbox) { 'use strict';
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 10,
       maxAgeSeconds: 31536000
-    }), new workbox.CacheableResponsePlugin({
-      statuses: [0, 200]
-    })]
-  }), 'GET');
-  workbox.registerRoute(/^https:\/\/fonts\.gstatic\.com\/.*/i, new workbox.CacheFirst({
-    "cacheName": "google-fonts-cache",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 10,
-      maxAgeSeconds: 31536000
-    }), new workbox.CacheableResponsePlugin({
-      statuses: [0, 200]
     })]
   }), 'GET');
   workbox.registerRoute(/\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/, new workbox.CacheFirst({
@@ -123,13 +110,6 @@ define(['./workbox-193af733'], (function (workbox) { 'use strict';
     plugins: [new workbox.ExpirationPlugin({
       maxEntries: 100,
       maxAgeSeconds: 2592000
-    })]
-  }), 'GET');
-  workbox.registerRoute(/\.(?:js|css)$/, new workbox.StaleWhileRevalidate({
-    "cacheName": "static-resources",
-    plugins: [new workbox.ExpirationPlugin({
-      maxEntries: 50,
-      maxAgeSeconds: 604800
     })]
   }), 'GET');
 

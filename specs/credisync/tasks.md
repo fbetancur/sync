@@ -225,7 +225,7 @@
 
 ## Phase 7: Core Features - Clientes
 
-- [ ] 20. Implement clientes data operations
+- [x] 20. Implement clientes data operations
   - Create Cliente model and repository
   - Implement CRUD operations in IndexedDB
   - Implement duplicate detection by documento
@@ -234,17 +234,18 @@
   - Implement filtering by ruta and estado
   - _Requirements: 11.1, 11.3, 11.4, 11.5, 11.6, 11.7_
 
-- [ ] 21. Create clientes UI components
-  - Create ClientesList page with virtual scrolling
-  - Create ClienteForm component for create/edit
-  - Create ClienteDetail page
-  - Implement search with debouncing
-  - Implement filters (ruta, estado)
-  - Integrate GPS capture for direccion
-  - Implement form validation with Zod
+- [x] 21. Create clientes UI components (NEEDS ENHANCEMENT)
+  - Create ClientesList page with virtual scrolling ✅
+  - Create ClienteForm component for create/edit ✅
+  - Create ClienteDetail page ✅
+  - Implement search with debouncing ✅
+  - Implement filters (ruta, estado) ✅
+  - Integrate GPS capture for direccion ✅
+  - Implement form validation with Zod ✅
+  - ⚠️ PENDING: Enhance ClienteCard with advanced features (see task 33.2)
   - _Requirements: 11.1, 11.2, 11.3, 11.5_
 
-- [ ] 22. Implement auto-save for cliente form
+- [x] 22. Implement auto-save for cliente form
   - Integrate FormAutoSave component
   - Implement auto-save every 3 seconds
   - Implement recovery on form reopen
@@ -253,7 +254,7 @@
 
 ## Phase 8: Core Features - Créditos
 
-- [ ] 23. Implement creditos data operations
+- [-] 23. Implement creditos data operations
   - Create Credito model and repository
   - Implement CRUD operations in IndexedDB
   - Integrate credit calculations
@@ -262,7 +263,7 @@
   - Implement arrears calculation
   - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5, 12.6, 12.7_
 
-- [ ] 24. Create creditos UI components
+- [x] 24. Create creditos UI components
   - Create CreditosList page
   - Create CreditoForm component
   - Create CreditoDetail page with payment history
@@ -292,15 +293,29 @@
   - Verify all 3 layers written or none
   - Test failure scenarios
 
-- [ ] 26. Create pago registration UI
-  - Create PagoForm component
-  - Implement cliente/credito search
-  - Show saldo pendiente and dias_atraso
-  - Integrate GPS capture
-  - Implement camera capture for comprobante
-  - Show real-time balance calculation
-  - Implement validation
-  - Show confirmation with new balance
+- [ ] 25.2 Implement intelligent payment distribution service
+  - Create PaymentDistributionService in @sync/core
+  - Implement proportional distribution algorithm across multiple credits
+  - Implement validation for payment amounts
+  - Integrate with existing pago registration logic
+  - _Requirements: 3.3, 3.4, 13.1_
+
+- [ ] 25.3 Implement ReportesService for dashboard statistics
+  - Create ReportesService in @sync/core
+  - Implement getEstadisticasRuta() method
+  - Implement getClientesConCreditos() method
+  - Calculate real-time statistics (recaudo esperado, cuotas esperadas, etc.)
+  - Integrate with existing database operations
+  - _Requirements: 11.4, 13.4_
+
+- [ ] 26. Create advanced pago registration UI (CobroModal)
+  - Create CobroModal component using @sync/ui Modal
+  - Implement intelligent payment distribution interface
+  - Show real-time distribution calculation across credits
+  - Allow selection/deselection of credits to pay
+  - Integrate GPS capture and camera for comprobante
+  - Show confirmation with updated balances for all credits
+  - Implement validation and error handling
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 15.1, 15.2, 15.3, 16.1, 16.2_
 
 - [ ] 27. Optimize pago registration performance
@@ -374,16 +389,63 @@
   - Test credito update
   - Verify all operations complete successfully
 
+## Phase 11.5: Advanced UI Components (Based on credisync-ui-enhancement.md)
+
+- [ ] 33.1 Enhance SyncStatusIndicator component
+  - Upgrade existing SyncStatusIndicator to advanced version
+  - Add real-time sync status from @sync/core
+  - Add manual sync trigger button
+  - Add last sync timestamp display
+  - Add connection status indicator with visual states
+  - Integrate with crediSyncApp from app-config.ts
+  - _Requirements: 14.3, 14.4, 5.1_
+
+- [ ] 33.2 Create enhanced ClienteCard component
+  - Upgrade existing ClienteCard with advanced features
+  - Add visual states (AL_DIA, MORA, PROXIMO) with color coding
+  - Add calculated fields display (creditos_activos, saldo_total, dias_atraso_max)
+  - Add action buttons (Cobrar, Ver detalles)
+  - Implement responsive design for mobile-first
+  - Use @sync/types for proper typing
+  - _Requirements: 11.4, 14.1, 14.2_
+
+- [ ] 33.3 Create RutaView dashboard page
+  - Create new route page at /ruta with comprehensive dashboard
+  - Implement statistics cards (recaudo esperado, cuotas esperadas, clientes en mora)
+  - Add client list with priority ordering (MORA first, then by saldo_total)
+  - Integrate SearchInput component with debounce (300ms)
+  - Add pull-to-refresh functionality
+  - Integrate with @sync/core for data operations
+  - _Requirements: 10.1, 11.3, 14.3, 18.4_
+
+- [ ] 33.4 Integrate CobroModal with RutaView
+  - Add CobroModal integration to ClienteCard actions
+  - Implement modal state management
+  - Add success callback to refresh data after payment
+  - Ensure proper error handling and user feedback
+  - Test complete workflow from client selection to payment confirmation
+  - _Requirements: 3.1, 3.2, 3.3, 3.4_
+
 ## Phase 12: UI/UX and Components
 
-- [ ] 34. Create reusable UI components
-  - Create SyncIndicator component
-  - Create ConnectionStatus component
-  - Create FormAutoSave component
-  - Create ValidationMessage component
+- [ ] 34. Create missing @sync/ui components
+  - Create Modal component with proper TypeScript interfaces
+  - Create Button component with variants (primary, secondary, outline, ghost)
+  - Create Input component with validation and formatting support
+  - Create SearchInput component with debounce functionality
+  - Create StatCard component for dashboard statistics
   - Create LoadingSpinner component
-  - Create ConfirmDialog component
-  - Create Toast notifications
+  - Create EmptyState component
+  - Export all components from @sync/ui index
+  - _Requirements: 14.3, 14.4, 14.5, 14.6_
+
+- [ ] 34.1 Enhance existing UI components
+  - Update SyncIndicator component (already exists)
+  - Update ConnectionStatus component (already exists)
+  - Update FormAutoSave component (already exists)
+  - Update ValidationMessage component (already exists)
+  - Update ConfirmDialog component (already exists)
+  - Update Toast notifications (already exists)
   - _Requirements: 14.3, 14.4, 14.5, 14.6_
 
 - [ ] 35. Implement responsive layouts
@@ -511,3 +573,32 @@
   - Monitor user adoption
   - Collect user feedback
   - Plan iterations based on feedback
+
+---
+
+## 📋 ESTADO ACTUAL (Diciembre 10, 2024)
+
+### ✅ COMPLETADO (Fases 1-7)
+- **Infraestructura completa**: @sync/core, @sync/types, @sync/ui funcionando
+- **Sistema de sincronización**: CRDT, conflict resolution, audit logging
+- **Autenticación y seguridad**: JWT, encryption, RLS
+- **Gestión básica de clientes**: CRUD, search, validation
+
+### 🚧 EN PROGRESO (Fase 8)
+- **Tarea 23**: Gestión de créditos (marcada como in_progress)
+
+### 🎯 PRÓXIMAS PRIORIDADES (Basado en credisync-ui-enhancement.md)
+1. **Tarea 25**: Implementar sistema de pagos (CRÍTICO)
+2. **Tarea 25.2**: Servicio de distribución inteligente de pagos
+3. **Tarea 25.3**: Servicio de reportes para dashboard
+4. **Tarea 26**: CobroModal avanzado
+5. **Tareas 33.1-33.4**: Componentes UI avanzados
+
+### 📱 FUNCIONALIDADES FALTANTES IDENTIFICADAS
+- ❌ **CobroModal**: Modal inteligente con distribución de pagos
+- ❌ **ClienteCard mejorado**: Estados visuales y acciones
+- ❌ **RutaView**: Dashboard con estadísticas del día
+- ❌ **SyncStatusIndicator avanzado**: Indicador completo de estado
+- ❌ **Distribución proporcional**: Lógica de pagos múltiples
+
+**Nota**: Estas funcionalidades están especificadas en `specs/credisync-ui-enhancement.md` y ahora están integradas en este plan de tareas.

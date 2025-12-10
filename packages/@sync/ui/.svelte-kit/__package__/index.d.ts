@@ -6,6 +6,11 @@
  */
 export { default as ErrorBoundary } from './components/ErrorBoundary.svelte';
 export { default as PinEntry } from './components/PinEntry.svelte';
+export { default as Modal } from './components/Modal.svelte';
+export { default as Button } from './components/Button.svelte';
+export { default as Input } from './components/Input.svelte';
+export { default as SearchInput } from './components/SearchInput.svelte';
+export { default as StatCard } from './components/StatCard.svelte';
 export { authStore } from './stores/auth.js';
 export { syncStore } from './stores/sync.js';
 export { useBackgroundSync } from './hooks/useBackgroundSync.js';

@@ -1,0 +1,87 @@
+<script lang="ts">
+	import { user, auth } from '$lib/stores/auth';
+
+	async function handleSignOut() {
+		await auth.signOut();
+	}
+</script>
+
+<!-- Página temporal del dashboard - será reemplazada en FASE 3.3 -->
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+	<div class="max-w-md mx-auto">
+		<!-- Header temporal -->
+		<div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+			<div class="flex items-center justify-between mb-4">
+				<div>
+					<h1 class="text-2xl font-bold text-gray-800">CrediSync</h1>
+					<p class="text-gray-600">Dashboard Principal</p>
+				</div>
+				<div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+					<span class="text-white font-bold text-xl">C</span>
+				</div>
+			</div>
+			
+			{#if $user}
+				<div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+					<p class="text-green-800 text-sm">
+						✅ <strong>Autenticación exitosa</strong>
+					</p>
+					<p class="text-green-600 text-xs mt-1">
+						Usuario: {$user.email || 'Usuario autenticado'}
+					</p>
+				</div>
+			{/if}
+		</div>
+
+		<!-- Estado del desarrollo -->
+		<div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+			<h2 class="text-lg font-semibold text-gray-800 mb-4">🚧 Estado del Desarrollo</h2>
+			
+			<div class="space-y-3">
+				<div class="flex items-center justify-between">
+					<span class="text-sm text-gray-600">FASE 1: SvelteKit Setup</span>
+					<span class="text-green-600 font-semibold">✅ Completado</span>
+				</div>
+				
+				<div class="flex items-center justify-between">
+					<span class="text-sm text-gray-600">FASE 2: Authentication</span>
+					<span class="text-blue-600 font-semibold">✅ Completado</span>
+				</div>
+				
+				<div class="flex items-center justify-between">
+					<span class="text-sm text-gray-600">Task 2.5: Route Protection</span>
+					<span class="text-green-600 font-semibold">✅ Implementado</span>
+				</div>
+				
+				<div class="flex items-center justify-between">
+					<span class="text-sm text-gray-600">FASE 3: Dashboard Layout</span>
+					<span class="text-gray-400 font-semibold">🚧 Próximo</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Próximos pasos -->
+		<div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+			<h2 class="text-lg font-semibold text-gray-800 mb-4">📋 Próximos Pasos</h2>
+			
+			<div class="space-y-2 text-sm text-gray-600">
+				<p>• <strong>Task 2.6:</strong> Test login functionality manually</p>
+				<p>• <strong>FASE 3.1:</strong> Create main app layout from reference</p>
+				<p>• <strong>FASE 3.3:</strong> Create dashboard/ruta page from reference</p>
+				<p>• <strong>Checkpoint 1:</strong> Authentication system complete</p>
+			</div>
+		</div>
+
+		<!-- Acciones -->
+		<div class="bg-white rounded-2xl shadow-lg p-6">
+			<h2 class="text-lg font-semibold text-gray-800 mb-4">⚙️ Acciones</h2>
+			
+			<button 
+				on:click={handleSignOut}
+				class="w-full bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold py-3 px-4 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-lg"
+			>
+				Cerrar Sesión
+			</button>
+		</div>
+	</div>
+</div>

@@ -1,122 +1,103 @@
-/**
- * Configuración centralizada para CrediSync
- *
- * Este archivo define la configuración de la aplicación usando el API factory
- * de @sync/core para inicializar todos los servicios de manera centralizada.
- *
- * Requirements: 4.4, 4.5, 4.6
- */
+import { createSyncApp } from '@sync/core';
+import type { SyncAppConfig } from '@sync/types';
 
-import {
-  createSyncApp,
-  createDevConfig,
-  createProdConfig,
-  type SyncApp
-} from '@sync/core';
-
-// ============================================================================
-// CONFIGURACIÓN DE LA APLICACIÓN
-// ============================================================================
-
-/**
- * Crear configuración basada en el entorno
- */
-function createAppConfig() {
-  const isDev = import.meta.env.DEV;
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-  if (isDev) {
-    return createDevConfig('credisync');
-  } else {
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error(
-        'Variables de entorno de Supabase requeridas en producción'
-      );
-    }
-    return createProdConfig('credisync', supabaseUrl, supabaseKey);
+// Configuración de CrediSync usando @sync/core
+const crediSyncConfig: SyncAppConfig = {
+  appName: 'CrediSync',
+  version: '1.0.0',
+  
+  // Configuración de Supabase (preservando credenciales existentes)
+  supabase: {
+    url: import.meta.env.VITE_SUPABASE_URL || 'https://hmnlriywocnpiktflehr.supabase.co',
+    anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtbmxyaXl3b2NucGlrdGZsZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzMDE4MzIsImV4cCI6MjA4MDg3NzgzMn0.P4ZZdWAPgby89Rc8yYAZB9f2bwRrRuLEsS_6peobkf4'
+  },
+  
+  // Configuración offline-first
+  offline: {
+    enabled: true,
+    syncInterval: 30000, // 30 segundos
+    maxRetries: 3,
+    retryDelay: 1000
+  },
+  
+  // Configuración de sincronización inteligente
+  sync: {
+    pauseOnActivity: true,
+    activityTimeout: 50000, // 50 segundos de inactividad
+    forceOnReconnect: true,
+    maxSyncInterval: 300000 // 5 minutos máximo
+  },
+  
+  // Configuración de seguridad
+  security: {
+    encryption: true,
+    auditLog: true,
+    sessionTimeout: 24 * 60 * 60 * 1000 // 24 horas
   }
-}
+};
 
-// ============================================================================
-// INSTANCIA GLOBAL DE LA APLICACIÓN
-// ============================================================================
+// Crear instancia de la aplicación CrediSync
+export const crediSyncApp = createSyncApp(crediSyncConfig);
 
-/**
- * Instancia global de la aplicación CrediSync
- * Proporciona acceso centralizado a todos los servicios
- */
-export const crediSyncApp: SyncApp = createSyncApp(createAppConfig());
-
-// ============================================================================
-// SERVICIOS EXPORTADOS PARA COMPATIBILIDAD
-// ============================================================================
-
-/**
- * Exportar servicios individuales para mantener compatibilidad
- * con el código existente durante la migración
- */
-export const {
-  db,
-  checksum,
-  sync: syncManager,
-  syncQueue,
-  conflictResolver,
-  changeTracker,
-  storage: storageManager,
-  audit: auditLogger,
-  encryption: encryptionService
-} = crediSyncApp.services;
-
-// ============================================================================
-// FUNCIONES DE UTILIDAD
-// ============================================================================
-
-/**
- * Inicializar la aplicación CrediSync
- * Debe llamarse al inicio de la aplicación
- */
+// Función de inicialización
 export async function initializeCrediSync(): Promise<void> {
   try {
-    console.log('🚀 Inicializando CrediSync...');
-    await crediSyncApp.start();
-    console.log('✅ CrediSync inicializado exitosamente');
+    console.log('🚀 Inicializando CrediSync con @sync/core...');
+    
+    // Inicializar la aplicación
+    await crediSyncApp.initialize();
+    
+    // Configurar detección de actividad para sync inteligente
+    setupActivityDetection();
+    
+    console.log('✅ CrediSync inicializado correctamente');
   } catch (error) {
     console.error('❌ Error inicializando CrediSync:', error);
     throw error;
   }
 }
 
-/**
- * Obtener el estado actual de la aplicación
- */
-export async function getAppStatus() {
-  return await crediSyncApp.getStatus();
+// Configurar detección de actividad del usuario
+function setupActivityDetection(): void {
+  const activityEvents = [
+    'scroll', 'mousemove', 'mousedown', 'touchstart', 
+    'touchmove', 'keydown', 'click', 'input'
+  ];
+  
+  let activityTimer: NodeJS.Timeout | null = null;
+  
+  function onActivity() {
+    // Pausar sincronización durante actividad
+    crediSyncApp.services.sync.pauseAutoSync();
+    
+    // Reiniciar timer
+    if (activityTimer) {
+      clearTimeout(activityTimer);
+    }
+    
+    // Reanudar sync después de inactividad
+    activityTimer = setTimeout(() => {
+      crediSyncApp.services.sync.resumeAutoSync();
+    }, crediSyncConfig.sync.activityTimeout);
+  }
+  
+  // Agregar listeners de actividad
+  activityEvents.forEach(event => {
+    document.addEventListener(event, onActivity, { passive: true });
+  });
+  
+  // Sync forzado al recuperar conexión
+  window.addEventListener('online', () => {
+    crediSyncApp.services.sync.syncNow();
+  });
 }
 
-/**
- * Detener la aplicación (útil para cleanup)
- */
-export async function shutdownCrediSync(): Promise<void> {
-  try {
-    console.log('🛑 Deteniendo CrediSync...');
-    await crediSyncApp.stop();
-    console.log('✅ CrediSync detenido exitosamente');
-  } catch (error) {
-    console.error('❌ Error deteniendo CrediSync:', error);
-    throw error;
-  }
-}
-
-/**
- * Limpiar todos los datos (para desarrollo/testing)
- */
-export async function clearAllData(): Promise<void> {
-  if (crediSyncApp.isStarted) {
-    throw new Error(
-      'No se puede limpiar datos mientras la aplicación está iniciada'
-    );
-  }
-
-  await crediSyncApp.clearData();
+// Obtener estado de la aplicación
+export function getAppStatus() {
+  return {
+    isInitialized: crediSyncApp.isStarted,
+    isOnline: navigator.onLine,
+    syncStatus: crediSyncApp.services.sync.getStatus(),
+    queueSize: crediSyncApp.services.sync.getQueueSize()
+  };
 }

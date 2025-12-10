@@ -142,6 +142,33 @@ export class AuditLogger {
   }
 
   /**
+   * Método simplificado para registrar eventos (wrapper de logEvent)
+   */
+  async log(eventData: {
+    event_type: string;
+    aggregate_type: string;
+    aggregate_id: string;
+    data: any;
+    tenant_id: string;
+    user_id: string;
+    device_id?: string;
+    metadata?: Partial<AuditEventMetadata>;
+  }): Promise<AuditLogEntry> {
+    const fullEventData: AuditEventData = {
+      tenant_id: eventData.tenant_id,
+      user_id: eventData.user_id,
+      device_id: eventData.device_id || 'unknown-device',
+      event_type: eventData.event_type as EventType,
+      aggregate_type: eventData.aggregate_type as AggregateType,
+      aggregate_id: eventData.aggregate_id,
+      data: eventData.data,
+      metadata: eventData.metadata
+    };
+
+    return this.logEvent(fullEventData);
+  }
+
+  /**
    * Registrar un evento de auditoría
    * Requirements: 8.1, 8.2, 8.3
    */
