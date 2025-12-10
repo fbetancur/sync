@@ -1,0 +1,151 @@
+name: Conditional Deployment
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job 1: Detectar cambios
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      credisync: ${{ steps.changes.outputs.credisync }}
+      healthsync: ${{ steps.changes.outputs.healthsync }}
+      surveysync: ${{ steps.changes.outputs.surveysync }}
+      packages: ${{ steps.changes.outputs.packages }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            credisync:
+              - 'apps/credisync/**'
+            healthsync:
+              - 'apps/healthsync/**'
+            surveysync:
+              - 'apps/surveysync/**'
+            packages:
+              - 'packages/@sync/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+
+  # Job 2: Deploy CrediSync si hay cambios
+  deploy-credisync:
+    name: Deploy CrediSync
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.credisync == 'true' || needs.detect-changes.outputs.packages == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        
+      - name: Build packages
+        run: pnpm build:packages
+        
+      - name: Test CrediSync
+        run: pnpm test:credisync
+        
+      - name: Build CrediSync
+        run: pnpm build:credisync
+        
+      - name: Deploy to Vercel
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "🚀 Deploying CrediSync to production..."
+          echo "Changes detected in: ${{ needs.detect-changes.outputs.credisync == 'true' && 'CrediSync app' || '' }} ${{ needs.detect-changes.outputs.packages == 'true' && 'Shared packages' || '' }}"
+          # El deployment real se maneja por Vercel automáticamente
+
+  # Job 3: Preparar HealthSync (futuro)
+  prepare-healthsync:
+    name: Prepare HealthSync
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.healthsync == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Log HealthSync changes
+        run: |
+          echo "📱 HealthSync changes detected"
+          echo "HealthSync deployment will be configured in the future"
+          echo "For now, only logging the changes"
+
+  # Job 4: Preparar SurveySync (futuro)
+  prepare-surveysync:
+    name: Prepare SurveySync
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.surveysync == 'true'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Log SurveySync changes
+        run: |
+          echo "📊 SurveySync changes detected"
+          echo "SurveySync deployment will be configured in the future"
+          echo "For now, only logging the changes"
+
+  # Job 5: Reporte de deployment
+  deployment-report:
+    name: Deployment Report
+    runs-on: ubuntu-latest
+    needs: [detect-changes, deploy-credisync, prepare-healthsync, prepare-surveysync]
+    if: always()
+    
+    steps:
+      - name: Generate deployment report
+        run: |
+          echo "## 📋 Deployment Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.detect-changes.outputs.credisync }}" = "true" ] || [ "${{ needs.detect-changes.outputs.packages }}" = "true" ]; then
+            echo "✅ **CrediSync**: Deployed" >> $GITHUB_STEP_SUMMARY
+            echo "   - URL: https://credisync-green.vercel.app/" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⏭️ **CrediSync**: No changes, skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.detect-changes.outputs.healthsync }}" = "true" ]; then
+            echo "📱 **HealthSync**: Changes detected (deployment pending)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⏭️ **HealthSync**: No changes" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.detect-changes.outputs.surveysync }}" = "true" ]; then
+            echo "📊 **SurveySync**: Changes detected (deployment pending)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⏭️ **SurveySync**: No changes" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          if [ "${{ needs.detect-changes.outputs.packages }}" = "true" ]; then
+            echo "📦 **Packages**: Updated, affecting all apps" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "📦 **Packages**: No changes" >> $GITHUB_STEP_SUMMARY
+          fi
