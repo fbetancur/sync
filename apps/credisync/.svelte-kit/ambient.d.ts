@@ -72,6 +72,7 @@ declare module '$env/static/private' {
 	export const npm_config_node_gyp: string;
 	export const npm_config_npm_globalconfig: string;
 	export const npm_config_prefer_workspace_packages: string;
+	export const npm_config_recursive: string;
 	export const npm_config_registry: string;
 	export const npm_config_save_workspace_protocol: string;
 	export const npm_config_shared_workspace_lockfile: string;
@@ -206,6 +207,7 @@ declare module '$env/dynamic/private' {
 		npm_config_node_gyp: string;
 		npm_config_npm_globalconfig: string;
 		npm_config_prefer_workspace_packages: string;
+		npm_config_recursive: string;
 		npm_config_registry: string;
 		npm_config_save_workspace_protocol: string;
 		npm_config_shared_workspace_lockfile: string;

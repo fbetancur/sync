@@ -1,6 +1,11 @@
 {
 	"/(app)": [],
 	"/": [],
+	"/(app)/balance": [],
+	"/(app)/clientes": [],
+	"/(app)/clientes/nuevo": [],
+	"/(app)/clientes/[id]": [],
+	"/(app)/configuracion": [],
 	"/login": [],
 	"/(app)/ruta": []
 }

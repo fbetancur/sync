@@ -27,17 +27,22 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/(app)" | "/" | "/login" | "/(app)/ruta";
+		RouteId(): "/(app)" | "/" | "/(app)/balance" | "/(app)/clientes" | "/(app)/clientes/nuevo" | "/(app)/clientes/[id]" | "/(app)/configuracion" | "/login" | "/(app)/ruta";
 		RouteParams(): {
-			
+			"/(app)/clientes/[id]": { id: string }
 		};
 		LayoutParams(): {
-			"/(app)": Record<string, never>;
-			"/": Record<string, never>;
+			"/(app)": { id?: string };
+			"/": { id?: string };
+			"/(app)/balance": Record<string, never>;
+			"/(app)/clientes": { id?: string };
+			"/(app)/clientes/nuevo": Record<string, never>;
+			"/(app)/clientes/[id]": { id: string };
+			"/(app)/configuracion": Record<string, never>;
 			"/login": Record<string, never>;
 			"/(app)/ruta": Record<string, never>
 		};
-		Pathname(): "/" | "/login" | "/login/" | "/ruta" | "/ruta/";
+		Pathname(): "/" | "/balance" | "/balance/" | "/clientes" | "/clientes/" | "/clientes/nuevo" | "/clientes/nuevo/" | `/clientes/${string}` & {} | `/clientes/${string}/` & {} | "/configuracion" | "/configuracion/" | "/login" | "/login/" | "/ruta" | "/ruta/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
 		Asset(): "/icon-192.png" | "/icon-512.png" | "/icon.svg" | "/manifest.json" | string & {};
 	}
