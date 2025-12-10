@@ -1,6 +1,6 @@
 packages:
   - 'apps/*'
-  - 'packages/*'
+  - 'packages/@sync/*'
   - 'tools/*'
 
 # Configuración de hoisting

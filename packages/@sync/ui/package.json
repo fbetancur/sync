@@ -1,0 +1,46 @@
+{
+  "name": "@sync/ui",
+  "version": "1.0.0",
+  "description": "Shared UI components for Sync Platform",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "svelte": "src/index.js",
+  "exports": {
+    ".": {
+      "svelte": "./src/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./components/*": {
+      "svelte": "./src/components/*.svelte"
+    },
+    "./stores/*": {
+      "import": "./src/stores/*.js"
+    }
+  },
+  "scripts": {
+    "build": "svelte-package",
+    "dev": "svelte-package --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext .ts,.svelte",
+    "format": "prettier --write .",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@sync/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/package": "^2.3.7",
+    "@types/node": "^24.10.1",
+    "svelte": "^5.43.8",
+    "typescript": "~5.9.3",
+    "vitest": "^4.0.15",
+    "eslint": "^9.39.1",
+    "prettier": "^3.7.4"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  }
+}
