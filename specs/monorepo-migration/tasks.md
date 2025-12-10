@@ -153,28 +153,40 @@
 
 
 
+
+
   - Corregir errores de TypeScript en packages
+
+
   - Configurar builds secuenciales: @sync/types → @sync/core → @sync/ui
   - _Requirements: 6.4, 6.5, 12.3_
 
 
 ## FASE 3: Configuración de CI/CD y Deployment (1 día)
 
+
+
 - [ ] 15. Configurar deployment de CrediSync
   - Actualizar vercel.json para estructura de monorepo
   - Configurar build command para monorepo
   - Probar deployment en preview environment
+
+
+
   - Validar que credisync.vercel.app funciona correctamente
   - _Requirements: 9.1, 9.4, 9.6_
 
 - [ ] 16. Crear pipelines de CI/CD
   - Crear .github/workflows/credisync-deploy.yml
   - Configurar deployment condicional basado en cambios
+
+
   - Crear pipeline para testing de packages
   - Configurar preview deployments
   - _Requirements: 9.4, 9.5, 9.6_
 
-- [ ] 17. Preparar configuración para futuras apps
+- [-] 17. Preparar configuración para futuras apps
+
   - Crear vercel.json template para nuevas apps
   - Preparar configuración para healthsync.vercel.app
   - Preparar configuración para surveysync.vercel.app
