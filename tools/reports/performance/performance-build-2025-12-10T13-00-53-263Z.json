@@ -1,0 +1,54 @@
+{
+  "timestamp": "2025-12-10T13:00:02.879Z",
+  "type": "build",
+  "packages": [
+    {
+      "name": "@sync/core",
+      "success": true,
+      "duration": 1743,
+      "command": "pnpm --filter @sync/core build",
+      "description": "Building @sync/core"
+    },
+    {
+      "name": "@sync/types",
+      "success": true,
+      "duration": 1506,
+      "command": "pnpm --filter @sync/types build",
+      "description": "Building @sync/types"
+    },
+    {
+      "name": "@sync/ui",
+      "success": true,
+      "duration": 5215,
+      "command": "pnpm --filter @sync/ui build",
+      "description": "Building @sync/ui"
+    }
+  ],
+  "apps": [
+    {
+      "name": "credisync",
+      "success": true,
+      "duration": 40795,
+      "command": "pnpm --filter credisync build",
+      "description": "Building credisync"
+    },
+    {
+      "name": "healthsync",
+      "success": true,
+      "duration": 527,
+      "command": "pnpm --filter healthsync build",
+      "description": "Building healthsync"
+    },
+    {
+      "name": "surveysync",
+      "success": true,
+      "duration": 547,
+      "command": "pnpm --filter surveysync build",
+      "description": "Building surveysync"
+    }
+  ],
+  "total": {
+    "duration": 50338,
+    "success": true
+  }
+}

@@ -42,7 +42,17 @@
     "lint-fix:fix": "node tools/scripts/lint-fix.js --fix",
     "lint-fix:format": "node tools/scripts/lint-fix.js --format",
     "lint-fix:check": "node tools/scripts/lint-fix.js --check",
-    "pre-commit": "node tools/scripts/pre-commit.js"
+    "pre-commit": "node tools/scripts/pre-commit.js",
+    "bundle-analyzer": "node tools/scripts/bundle-analyzer.js",
+    "bundle-analyzer:credisync": "node tools/scripts/bundle-analyzer.js credisync",
+    "bundle-analyzer:all": "node tools/scripts/bundle-analyzer.js --all",
+    "performance-monitor": "node tools/scripts/performance-monitor.js",
+    "performance-monitor:build": "node tools/scripts/performance-monitor.js --build",
+    "performance-monitor:test": "node tools/scripts/performance-monitor.js --test",
+    "performance-monitor:all": "node tools/scripts/performance-monitor.js --all",
+    "metrics-dashboard": "node tools/scripts/metrics-dashboard.js",
+    "metrics-dashboard:serve": "node tools/scripts/metrics-dashboard.js --serve",
+    "metrics-dashboard:export": "node tools/scripts/metrics-dashboard.js --export"
   },
   "engines": {
     "node": ">=18.0.0",
