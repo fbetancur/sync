@@ -239,7 +239,7 @@
   - Crear documentación avanzada de packages
   - _Requirements: 4.5, 4.6_
 
-- [ ] 30. Crear herramientas avanzadas
+- [x] 30. Crear herramientas avanzadas
   - Crear generadores automáticos de código
   - Implementar hot reload entre packages
   - Crear herramientas de debugging

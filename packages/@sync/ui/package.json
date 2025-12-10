@@ -20,7 +20,7 @@
     }
   },
   "scripts": {
-    "build": "svelte-package",
+    "build": "svelte-package --input src/lib",
     "dev": "svelte-package --watch",
     "test": "vitest",
     "test:ui": "vitest --ui",
@@ -32,6 +32,8 @@
     "@sync/core": "workspace:*"
   },
   "devDependencies": {
+    "@sveltejs/adapter-auto": "^7.0.0",
+    "@sveltejs/kit": "^2.49.2",
     "@sveltejs/package": "^2.5.7",
     "@types/node": "^24.10.1",
     "eslint": "^9.39.1",

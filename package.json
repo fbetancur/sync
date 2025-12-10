@@ -64,7 +64,17 @@
     "rollback": "node tools/scripts/rollback.js",
     "rollback:to-backup": "node tools/scripts/rollback.js --to-backup=backup-pre-migration",
     "rollback:list-backups": "node tools/scripts/rollback.js --list-backups",
-    "rollback:dry-run": "node tools/scripts/rollback.js --dry-run"
+    "rollback:dry-run": "node tools/scripts/rollback.js --dry-run",
+    "generate:component": "node tools/scripts/generate-component-fixed.js",
+    "generate:service": "node tools/scripts/generate-service.js",
+    "hot-reload": "node tools/scripts/hot-reload-packages.js",
+    "hot-reload:packages": "node tools/scripts/hot-reload-packages.js --packages-only",
+    "debug:sync": "node tools/scripts/debug-sync.js",
+    "debug:sync:verbose": "node tools/scripts/debug-sync.js --verbose",
+    "analyze:deps": "node tools/scripts/dependency-analyzer.js",
+    "analyze:deps:circular": "node tools/scripts/dependency-analyzer.js --circular",
+    "analyze:deps:unused": "node tools/scripts/dependency-analyzer.js --unused",
+    "analyze:deps:full": "node tools/scripts/dependency-analyzer.js --circular --unused --outdated --visualize"
   },
   "engines": {
     "node": ">=18.0.0",

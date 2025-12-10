@@ -1,4 +1,9 @@
 # 🚀 Sync Platform
+Antes de iniciar revisar EXHAUSTIVAMENTE C:\Users\code\Desktop\sync\docs\development\session-onboarding.md 
+y
+C:\Users\code\Desktop\sync\README.md
+y seguir sus instrucciones.
+
 
 > **Monorepo modular para aplicaciones offline-first de recolección de datos**
 
@@ -122,6 +127,7 @@ sync/                          ← Monorepo principal
 - [➕ Adding New Apps](docs/development/adding-new-apps.md)
 - [🌍 Environment Variables](docs/development/environment-variables.md)
 - [📊 Monitoring & Metrics](docs/development/monitoring-metrics.md)
+- [🛠️ Advanced Tools](docs/development/advanced-tools.md)
 
 ### Deployment
 - [🚀 Vercel Setup](docs/deployment/vercel-monorepo-setup.md)
@@ -174,6 +180,13 @@ pnpm metrics-dashboard          # Dashboard de métricas
 pnpm validation-complete        # Validación completa del sistema
 pnpm optimize-performance       # Optimización automática
 pnpm rollback:list-backups      # Listar backups disponibles
+
+# Herramientas Avanzadas
+pnpm generate:component Button  # Generar componente UI
+pnpm generate:service UserManager # Generar service
+pnpm hot-reload                 # Hot reload inteligente
+pnpm debug:sync                 # Debugger de sincronización
+pnpm analyze:deps               # Analizador de dependencias
 ```
 
 ## 📊 Métricas de Performance
