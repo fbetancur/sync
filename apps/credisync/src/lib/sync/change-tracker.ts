@@ -7,7 +7,7 @@
  * Requirements: 5.3, 5.6, 5.7
  */
 
-import { db } from '../db';
+import { db } from '../app-config';
 import type { ChangeLogEntry } from '../db/types';
 
 export interface Change {

@@ -96,6 +96,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.87.1
         version: 2.87.1
+      '@sync/core':
+        specifier: workspace:*
+        version: link:../../packages/@sync/core
       '@sync/types':
         specifier: workspace:*
         version: link:../../packages/@sync/types
@@ -236,7 +239,7 @@ importers:
         version: link:../core
     devDependencies:
       '@sveltejs/package':
-        specifier: ^2.3.7
+        specifier: ^2.5.7
         version: 2.5.7(svelte@5.45.8)(typescript@5.9.3)
       '@types/node':
         specifier: ^24.10.1

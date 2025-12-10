@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SyncManager } from './sync-manager';
-import { db } from '../db';
+import { db } from '../app-config';
 
 describe('SyncManager', () => {
 	let syncManager: SyncManager;

@@ -1,7 +1,7 @@
 import { mount } from 'svelte'
 import './app.css'
 import App from './App.svelte'
-import { db } from './lib/db'
+import { initializeCrediSync } from './lib/app-config'
 import { errorLogger } from './lib/monitoring/error-logger'
 
 // Initialize Error Logger / Sentry
@@ -29,13 +29,11 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
   console.log('🔧 Modo desarrollo: Service Worker deshabilitado')
 }
 
-// Initialize IndexedDB on app startup
-db.open().then(() => {
-  console.log('✅ IndexedDB initialized successfully')
-  console.log('📊 Database version:', db.verno)
-  console.log('📋 Tables:', db.tables.map(t => t.name).join(', '))
+// Initialize CrediSync App using centralized configuration
+initializeCrediSync().then(() => {
+  console.log('✅ CrediSync App initialized successfully')
 }).catch(err => {
-  console.error('❌ Failed to initialize IndexedDB:', err)
+  console.error('❌ Failed to initialize CrediSync App:', err)
 })
 
 const app = mount(App, {

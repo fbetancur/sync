@@ -11,7 +11,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { SyncQueue } from './sync-queue';
-import { db } from '../db';
+import { db } from '../app-config';
 
 describe('SyncQueue', () => {
   let syncQueue: SyncQueue;

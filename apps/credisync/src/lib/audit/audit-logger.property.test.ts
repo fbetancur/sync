@@ -11,7 +11,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { fc } from '@fast-check/vitest';
 import { AuditLogger, type AuditEventData } from './audit-logger';
-import { db } from '../db/index';
+import { db } from '../app-config';
 import type { EventType, AggregateType } from '../db/types';
 
 describe('AuditLogger - Property-Based Tests', () => {

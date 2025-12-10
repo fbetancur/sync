@@ -10,7 +10,7 @@
  * Requirements: 5.2, 5.8
  */
 
-import { db } from '../db';
+import { db } from '../app-config';
 import type { SyncQueueItem } from '../db/types';
 
 export interface AddToQueueOptions {

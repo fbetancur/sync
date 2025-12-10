@@ -12,7 +12,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import fc from 'fast-check';
 import { SyncQueue } from './sync-queue';
-import { db } from '../db';
+import { db } from '../app-config';
 
 describe('SyncQueue - Property-Based Tests', () => {
   let syncQueue: SyncQueue;

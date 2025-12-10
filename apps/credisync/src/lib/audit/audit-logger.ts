@@ -8,7 +8,8 @@
  * Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7
  */
 
-import { db, type AuditLogEntry } from '../db/index';
+import { db } from '../app-config';
+import type { AuditLogEntry } from '../db/index';
 import type { EventType, AggregateType } from '../db/types';
 
 // ============================================================================

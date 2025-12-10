@@ -3,24 +3,21 @@
 
 ## FASE 1: Preparación del Monorepo (1-2 horas) - CRÍTICA
 
-- [x] 1. Crear backup y checkpoint de seguridad
-
+- [ ] 1. Crear backup y checkpoint de seguridad
   - Crear branch de backup: `git checkout -b backup-pre-migration`
   - Ejecutar tests completos para establecer baseline (296 tests)
   - Crear snapshot de node_modules y package-lock.json
   - Documentar estado actual en migration-log.md
   - _Requirements: 3.4, 11.6_
 
-- [x] 2. Configurar estructura base del monorepo
-
+- [ ] 2. Configurar estructura base del monorepo
   - Crear directorios: apps/, packages/, docs/, specs/, tools/, .archive/
   - Crear pnpm-workspace.yaml con configuración de workspaces
   - Actualizar root package.json con workspaces y scripts
   - Crear .gitignore actualizado para monorepo
   - _Requirements: 2.1, 2.2, 2.3_
 
-- [x] 3. Migrar código actual a apps/credisync/
-
+- [ ] 3. Migrar código actual a apps/credisync/
   - Mover src/ → apps/credisync/src/
   - Mover public/ → apps/credisync/public/
   - Mover archivos de configuración (vite.config.ts, etc.) → apps/credisync/
@@ -28,40 +25,35 @@
   - Actualizar imports relativos en el código migrado
   - _Requirements: 1.1, 1.4, 3.2_
 
-- [x] 4. Configurar gestión de dependencias con pnpm
-
+- [ ] 4. Configurar gestión de dependencias con pnpm
   - Instalar pnpm globalmente si no existe
   - Ejecutar `pnpm install` para configurar workspaces
   - Verificar que todas las dependencias se resuelven correctamente
   - Configurar hoisting de dependencias comunes
   - _Requirements: 6.1, 6.2, 6.3_
 
-- [x] 5. Validar funcionalidad básica post-migración
-
+- [ ] 5. Validar funcionalidad básica post-migración
   - Ejecutar `pnpm dev:credisync` y verificar que el servidor inicia
   - Ejecutar todos los tests: `pnpm test:credisync`
   - Verificar que build funciona: `pnpm build:credisync`
   - Probar funcionalidad básica en navegador
   - _Requirements: 1.1, 1.2, 11.1_
 
-- [x] 6. Crear estructura placeholder para futuras apps
-
+- [ ] 6. Crear estructura placeholder para futuras apps
   - Crear apps/healthsync/ con estructura básica
   - Crear apps/surveysync/ con estructura básica
   - Crear package.json básicos para cada app placeholder
   - Documentar estructura en README.md de cada app
   - _Requirements: 5.1, 5.2, 5.3_
 
-- [x] 7. Reorganizar documentación existente
-
+- [ ] 7. Reorganizar documentación existente
   - Migrar .kiro/specs/ → specs/credisync/
   - Crear docs/ con estructura organizada
   - Migrar documentación existente a nueva estructura
   - Crear README.md principal del monorepo
   - _Requirements: 7.1, 7.2, 7.3_
 
-- [x] 8. Configurar scripts de desarrollo
-
+- [ ] 8. Configurar scripts de desarrollo
   - Crear scripts de desarrollo en root package.json
   - Configurar hot reload para apps/credisync/
   - Crear scripts de build y test centralizados
@@ -70,19 +62,14 @@
 
 ## FASE 2: Extracción de Packages Compartidos (2-3 días)
 
-- [x] 9. Crear estructura base de packages
-
-
+- [ ] 9. Crear estructura base de packages
   - Crear packages/@sync/core/ con package.json y estructura básica
   - Crear packages/@sync/ui/ con package.json y estructura básica
   - Crear packages/@sync/types/ con package.json y estructura básica
   - Configurar TypeScript y build para cada package
   - _Requirements: 4.1, 4.2, 4.3_
 
-- [x] 10. Extraer @sync/types (más fácil, sin dependencias)
-
-
-
+- [ ] 10. Extraer @sync/types (más fácil, sin dependencias)
   - Migrar interfaces de src/lib/db/index.ts → packages/@sync/types/src/database.ts
   - Crear tipos para API, business logic, UI
   - Configurar exports en packages/@sync/types/src/index.ts
@@ -90,12 +77,7 @@
   - Ejecutar tests para validar migración
   - _Requirements: 4.3, 4.4, 4.5_
 
-- [x] 11. Extraer @sync/core módulo por módulo
-
-
-
-
-
+- [ ] 11. Extraer @sync/core módulo por módulo
   - **Fase 11.1**: Migrar utilidades básicas (checksums, crypto)
     - Migrar src/lib/utils/ → packages/@sync/core/src/utils/
     - Actualizar imports y ejecutar tests

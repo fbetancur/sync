@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { encryptionService } from '../security/encryption.service';
+import { encryptionService } from '../app-config';
 import type { User } from '../../types/database';
 
 export interface LoginCredentials {

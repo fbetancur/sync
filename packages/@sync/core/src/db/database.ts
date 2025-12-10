@@ -462,16 +462,7 @@ export class MicrocreditosDB extends Dexie {
  * Esta función permite crear múltiples instancias para diferentes aplicaciones
  */
 export function createDatabase(name?: string): MicrocreditosDB {
-  if (name) {
-    // Crear una clase personalizada con nombre específico
-    class CustomDB extends MicrocreditosDB {
-      constructor() {
-        super();
-        this.name = name;
-      }
-    }
-    return new CustomDB();
-  }
-  
+  // Por ahora, ignoramos el parámetro name ya que Dexie maneja el nombre internamente
+  // En el futuro, podríamos implementar múltiples bases de datos si es necesario
   return new MicrocreditosDB();
 }

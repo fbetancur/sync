@@ -8,8 +8,8 @@
  */
 
 import * as Sentry from '@sentry/svelte';
-import { db } from '../db/index';
-import { auditLogger } from '../audit/audit-logger';
+import { db } from '../app-config';
+import { auditLogger } from '../app-config';
 
 // ============================================================================
 // INTERFACES

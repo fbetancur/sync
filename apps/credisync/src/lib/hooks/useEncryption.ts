@@ -6,7 +6,8 @@
  */
 
 import { writable, derived, type Readable } from 'svelte/store';
-import { encryptionService, type EncryptedData } from '../security/encryption.service';
+import { encryptionService } from '../app-config';
+import type { EncryptedData } from '../security/encryption.service';
 
 interface EncryptionState {
   isInitialized: boolean;

@@ -89,7 +89,7 @@ export class EncryptionService {
     return await crypto.subtle.deriveKey(
       {
         name: 'PBKDF2',
-        salt: salt,
+        salt: new Uint8Array(salt),
         iterations: iterations,
         hash: 'SHA-256'
       },
@@ -138,8 +138,8 @@ export class EncryptionService {
 
     return {
       data: this.arrayBufferToBase64(encryptedBuffer),
-      iv: this.arrayBufferToBase64(iv),
-      salt: this.arrayBufferToBase64(salt)
+      iv: this.arrayBufferToBase64(iv.buffer),
+      salt: this.arrayBufferToBase64(salt.buffer)
     };
   }
 

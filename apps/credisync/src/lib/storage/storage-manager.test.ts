@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { StorageManager } from './storage-manager';
-import { db } from '../db';
+import { db } from '../app-config';
 
 describe('StorageManager', () => {
   let storageManager: StorageManager;

@@ -10,7 +10,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ChangeTracker } from './change-tracker';
-import { db } from '../db';
+import { db } from '../app-config';
 
 describe('ChangeTracker', () => {
   let tracker: ChangeTracker;

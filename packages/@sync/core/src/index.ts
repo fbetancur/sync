@@ -9,19 +9,19 @@
 export * from './types';
 
 // Database layer
-export * from './db';
+export { createDatabase, MicrocreditosDB } from './db';
 
 // Sync system
-export * from './sync';
+export { SyncManager, ConflictResolver, ChangeTracker } from './sync';
 
 // Storage management
-export * from './storage';
+export { StorageManager } from './storage';
 
 // Audit system
-export * from './audit';
+export { AuditLogger } from './audit';
 
 // Security services
-export * from './security';
+export { EncryptionService } from './security';
 
 // Validation schemas
 export * from './validation';
@@ -30,8 +30,8 @@ export * from './validation';
 export * from './business';
 
 // Utility functions
-export * from './utils';
+export { ChecksumService } from './utils';
 
 // Main factory function
-export { createSyncApp } from './app';
-export type { SyncAppConfig, SyncApp } from './app';
+export { createSyncApp, createDefaultConfig, createDevConfig, createProdConfig } from './app';
+export type { SyncAppConfig, SyncApp, SyncAppServices, AppStatus } from './app';

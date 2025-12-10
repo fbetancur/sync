@@ -1,56 +1,128 @@
 # @sync/ui
 
-Shared UI components for Sync Platform applications.
+Componentes UI compartidos para aplicaciones de la Plataforma Sync.
 
-## Overview
+## Descripción
 
-This package provides reusable Svelte components, stores, and actions that are common across all Sync Platform applications.
+Este paquete proporciona componentes Svelte reutilizables, stores y hooks que son comunes en todas las aplicaciones de la Plataforma Sync.
 
-## Components
+## Componentes
 
-- **SyncIndicator** - Shows synchronization status
-- **ConnectionStatus** - Displays online/offline status
-- **FormAutoSave** - Automatic form saving functionality
-- **LoadingSpinner** - Consistent loading indicators
-- **PinEntry** - Secure PIN input component
-
-## Stores
-
-- **syncStore** - Global synchronization state
-- **authStore** - Authentication state management
-
-## Actions
-
-- **autoSave** - Automatic saving for form inputs
-- **gpsCapture** - GPS location capture
-
-## Installation
-
-```bash
-pnpm add @sync/ui
-```
-
-## Usage
+### PinEntry
+Componente para entrada segura de PIN para inicializar encriptación.
 
 ```svelte
 <script>
-  import { SyncIndicator, ConnectionStatus } from '@sync/ui';
-  import { syncStore } from '@sync/ui/stores/sync';
+  import { PinEntry } from '@sync/ui';
+  import { encryptionService } from '@sync/core';
 </script>
 
-<SyncIndicator />
-<ConnectionStatus />
+<PinEntry 
+  {encryptionService}
+  title="Ingrese su PIN"
+  on:success={(event) => console.log('PIN configurado')}
+  on:cancel={() => console.log('Cancelado')}
+/>
 ```
 
-## Development
+### ErrorBoundary
+Componente para capturar y manejar errores en componentes hijos.
+
+```svelte
+<script>
+  import { ErrorBoundary } from '@sync/ui';
+  import { errorLogger } from '@sync/core';
+</script>
+
+<ErrorBoundary {errorLogger} showDetails={true}>
+  <MiComponente />
+</ErrorBoundary>
+```
+
+## Hooks
+
+### useEncryption
+Hook para gestionar el estado de encriptación.
+
+```javascript
+import { createEncryptionHook } from '@sync/ui';
+import { encryptionService } from '@sync/core';
+
+const encryption = createEncryptionHook(encryptionService);
+```
+
+### useBackgroundSync
+Hook para integración de sincronización en segundo plano.
+
+```javascript
+import { createBackgroundSyncHook } from '@sync/ui';
+import { backgroundSyncManager, syncManager } from '@sync/core';
+
+const backgroundSync = createBackgroundSyncHook(backgroundSyncManager, syncManager);
+```
+
+## Stores
+
+### Sync Store
+Gestión del estado de sincronización.
+
+```javascript
+import { createSyncStore } from '@sync/ui';
+import { syncManager } from '@sync/core';
+
+const syncStore = createSyncStore(syncManager);
+```
+
+### Auth Store
+Gestión del estado de autenticación.
+
+```javascript
+import { createAuthStore } from '@sync/ui';
+import { authService, encryptionService } from '@sync/core';
+
+const authStore = createAuthStore(authService, encryptionService);
+```
+
+## Instalación
 
 ```bash
-# Build the package
-pnpm build
-
-# Watch mode
-pnpm dev
-
-# Run tests
-pnpm test
+pnpm add @sync/ui @sync/core
 ```
+
+## Uso
+
+```javascript
+// Componentes
+import { PinEntry, ErrorBoundary } from '@sync/ui';
+
+// Hooks
+import { createEncryptionHook, createBackgroundSyncHook } from '@sync/ui';
+
+// Stores
+import { createSyncStore, createAuthStore } from '@sync/ui';
+```
+
+## Desarrollo
+
+```bash
+# Ejecutar tests
+pnpm test
+
+# Ejecutar tests en modo watch
+pnpm test:ui
+
+# Linting
+pnpm lint
+
+# Formatear código
+pnpm format
+```
+
+## Características
+
+- ✅ Componentes Svelte reutilizables
+- ✅ Inyección de dependencias para máxima flexibilidad
+- ✅ Hooks para funcionalidad común
+- ✅ Stores reactivos para estado global
+- ✅ Tests unitarios
+- ✅ Documentación completa

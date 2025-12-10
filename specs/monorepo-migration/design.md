@@ -170,6 +170,18 @@ sync/                                    ← Monorepo principal
 
 ### Configuración de Workspaces
 
+#### Mejoras de Implementación
+
+Durante la implementación se realizaron las siguientes optimizaciones al diseño original:
+
+1. **Filtros Específicos de Packages**: Se cambió de `'packages/*'` a `'packages/@sync/*'` para evitar conflictos y mejorar la precisión de los filtros de pnpm.
+
+2. **Scripts de Build Granulares**: Se implementaron scripts más específicos (`build:packages`, `build:apps`) para mejor control del proceso de construcción y manejo de dependencias entre packages.
+
+3. **Scripts de Limpieza Específicos**: Se agregaron `clean:packages` y `clean:apps` para limpieza granular.
+
+4. **Orden de Build Optimizado**: Los packages se construyen en orden de dependencias: `@sync/types` → `@sync/core` → `@sync/ui`.
+
 #### Root package.json
 ```json
 {
@@ -186,14 +198,18 @@ sync/                                    ← Monorepo principal
     "dev:credisync": "pnpm --filter credisync dev",
     "dev:healthsync": "pnpm --filter healthsync dev",
     "dev:surveysync": "pnpm --filter surveysync dev",
-    "build": "pnpm --filter './packages/*' build && pnpm --filter './apps/*' build",
+    "build": "pnpm build:packages && pnpm build:apps",
+    "build:packages": "pnpm --filter @sync/types build && pnpm --filter @sync/core build && pnpm --filter @sync/ui build",
+    "build:apps": "pnpm --filter credisync build",
     "build:credisync": "pnpm --filter credisync build",
     "test": "pnpm --recursive test",
-    "test:packages": "pnpm --filter './packages/*' test",
+    "test:packages": "pnpm --filter './packages/@sync/*' test",
     "test:apps": "pnpm --filter './apps/*' test",
     "lint": "pnpm --recursive lint",
     "format": "pnpm --recursive format",
     "clean": "pnpm --recursive clean",
+    "clean:packages": "pnpm --filter @sync/types clean && pnpm --filter @sync/core clean && pnpm --filter @sync/ui clean",
+    "clean:apps": "pnpm --filter credisync clean",
     "create-app": "node tools/scripts/create-app.js",
     "migrate-package": "node tools/scripts/migrate-package.js"
   },
@@ -216,7 +232,7 @@ sync/                                    ← Monorepo principal
 ```yaml
 packages:
   - 'apps/*'
-  - 'packages/*'
+  - 'packages/@sync/*'
   - 'tools/*'
 
 # Configuración de hoisting

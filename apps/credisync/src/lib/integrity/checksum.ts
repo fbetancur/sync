@@ -8,7 +8,7 @@
  * Requirements: 2.6, 7.6
  */
 
-import { db } from '../db';
+import { db } from '../app-config';
 import type { Pago, Credito, Cliente, ChecksumEntry } from '../db';
 
 // ============================================================================

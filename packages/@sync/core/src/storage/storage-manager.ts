@@ -457,7 +457,7 @@ export class StorageManager {
     try {
       if (this.db && this.db.getStats) {
         const dbStats = await this.db.getStats();
-        const totalRecords = Object.values(dbStats).reduce((a: any, b: any) => a + b, 0);
+        const totalRecords = Object.values(dbStats).reduce((a: number, b: unknown) => a + (typeof b === 'number' ? b : 0), 0);
         stats.indexedDB = totalRecords * 1024; // Estimación aproximada
       }
     } catch (error) {

@@ -7,7 +7,7 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ChecksumService } from './checksum';
-import { db } from '../db';
+import { db } from '../app-config';
 import type { Pago, Credito, Cliente } from '../db';
 
 describe('ChecksumService', () => {

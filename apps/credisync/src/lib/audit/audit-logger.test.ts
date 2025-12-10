@@ -6,7 +6,7 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AuditLogger, type AuditEventData } from './audit-logger';
-import { db } from '../db/index';
+import { db } from '../app-config';
 
 describe('AuditLogger', () => {
   let logger: AuditLogger;

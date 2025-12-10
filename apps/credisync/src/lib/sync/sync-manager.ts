@@ -11,7 +11,7 @@
  * Requirements: 5.1, 5.4, 5.5, 5.9
  */
 
-import { db } from '../db';
+import { db } from '../app-config';
 import { SyncQueue } from './sync-queue';
 import { ChangeTracker } from './change-tracker';
 import { ConflictResolver } from './conflict-resolver';

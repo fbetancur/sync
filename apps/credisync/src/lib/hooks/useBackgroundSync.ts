@@ -5,8 +5,8 @@
  */
 
 import { onMount, onDestroy } from 'svelte';
+import { syncManager } from '../app-config';
 import { BackgroundSyncManager } from '../sync/background-sync';
-import { SyncManager } from '../sync/sync-manager';
 
 export interface UseBackgroundSyncOptions {
 	autoRegister?: boolean;
@@ -16,7 +16,6 @@ export interface UseBackgroundSyncOptions {
 
 export function useBackgroundSync(options: UseBackgroundSyncOptions = {}) {
 	const backgroundSync = new BackgroundSyncManager();
-	const syncManager = new SyncManager();
 	let messageHandler: ((event: MessageEvent) => void) | null = null;
 
 	onMount(() => {
