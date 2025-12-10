@@ -26,7 +26,11 @@
     "clean:packages": "pnpm --filter @sync/types clean && pnpm --filter @sync/core clean && pnpm --filter @sync/ui clean",
     "clean:apps": "pnpm --filter credisync clean",
     "create-app": "node tools/scripts/create-app.js",
-    "migrate-package": "node tools/scripts/migrate-package.js"
+    "migrate-package": "node tools/scripts/migrate-package.js",
+    "validate-env": "node tools/scripts/validate-env.js",
+    "validate-env:credisync": "node tools/scripts/validate-env.js credisync",
+    "validate-env:healthsync": "node tools/scripts/validate-env.js healthsync",
+    "validate-env:surveysync": "node tools/scripts/validate-env.js surveysync"
   },
   "engines": {
     "node": ">=18.0.0",
