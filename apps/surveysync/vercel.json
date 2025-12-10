@@ -1,11 +1,11 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "name": "surveysync",
-  "buildCommand": "cd ../.. && pnpm build:surveysync",
+  "buildCommand": "cd ../.. && pnpm build:packages && pnpm build:surveysync",
   "outputDirectory": "dist",
   "devCommand": "cd ../.. && pnpm dev:surveysync",
   "installCommand": "cd ../.. && pnpm install",
   "framework": "vite",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
   "rewrites": [
     {
       "source": "/(.*)",

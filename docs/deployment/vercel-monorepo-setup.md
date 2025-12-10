@@ -57,20 +57,14 @@ VITE_APP_NAME=CrediSyncApp
 
 ## 🔄 Deployment Inteligente
 
-### Ignore Commands
+### Deployment Strategy
 
-Cada proyecto tiene configurado un `ignoreCommand` para deployar solo cuando hay cambios relevantes:
+Por ahora, cada proyecto se deploya en cada push para asegurar que siempre esté actualizado. En el futuro se puede configurar un `ignoreCommand` más sofisticado para deployar solo cuando hay cambios relevantes.
 
-```json
-{
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./"
-}
-```
-
-Esto significa que:
-- ✅ **Se deploya** si hay cambios en la carpeta de la app
-- ✅ **Se deploya** si hay cambios en `packages/` (afecta a todas las apps)
-- ❌ **NO se deploya** si solo cambian otras apps
+**Deployment actual:**
+- ✅ **Se deploya** en cada push al repositorio
+- ✅ **Garantiza** que la aplicación esté siempre actualizada
+- ✅ **Simplifica** el proceso de deployment inicial
 
 ### Build Dependencies
 
@@ -162,20 +156,30 @@ ls apps/credisync/dist/
 - [x] Build command funciona
 - [x] Variables de entorno configuradas
 - [x] Output directory correcto
-- [ ] Proyecto creado en Vercel Dashboard
-- [ ] Deployment de prueba exitoso
+- [x] Proyecto creado en Vercel Dashboard
+- [x] Deployment de prueba exitoso
+- [x] **APLICACIÓN FUNCIONANDO EN PRODUCCIÓN** 🎉
+- [x] URL: https://credisync-green.vercel.app/
 
-### Para HealthSync (Futuro):
-- [x] vercel.json preparado
+### Para HealthSync (Preparado):
+- [x] vercel.json configurado
+- [x] Workflow de CI/CD creado
+- [x] Variables de entorno preparadas
+- [x] Build command configurado
 - [ ] Aplicación desarrollada
 - [ ] Proyecto creado en Vercel Dashboard
-- [ ] Variables de entorno configuradas
+- [ ] Secrets configurados en GitHub
+- [ ] Deployment activado
 
-### Para SurveySync (Futuro):
-- [x] vercel.json preparado
+### Para SurveySync (Preparado):
+- [x] vercel.json configurado
+- [x] Workflow de CI/CD creado
+- [x] Variables de entorno preparadas
+- [x] Build command configurado
 - [ ] Aplicación desarrollada
 - [ ] Proyecto creado en Vercel Dashboard
-- [ ] Variables de entorno configuradas
+- [ ] Secrets configurados en GitHub
+- [ ] Deployment activado
 
 ## 🎯 Próximos Pasos
 

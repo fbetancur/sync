@@ -1,11 +1,11 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "name": "healthsync",
-  "buildCommand": "cd ../.. && pnpm build:healthsync",
+  "buildCommand": "cd ../.. && pnpm build:packages && pnpm build:healthsync",
   "outputDirectory": "dist",
   "devCommand": "cd ../.. && pnpm dev:healthsync",
   "installCommand": "cd ../.. && pnpm install",
   "framework": "vite",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
   "rewrites": [
     {
       "source": "/(.*)",
