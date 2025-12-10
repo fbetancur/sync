@@ -1,0 +1,14 @@
+{
+  "name": "healthsync",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HealthSync - Offline-first health data management",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'HealthSync development server - Coming soon!'",
+    "build": "echo 'HealthSync build - Coming soon!'",
+    "test": "echo 'HealthSync tests - Coming soon!'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

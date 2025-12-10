@@ -1,0 +1,9 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'tools/*'
+
+# Configuración de hoisting
+prefer-workspace-packages: true
+shared-workspace-lockfile: true
+save-workspace-protocol: rolling

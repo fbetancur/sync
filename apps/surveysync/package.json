@@ -1,0 +1,14 @@
+{
+  "name": "surveysync",
+  "private": true,
+  "version": "1.0.0",
+  "description": "SurveySync - Offline-first survey data collection",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'SurveySync development server - Coming soon!'",
+    "build": "echo 'SurveySync build - Coming soon!'",
+    "test": "echo 'SurveySync tests - Coming soon!'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

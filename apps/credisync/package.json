@@ -1,32 +1,21 @@
 {
-  "name": "sync-platform",
+  "name": "credisync",
   "private": true,
   "version": "1.0.0",
-  "description": "Sync Platform - Offline-first data platform",
+  "description": "CrediSync - Offline-first microcréditos management",
   "type": "module",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
-    "dev": "pnpm --parallel --filter './apps/*' dev",
-    "dev:credisync": "pnpm --filter credisync dev",
-    "dev:healthsync": "pnpm --filter healthsync dev",
-    "dev:surveysync": "pnpm --filter surveysync dev",
-    "build": "pnpm --filter './packages/*' build && pnpm --filter './apps/*' build",
-    "build:credisync": "pnpm --filter credisync build",
-    "test": "pnpm --recursive test",
-    "test:packages": "pnpm --filter './packages/*' test",
-    "test:apps": "pnpm --filter './apps/*' test",
-    "lint": "pnpm --recursive lint",
-    "format": "pnpm --recursive format",
-    "clean": "pnpm --recursive clean",
-    "create-app": "node tools/scripts/create-app.js",
-    "migrate-package": "node tools/scripts/migrate-package.js"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.app.json && tsc -p tsconfig.node.json",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .ts,.svelte",
+    "format": "prettier --write .",
+    "clean": "rm -rf dist node_modules/.vite"
   },
   "devDependencies": {
     "@fast-check/vitest": "^0.2.4",
