@@ -1,9 +1,9 @@
 /**
  * Componentes UI Compartidos
- * 
+ *
  * Este paquete proporciona componentes Svelte reutilizables, stores y acciones
  * para aplicaciones de la Plataforma Sync.
- * 
+ *
  * Requirements: 4.2, 4.4, 4.6
  */
 

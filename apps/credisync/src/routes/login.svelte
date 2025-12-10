@@ -13,10 +13,11 @@
     success = '';
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { data, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
 
       if (signInError) throw signInError;
 

@@ -1,12 +1,12 @@
 /**
  * Gestor de Cola de Sincronización
- * 
+ *
  * Gestiona la cola de operaciones de sincronización pendientes con:
  * - Ordenamiento basado en prioridad
  * - Lógica de reintentos con backoff exponencial
  * - Monitoreo del tamaño de la cola
  * - Operaciones por lotes
- * 
+ *
  * Requirements: 5.2, 5.8
  */
 
@@ -76,7 +76,8 @@ export class SyncQueue {
       throw new Error('Base de datos no configurada en SyncQueue');
     }
 
-    const { priority = this.getDefaultPriority(tableName), data = null } = options;
+    const { priority = this.getDefaultPriority(tableName), data = null } =
+      options;
 
     const item: SyncQueueItem = {
       timestamp: Date.now(),
@@ -88,7 +89,7 @@ export class SyncQueue {
       priority,
       attempts: 0,
       last_attempt: null,
-      error: null,
+      error: null
     };
 
     const id = await this.db.sync_queue.add(item);
@@ -105,15 +106,15 @@ export class SyncQueue {
     }
 
     const allItems = await this.db.sync_queue.toArray();
-    
+
     const items = allItems.filter((item: SyncQueueItem) => {
       // Solo incluir elementos no sincronizados
       if (item.synced) return false;
-        
+
       // Solo incluir elementos que están listos para reintentar
       if (item.attempts === 0) return true;
       if (item.attempts >= this.MAX_ATTEMPTS) return false;
-        
+
       const backoffMs = this.calculateBackoff(item.attempts);
       const nextRetryTime = (item.last_attempt || 0) + backoffMs;
       return Date.now() >= nextRetryTime;
@@ -140,7 +141,7 @@ export class SyncQueue {
 
     await this.db.sync_queue.update(id, {
       synced: true,
-      error: null,
+      error: null
     });
   }
 
@@ -158,7 +159,7 @@ export class SyncQueue {
     await this.db.sync_queue.update(id, {
       attempts: item.attempts + 1,
       last_attempt: Date.now(),
-      error,
+      error
     });
   }
 
@@ -171,20 +172,26 @@ export class SyncQueue {
     }
 
     const all = await this.db.sync_queue.toArray();
-    const pending = all.filter((item: SyncQueueItem) => !item.synced && item.attempts < this.MAX_ATTEMPTS);
+    const pending = all.filter(
+      (item: SyncQueueItem) => !item.synced && item.attempts < this.MAX_ATTEMPTS
+    );
     const synced = all.filter((item: SyncQueueItem) => item.synced);
-    const failed = all.filter((item: SyncQueueItem) => !item.synced && item.attempts >= this.MAX_ATTEMPTS);
+    const failed = all.filter(
+      (item: SyncQueueItem) =>
+        !item.synced && item.attempts >= this.MAX_ATTEMPTS
+    );
 
-    const oldestPending = pending.length > 0
-      ? Math.min(...pending.map((item: SyncQueueItem) => item.timestamp))
-      : null;
+    const oldestPending =
+      pending.length > 0
+        ? Math.min(...pending.map((item: SyncQueueItem) => item.timestamp))
+        : null;
 
     return {
       total: all.length,
       pending: pending.length,
       synced: synced.length,
       failed: failed.length,
-      oldestPending,
+      oldestPending
     };
   }
 
@@ -197,7 +204,10 @@ export class SyncQueue {
     }
 
     return await this.db.sync_queue
-      .filter((item: SyncQueueItem) => !item.synced && item.attempts < this.MAX_ATTEMPTS)
+      .filter(
+        (item: SyncQueueItem) =>
+          !item.synced && item.attempts < this.MAX_ATTEMPTS
+      )
       .count();
   }
 
@@ -210,7 +220,10 @@ export class SyncQueue {
     }
 
     return await this.db.sync_queue
-      .filter((item: SyncQueueItem) => !item.synced && item.attempts >= this.MAX_ATTEMPTS)
+      .filter(
+        (item: SyncQueueItem) =>
+          !item.synced && item.attempts >= this.MAX_ATTEMPTS
+      )
       .toArray();
   }
 
@@ -225,7 +238,7 @@ export class SyncQueue {
     await this.db.sync_queue.update(id, {
       attempts: 0,
       last_attempt: null,
-      error: null,
+      error: null
     });
   }
 
@@ -238,14 +251,16 @@ export class SyncQueue {
     }
 
     const cutoffTime = Date.now() - daysOld * 24 * 60 * 60 * 1000;
-    
+
     const oldItems = await this.db.sync_queue
-      .filter((item: SyncQueueItem) => item.synced && item.timestamp < cutoffTime)
+      .filter(
+        (item: SyncQueueItem) => item.synced && item.timestamp < cutoffTime
+      )
       .toArray();
 
     const ids = oldItems.map((item: SyncQueueItem) => item.id!);
     await this.db.sync_queue.bulkDelete(ids);
-    
+
     return ids.length;
   }
 
@@ -292,7 +307,7 @@ export class SyncQueue {
   getNextRetryTime(item: SyncQueueItem): number | null {
     if (item.attempts === 0) return Date.now();
     if (item.attempts >= this.MAX_ATTEMPTS) return null;
-    
+
     const backoffMs = this.calculateBackoff(item.attempts);
     return (item.last_attempt || 0) + backoffMs;
   }
@@ -304,7 +319,7 @@ export class SyncQueue {
     if (item.synced) return false;
     if (item.attempts >= this.MAX_ATTEMPTS) return false;
     if (item.attempts === 0) return true;
-    
+
     const nextRetryTime = this.getNextRetryTime(item);
     return nextRetryTime !== null && Date.now() >= nextRetryTime;
   }

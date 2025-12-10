@@ -53,7 +53,10 @@
       await encryption.initializeWithPin(pin);
       dispatch('success');
     } catch (err) {
-      error = err instanceof Error ? err.message : 'Error al inicializar encriptación';
+      error =
+        err instanceof Error
+          ? err.message
+          : 'Error al inicializar encriptación';
     } finally {
       isLoading = false;
     }
@@ -93,8 +96,18 @@
     <form on:submit|preventDefault={handleSubmit} class="pin-entry-form">
       {#if error}
         <div class="alert alert-error">
-          <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="stroke-current shrink-0 h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
           <span>{error}</span>
         </div>
@@ -133,13 +146,40 @@
             title={showPin ? 'Ocultar PIN' : 'Mostrar PIN'}
           >
             {#if showPin}
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                />
               </svg>
             {:else}
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                />
               </svg>
             {/if}
           </button>
@@ -149,14 +189,22 @@
             <span class="label-text-alt">
               Longitud: {pin.length}/{maxLength}
             </span>
-            <span class="label-text-alt" class:text-success={isValidPin} class:text-error={!isValidPin && pin.length > 0}>
+            <span
+              class="label-text-alt"
+              class:text-success={isValidPin}
+              class:text-error={!isValidPin && pin.length > 0}
+            >
               {isValidPin ? '✓ Válido' : pin.length > 0 ? '✗ Muy corto' : ''}
             </span>
           </label>
         {:else}
           <label class="label">
             <span class="label-text-alt">
-              {pinsMatch ? '✓ Los PINs coinciden' : confirmPin.length > 0 ? '✗ Los PINs no coinciden' : ''}
+              {pinsMatch
+                ? '✓ Los PINs coinciden'
+                : confirmPin.length > 0
+                  ? '✗ Los PINs no coinciden'
+                  : ''}
             </span>
           </label>
         {/if}
@@ -171,12 +219,8 @@
         >
           {showConfirm ? 'Atrás' : 'Cancelar'}
         </button>
-        
-        <button
-          type="submit"
-          class="btn btn-primary"
-          disabled={!canSubmit}
-        >
+
+        <button type="submit" class="btn btn-primary" disabled={!canSubmit}>
           {#if isLoading}
             <span class="loading loading-spinner loading-sm"></span>
             Procesando...
@@ -191,8 +235,18 @@
 
     <div class="pin-entry-info">
       <div class="alert alert-info">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          class="stroke-current shrink-0 w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          ></path>
         </svg>
         <div class="text-sm">
           <p><strong>Seguridad:</strong></p>

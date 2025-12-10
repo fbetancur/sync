@@ -1,6 +1,6 @@
 /**
  * Unit tests for ChangeTracker
- * 
+ *
  * Tests differential sync (delta sync) functionality:
  * - Change logging
  * - Change compression
@@ -25,7 +25,7 @@ describe('ChangeTracker', () => {
     it('should log a change to the change log', async () => {
       const id = await tracker.logChange('pagos', 'p1', 'INSERT', {
         monto: 1000,
-        cliente_id: 'c1',
+        cliente_id: 'c1'
       });
 
       const entry = await db.change_log.get(id);
@@ -60,7 +60,9 @@ describe('ChangeTracker', () => {
     });
 
     it('should not return synced changes', async () => {
-      const id = await tracker.logChange('pagos', 'p1', 'INSERT', { monto: 1000 });
+      const id = await tracker.logChange('pagos', 'p1', 'INSERT', {
+        monto: 1000
+      });
       await db.change_log.update(id, { synced: true });
 
       const changes = await tracker.getPendingChanges('pagos', 'p1');
@@ -79,9 +81,13 @@ describe('ChangeTracker', () => {
     });
 
     it('should return changes sorted by timestamp', async () => {
-      const id1 = await tracker.logChange('pagos', 'p1', 'INSERT', { monto: 1000 });
-      await new Promise((resolve) => setTimeout(resolve, 10));
-      const id2 = await tracker.logChange('pagos', 'p2', 'INSERT', { monto: 2000 });
+      const id1 = await tracker.logChange('pagos', 'p1', 'INSERT', {
+        monto: 1000
+      });
+      await new Promise(resolve => setTimeout(resolve, 10));
+      const id2 = await tracker.logChange('pagos', 'p2', 'INSERT', {
+        monto: 2000
+      });
 
       const changes = await tracker.getAllPendingChanges();
       expect(changes[0].id).toBe(id1);
@@ -92,8 +98,12 @@ describe('ChangeTracker', () => {
   describe('compressChanges', () => {
     it('should compress multiple changes to same field', async () => {
       await tracker.logChange('clientes', 'c1', 'INSERT', { nombre: 'Juan' });
-      await tracker.logChange('clientes', 'c1', 'UPDATE', { nombre: 'Juan Pérez' });
-      await tracker.logChange('clientes', 'c1', 'UPDATE', { nombre: 'Juan Pérez García' });
+      await tracker.logChange('clientes', 'c1', 'UPDATE', {
+        nombre: 'Juan Pérez'
+      });
+      await tracker.logChange('clientes', 'c1', 'UPDATE', {
+        nombre: 'Juan Pérez García'
+      });
 
       const pending = await tracker.getAllPendingChanges();
       const compressed = tracker.compressChanges(pending);
@@ -107,8 +117,13 @@ describe('ChangeTracker', () => {
     });
 
     it('should compress changes to different fields', async () => {
-      await tracker.logChange('clientes', 'c1', 'INSERT', { nombre: 'Juan', telefono: '123' });
-      await tracker.logChange('clientes', 'c1', 'UPDATE', { direccion: 'Calle 1' });
+      await tracker.logChange('clientes', 'c1', 'INSERT', {
+        nombre: 'Juan',
+        telefono: '123'
+      });
+      await tracker.logChange('clientes', 'c1', 'UPDATE', {
+        direccion: 'Calle 1'
+      });
       await tracker.logChange('clientes', 'c1', 'UPDATE', { telefono: '456' });
 
       const pending = await tracker.getAllPendingChanges();
@@ -116,11 +131,13 @@ describe('ChangeTracker', () => {
 
       expect(compressed).toHaveLength(1);
       expect(compressed[0].changes).toHaveLength(3);
-      
-      const fields = compressed[0].changes.map((c) => c.field).sort();
+
+      const fields = compressed[0].changes.map(c => c.field).sort();
       expect(fields).toEqual(['direccion', 'nombre', 'telefono']);
-      
-      const telefonoChange = compressed[0].changes.find((c) => c.field === 'telefono');
+
+      const telefonoChange = compressed[0].changes.find(
+        c => c.field === 'telefono'
+      );
       expect(telefonoChange!.newValue).toBe('456');
     });
 
@@ -147,10 +164,10 @@ describe('ChangeTracker', () => {
       const compressed = tracker.compressChanges(pending);
 
       expect(compressed).toHaveLength(2);
-      
-      const c1Batch = compressed.find((b) => b.record_id === 'c1');
-      const c2Batch = compressed.find((b) => b.record_id === 'c2');
-      
+
+      const c1Batch = compressed.find(b => b.record_id === 'c1');
+      const c2Batch = compressed.find(b => b.record_id === 'c2');
+
       expect(c1Batch!.changes).toHaveLength(2); // nombre + telefono
       expect(c2Batch!.changes).toHaveLength(1); // nombre
     });
@@ -164,7 +181,7 @@ describe('ChangeTracker', () => {
       }
 
       const batches = await tracker.createUploadBatches(50);
-      
+
       expect(batches).toHaveLength(2);
       expect(batches[0]).toHaveLength(50);
       expect(batches[1]).toHaveLength(25);
@@ -176,7 +193,7 @@ describe('ChangeTracker', () => {
       await tracker.logChange('creditos', 'cr1', 'INSERT', { monto: 5000 });
 
       const batches = await tracker.createUploadBatches(10);
-      
+
       expect(batches[0][0].table_name).toBe('pagos');
       expect(batches[0][1].table_name).toBe('creditos');
       expect(batches[0][2].table_name).toBe('clientes');
@@ -190,12 +207,22 @@ describe('ChangeTracker', () => {
           table_name: 'pagos',
           record_id: 'p1',
           changes: [
-            { field: 'monto', oldValue: null, newValue: 1000, timestamp: Date.now() },
-            { field: 'cliente_id', oldValue: null, newValue: 'c1', timestamp: Date.now() },
+            {
+              field: 'monto',
+              oldValue: null,
+              newValue: 1000,
+              timestamp: Date.now()
+            },
+            {
+              field: 'cliente_id',
+              oldValue: null,
+              newValue: 'c1',
+              timestamp: Date.now()
+            }
           ],
           compressed: true,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       ];
 
       const applied = await tracker.applyDeltas(deltas);
@@ -212,17 +239,24 @@ describe('ChangeTracker', () => {
       await db.pagos.add({
         id: 'p1',
         monto: 1000,
-        cliente_id: 'c1',
+        cliente_id: 'c1'
       } as any);
 
       const deltas = [
         {
           table_name: 'pagos',
           record_id: 'p1',
-          changes: [{ field: 'monto', oldValue: 1000, newValue: 1500, timestamp: Date.now() }],
+          changes: [
+            {
+              field: 'monto',
+              oldValue: 1000,
+              newValue: 1500,
+              timestamp: Date.now()
+            }
+          ],
           compressed: true,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       ];
 
       await tracker.applyDeltas(deltas);
@@ -236,17 +270,24 @@ describe('ChangeTracker', () => {
       await db.pagos.add({
         id: 'p1',
         monto: 1000,
-        cliente_id: 'c1',
+        cliente_id: 'c1'
       } as any);
 
       const deltas = [
         {
           table_name: 'pagos',
           record_id: 'p1',
-          changes: [{ field: '__deleted__', oldValue: null, newValue: true, timestamp: Date.now() }],
+          changes: [
+            {
+              field: '__deleted__',
+              oldValue: null,
+              newValue: true,
+              timestamp: Date.now()
+            }
+          ],
           compressed: true,
-          timestamp: Date.now(),
-        },
+          timestamp: Date.now()
+        }
       ];
 
       await tracker.applyDeltas(deltas);
@@ -270,8 +311,12 @@ describe('ChangeTracker', () => {
 
   describe('clearOldSyncedChanges', () => {
     it('should clear old synced changes', async () => {
-      const id1 = await tracker.logChange('pagos', 'p1', 'INSERT', { monto: 1000 });
-      const id2 = await tracker.logChange('pagos', 'p2', 'INSERT', { monto: 2000 });
+      const id1 = await tracker.logChange('pagos', 'p1', 'INSERT', {
+        monto: 1000
+      });
+      const id2 = await tracker.logChange('pagos', 'p2', 'INSERT', {
+        monto: 2000
+      });
 
       // Mark as synced
       await db.change_log.update(id1, { synced: true });
@@ -279,7 +324,7 @@ describe('ChangeTracker', () => {
 
       // Set old timestamp for id1
       await db.change_log.update(id1, {
-        timestamp: Date.now() - 40 * 24 * 60 * 60 * 1000, // 40 days ago
+        timestamp: Date.now() - 40 * 24 * 60 * 60 * 1000 // 40 days ago
       });
 
       const cleared = await tracker.clearOldSyncedChanges(30);
@@ -297,17 +342,19 @@ describe('ChangeTracker', () => {
       await tracker.logChange('pagos', 'p2', 'INSERT', { monto: 2000 });
       await tracker.logChange('creditos', 'c1', 'INSERT', { monto: 5000 });
 
-      const id1 = await tracker.logChange('clientes', 'cl1', 'INSERT', { nombre: 'Juan' });
+      const id1 = await tracker.logChange('clientes', 'cl1', 'INSERT', {
+        nombre: 'Juan'
+      });
       await db.change_log.update(id1, { synced: true });
 
       const stats = await tracker.getStats();
-      
+
       expect(stats.total).toBe(4);
       expect(stats.pending).toBe(3);
       expect(stats.synced).toBe(1);
       expect(stats.byTable).toEqual({
         pagos: 2,
-        creditos: 1,
+        creditos: 1
       });
     });
   });

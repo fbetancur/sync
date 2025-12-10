@@ -1,9 +1,9 @@
 /**
  * Factory principal de aplicación para @sync/core
- * 
+ *
  * Proporciona una API centralizada para crear y configurar aplicaciones sync
  * con todos los servicios integrados.
- * 
+ *
  * Requirements: 4.4, 4.5, 4.6
  */
 
@@ -47,17 +47,17 @@ export interface SyncAppServices {
 export interface SyncApp {
   // Servicios principales
   services: SyncAppServices;
-  
+
   // Configuración
   config: SyncAppConfig;
-  
+
   // Estado
   isStarted: boolean;
-  
+
   // Métodos de ciclo de vida
   start(): Promise<void>;
   stop(): Promise<void>;
-  
+
   // Métodos de utilidad
   getStatus(): Promise<AppStatus>;
   clearData(): Promise<void>;
@@ -166,13 +166,15 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
               console.error('Error en sincronización automática:', error);
             }
           }, finalConfig.syncInterval);
-          
-          console.log(`🔄 Sincronización automática cada ${finalConfig.syncInterval}ms`);
+
+          console.log(
+            `🔄 Sincronización automática cada ${finalConfig.syncInterval}ms`
+          );
         }
 
         isStarted = true;
         app.isStarted = true;
-        
+
         console.log(`✅ ${finalConfig.appName} iniciado exitosamente`);
       } catch (error) {
         console.error(`❌ Error iniciando ${finalConfig.appName}:`, error);
@@ -214,7 +216,7 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
 
         isStarted = false;
         app.isStarted = false;
-        
+
         console.log(`✅ ${finalConfig.appName} detenido exitosamente`);
       } catch (error) {
         console.error(`❌ Error deteniendo ${finalConfig.appName}:`, error);
@@ -225,7 +227,7 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
     async getStatus(): Promise<AppStatus> {
       const queueSize = await syncQueue.getQueueSize();
       const dbStats = await db.getStats();
-      
+
       return {
         isStarted,
         isOnline: syncManager.isOnline(),
@@ -239,17 +241,19 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
 
     async clearData() {
       if (isStarted) {
-        throw new Error('No se puede limpiar datos mientras la aplicación está iniciada');
+        throw new Error(
+          'No se puede limpiar datos mientras la aplicación está iniciada'
+        );
       }
 
       console.log('🧹 Limpiando todos los datos...');
-      
+
       // Limpiar base de datos
       await db.clearAll();
-      
+
       // Limpiar almacenamiento de respaldo
       await storageManager.clearBackups();
-      
+
       console.log('✅ Todos los datos limpiados');
     }
   };
@@ -289,7 +293,11 @@ export function createDevConfig(appName: string): SyncAppConfig {
 /**
  * Crear configuración para producción
  */
-export function createProdConfig(appName: string, supabaseUrl: string, supabaseKey: string): SyncAppConfig {
+export function createProdConfig(
+  appName: string,
+  supabaseUrl: string,
+  supabaseKey: string
+): SyncAppConfig {
   return {
     ...createDefaultConfig(appName),
     supabaseUrl,

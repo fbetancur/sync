@@ -1,11 +1,16 @@
 # Design Document
+
 # Migración a Monorepo Sync Platform
 
 ## Overview
 
-Esta migración transformará el repositorio actual en un monorepo escalable que servirá como plataforma base para múltiples aplicaciones offline-first. La estrategia "Migration In-Place Gradual" preserva toda la funcionalidad existente mientras establece las bases para crecimiento horizontal.
+Esta migración transformará el repositorio actual en un monorepo escalable que servirá como
+plataforma base para múltiples aplicaciones offline-first. La estrategia "Migration In-Place
+Gradual" preserva toda la funcionalidad existente mientras establece las bases para crecimiento
+horizontal.
 
 **Principios de Diseño**:
+
 1. **Zero Downtime**: La aplicación actual sigue funcionando durante toda la migración
 2. **Preservación Total**: Todo el código, tests, configuración e historial se mantiene
 3. **Escalabilidad**: Estructura preparada para múltiples aplicaciones
@@ -13,6 +18,7 @@ Esta migración transformará el repositorio actual en un monorepo escalable que
 5. **Independencia**: Cada aplicación puede desarrollarse y deployarse independientemente
 
 **Stack Tecnológico del Monorepo**:
+
 - **Gestión de Workspaces**: pnpm workspaces
 - **Build System**: Vite (por workspace)
 - **Package Manager**: pnpm (más eficiente que npm/yarn)
@@ -174,25 +180,28 @@ sync/                                    ← Monorepo principal
 
 Durante la implementación se realizaron las siguientes optimizaciones al diseño original:
 
-1. **Filtros Específicos de Packages**: Se cambió de `'packages/*'` a `'packages/@sync/*'` para evitar conflictos y mejorar la precisión de los filtros de pnpm.
+1. **Filtros Específicos de Packages**: Se cambió de `'packages/*'` a `'packages/@sync/*'` para
+   evitar conflictos y mejorar la precisión de los filtros de pnpm.
 
-2. **Scripts de Build Granulares**: Se implementaron scripts más específicos (`build:packages`, `build:apps`) para mejor control del proceso de construcción y manejo de dependencias entre packages.
+2. **Scripts de Build Granulares**: Se implementaron scripts más específicos (`build:packages`,
+   `build:apps`) para mejor control del proceso de construcción y manejo de dependencias entre
+   packages.
 
-3. **Scripts de Limpieza Específicos**: Se agregaron `clean:packages` y `clean:apps` para limpieza granular.
+3. **Scripts de Limpieza Específicos**: Se agregaron `clean:packages` y `clean:apps` para limpieza
+   granular.
 
-4. **Orden de Build Optimizado**: Los packages se construyen en orden de dependencias: `@sync/types` → `@sync/core` → `@sync/ui`.
+4. **Orden de Build Optimizado**: Los packages se construyen en orden de dependencias: `@sync/types`
+   → `@sync/core` → `@sync/ui`.
 
 #### Root package.json
+
 ```json
 {
   "name": "sync-platform",
   "version": "1.0.0",
   "description": "Sync Platform - Offline-first data platform",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
     "dev": "pnpm --parallel --filter './apps/*' dev",
     "dev:credisync": "pnpm --filter credisync dev",
@@ -229,6 +238,7 @@ Durante la implementación se realizaron las siguientes optimizaciones al diseñ
 ```
 
 #### pnpm-workspace.yaml
+
 ```yaml
 packages:
   - 'apps/*'
@@ -248,6 +258,7 @@ save-workspace-protocol: rolling
 **Responsabilidad**: Proporcionar toda la infraestructura offline-first reutilizable
 
 **Estructura**:
+
 ```typescript
 // packages/@sync/core/src/index.ts
 export * from './db';
@@ -263,6 +274,7 @@ export function createSyncApp(config: SyncAppConfig): SyncApp;
 ```
 
 **API Principal**:
+
 ```typescript
 // packages/@sync/core/src/types.ts
 export interface SyncAppConfig {
@@ -290,6 +302,7 @@ export interface SyncApp {
 **Responsabilidad**: Componentes UI reutilizables entre aplicaciones
 
 **Estructura**:
+
 ```typescript
 // packages/@sync/ui/src/index.ts
 export { default as SyncIndicator } from './components/SyncIndicator.svelte';
@@ -312,6 +325,7 @@ export { gpsCapture } from './actions/gps-capture.js';
 **Responsabilidad**: Tipos TypeScript compartidos
 
 **Estructura**:
+
 ```typescript
 // packages/@sync/types/src/index.ts
 export * from './database';
@@ -342,6 +356,7 @@ export interface SyncableEntity extends BaseEntity {
 **Estrategia**: Los datos existentes se mantienen intactos. Solo se reorganiza el código.
 
 **Pasos**:
+
 1. **Preservar**: Toda la estructura de IndexedDB actual
 2. **Migrar**: Código de acceso a datos a @sync/core
 3. **Mantener**: APIs existentes para compatibilidad
@@ -350,6 +365,7 @@ export interface SyncableEntity extends BaseEntity {
 ### Configuración por Aplicación
 
 **CrediSync**:
+
 ```typescript
 // apps/credisync/src/config.ts
 import { createSyncApp } from '@sync/core';
@@ -366,45 +382,57 @@ export const app = createSyncApp({
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a
+system-essentially, a formal statement about what the system should do. Properties serve as the
+bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Migration Completeness
-*For any* file in the original structure, it must exist in the new monorepo structure at the correct location with identical content.
-**Validates: Requirements 1.1, 1.4**
+
+_For any_ file in the original structure, it must exist in the new monorepo structure at the correct
+location with identical content. **Validates: Requirements 1.1, 1.4**
 
 ### Property 2: Test Preservation
-*For any* test that passed before migration, it must continue passing after migration with identical results.
-**Validates: Requirements 1.1, 11.1**
+
+_For any_ test that passed before migration, it must continue passing after migration with identical
+results. **Validates: Requirements 1.1, 11.1**
 
 ### Property 3: Dependency Resolution
-*For any* package in the monorepo, all its dependencies must resolve correctly from the workspace or external registry.
-**Validates: Requirements 6.2, 6.3**
+
+_For any_ package in the monorepo, all its dependencies must resolve correctly from the workspace or
+external registry. **Validates: Requirements 6.2, 6.3**
 
 ### Property 4: Build Consistency
-*For any* application in the monorepo, its build output must be functionally identical to the pre-migration build.
-**Validates: Requirements 12.1, 12.2**
+
+_For any_ application in the monorepo, its build output must be functionally identical to the
+pre-migration build. **Validates: Requirements 12.1, 12.2**
 
 ### Property 5: Workspace Isolation
-*For any* two applications in the monorepo, changes in one application must not affect the build or runtime of another application unless explicitly shared through packages.
-**Validates: Requirements 2.7, 8.5**
+
+_For any_ two applications in the monorepo, changes in one application must not affect the build or
+runtime of another application unless explicitly shared through packages. **Validates: Requirements
+2.7, 8.5**
 
 ### Property 6: Package API Stability
-*For any* exported function or class from @sync/core, the API signature must remain stable across versions within the same major version.
-**Validates: Requirements 4.4, 4.5**
+
+_For any_ exported function or class from @sync/core, the API signature must remain stable across
+versions within the same major version. **Validates: Requirements 4.4, 4.5**
 
 ### Property 7: Deployment Independence
-*For any* application in the monorepo, it must be deployable independently without requiring deployment of other applications.
-**Validates: Requirements 9.4, 9.6**
+
+_For any_ application in the monorepo, it must be deployable independently without requiring
+deployment of other applications. **Validates: Requirements 9.4, 9.6**
 
 ### Property 8: Configuration Isolation
-*For any* application-specific configuration, it must not leak to or affect other applications in the monorepo.
-**Validates: Requirements 10.1, 10.6**
+
+_For any_ application-specific configuration, it must not leak to or affect other applications in
+the monorepo. **Validates: Requirements 10.1, 10.6**
 
 ## Error Handling
 
 ### Migration Error Recovery
 
 **Rollback Strategy**:
+
 ```bash
 # Automatic rollback script
 #!/bin/bash
@@ -416,6 +444,7 @@ echo "Rollback complete"
 ```
 
 **Validation Checkpoints**:
+
 1. **Pre-migration**: Backup completo + tests baseline
 2. **Post-structure**: Validar estructura de archivos
 3. **Post-dependencies**: Validar resolución de dependencias
@@ -428,21 +457,22 @@ echo "Rollback complete"
 ### Migration Testing
 
 **Automated Tests**:
+
 ```typescript
 // tools/tests/migration.test.ts
 describe('Migration Validation', () => {
   test('all original files exist in new structure', () => {
     // Validate file migration
   });
-  
+
   test('all tests pass after migration', () => {
     // Run full test suite
   });
-  
+
   test('all builds succeed', () => {
     // Test all app builds
   });
-  
+
   test('dependencies resolve correctly', () => {
     // Validate workspace dependencies
   });
@@ -450,6 +480,7 @@ describe('Migration Validation', () => {
 ```
 
 **Manual Validation Checklist**:
+
 - [ ] Servidor de desarrollo funciona
 - [ ] Tests pasan (296/296)
 - [ ] Build exitoso
@@ -460,21 +491,22 @@ describe('Migration Validation', () => {
 
 ### Package Testing
 
-**Unit Tests**: Cada package tiene su suite independiente
-**Integration Tests**: Tests entre packages
-**E2E Tests**: Tests de aplicaciones completas
+**Unit Tests**: Cada package tiene su suite independiente **Integration Tests**: Tests entre
+packages **E2E Tests**: Tests de aplicaciones completas
 
 ## Performance Considerations
 
 ### Build Optimization
 
 **Estrategias**:
+
 1. **Parallel Builds**: Builds simultáneos de packages independientes
 2. **Incremental Builds**: Solo rebuild lo que cambió
 3. **Shared Dependencies**: Hoisting de dependencias comunes
 4. **Cache Optimization**: Cache de builds y tests
 
 **Métricas Objetivo**:
+
 - Build completo: < 2 minutos
 - Build incremental: < 30 segundos
 - Test suite completa: < 5 minutos
@@ -482,23 +514,24 @@ describe('Migration Validation', () => {
 
 ### Runtime Optimization
 
-**Code Splitting**: Cada app tiene su bundle independiente
-**Shared Chunks**: Código común en chunks separados
-**Tree Shaking**: Eliminación de código no usado
-**Bundle Analysis**: Monitoreo de tamaño de bundles
+**Code Splitting**: Cada app tiene su bundle independiente **Shared Chunks**: Código común en chunks
+separados **Tree Shaking**: Eliminación de código no usado **Bundle Analysis**: Monitoreo de tamaño
+de bundles
 
 ## Security Considerations
 
 ### Package Security
 
 **Dependency Management**:
+
 - Audit regular de dependencias
 - Versionado estricto de packages críticos
 - Isolation de dependencias por workspace
 
 **Access Control**:
+
 - Packages internos no publicados
-- Scoped packages (@sync/*)
+- Scoped packages (@sync/\*)
 - Versionado semántico estricto
 
 ## Deployment Strategy
@@ -506,6 +539,7 @@ describe('Migration Validation', () => {
 ### Multi-App Deployment
 
 **Vercel Configuration**:
+
 ```json
 // apps/credisync/vercel.json
 {
@@ -518,6 +552,7 @@ describe('Migration Validation', () => {
 ```
 
 **CI/CD Pipeline**:
+
 ```yaml
 # .github/workflows/credisync-deploy.yml
 name: Deploy CrediSync
@@ -546,24 +581,28 @@ jobs:
 ## Migration Phases
 
 ### Fase 1: Preparación del Monorepo (1-2 horas)
+
 - Crear estructura de directorios
 - Configurar workspaces
 - Migrar código actual a apps/credisync/
 - Configurar scripts básicos
 
 ### Fase 2: Extracción Gradual (2-3 días)
+
 - Extraer @sync/core módulo por módulo
 - Crear @sync/ui con componentes comunes
 - Establecer @sync/types
 - Refactorizar imports gradualmente
 
 ### Fase 3: Optimización (1 semana)
+
 - Optimizar builds y dependencies
 - Configurar CI/CD por aplicación
 - Crear herramientas de desarrollo
 - Documentar procesos
 
 ### Fase 4: Expansión (futuro)
+
 - Crear HealthSync y SurveySync
 - Optimizar packages compartidos
 - Implementar features avanzadas

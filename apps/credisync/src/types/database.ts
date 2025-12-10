@@ -1,6 +1,6 @@
 /**
  * Database types for CrediSync
- * 
+ *
  * Re-exports from @sync/types for backward compatibility
  * and app-specific extensions
  */

@@ -20,7 +20,7 @@ export class AuthService {
   async signIn(credentials: LoginCredentials) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: credentials.email,
-      password: credentials.password,
+      password: credentials.password
     });
 
     if (error) throw error;
@@ -31,7 +31,7 @@ export class AuthService {
     return {
       session: data.session,
       user: data.user,
-      profile: userProfile,
+      profile: userProfile
     };
   }
 
@@ -42,7 +42,7 @@ export class AuthService {
     // 1. Create auth user
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email: signUpData.email,
-      password: signUpData.password,
+      password: signUpData.password
     });
 
     if (authError) throw authError;
@@ -57,7 +57,7 @@ export class AuthService {
         email: signUpData.email,
         nombre: signUpData.nombre,
         rol: signUpData.rol,
-        activo: true,
+        activo: true
       })
       .select()
       .single();
@@ -70,7 +70,7 @@ export class AuthService {
 
     return {
       user: authData.user,
-      profile: profileData,
+      profile: profileData
     };
   }
 
@@ -95,7 +95,7 @@ export class AuthService {
   async getSession() {
     const {
       data: { session },
-      error,
+      error
     } = await supabase.auth.getSession();
 
     if (error) throw error;
@@ -108,7 +108,7 @@ export class AuthService {
   async getCurrentUser() {
     const {
       data: { user },
-      error,
+      error
     } = await supabase.auth.getUser();
 
     if (error) throw error;
@@ -143,7 +143,7 @@ export class AuthService {
   async refreshSession() {
     const {
       data: { session },
-      error,
+      error
     } = await supabase.auth.refreshSession();
 
     if (error) throw error;
@@ -155,7 +155,7 @@ export class AuthService {
    */
   async resetPassword(email: string) {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${window.location.origin}/reset-password`
     });
 
     if (error) throw error;
@@ -166,7 +166,7 @@ export class AuthService {
    */
   async updatePassword(newPassword: string) {
     const { error } = await supabase.auth.updateUser({
-      password: newPassword,
+      password: newPassword
     });
 
     if (error) throw error;

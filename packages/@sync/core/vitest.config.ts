@@ -7,12 +7,7 @@ export default defineConfig({
     globals: true,
     coverage: {
       reporter: ['text', 'json', 'html'],
-      exclude: [
-        'node_modules/',
-        'dist/',
-        '**/*.test.ts',
-        '**/*.spec.ts'
-      ]
+      exclude: ['node_modules/', 'dist/', '**/*.test.ts', '**/*.spec.ts']
     }
   }
 });

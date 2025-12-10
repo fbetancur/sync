@@ -1,13 +1,13 @@
 /**
  * Credit Calculator Module
- * 
+ *
  * This module implements all credit-related calculations including:
  * - Interest calculation
  * - Total amount calculation
  * - Installment (cuota) value calculation
  * - Payment schedule generation with frequency support
  * - Sunday exclusion logic
- * 
+ *
  * Requirements: 12.2, 12.3, 12.4, 13.2, 13.5
  */
 
@@ -100,7 +100,7 @@ export class CreditCalculator {
       valor_cuota,
       numero_cuotas: input.numero_cuotas,
       fecha_primera_cuota,
-      fecha_ultima_cuota,
+      fecha_ultima_cuota
     };
   }
 
@@ -119,7 +119,7 @@ export class CreditCalculator {
     );
 
     let currentDate = new Date(input.fecha_desembolso);
-    
+
     for (let i = 1; i <= input.numero_cuotas; i++) {
       // Calculate next payment date based on frequency
       currentDate = this.getNextPaymentDate(
@@ -132,7 +132,7 @@ export class CreditCalculator {
       cuotas.push({
         numero: i,
         valor: valor_cuota,
-        fecha_programada: new Date(currentDate),
+        fecha_programada: new Date(currentDate)
       });
     }
 
@@ -190,7 +190,7 @@ export class CreditCalculator {
    */
   private skipSundays(date: Date): Date {
     const newDate = new Date(date);
-    
+
     // 0 = Sunday
     while (newDate.getDay() === 0) {
       newDate.setDate(newDate.getDate() + 1);
@@ -218,7 +218,11 @@ export class CreditCalculator {
   /**
    * Get business days between two dates (excluding Sundays)
    */
-  getBusinessDays(startDate: Date, endDate: Date, excluirDomingos: boolean): number {
+  getBusinessDays(
+    startDate: Date,
+    endDate: Date,
+    excluirDomingos: boolean
+  ): number {
     if (!excluirDomingos) {
       return this.calculateDaysBetween(startDate, endDate);
     }

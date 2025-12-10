@@ -46,7 +46,7 @@ function formatBytes(bytes) {
 
 function collectMetrics() {
   log('cyan', '📊 Recolectando métricas del monorepo...');
-  
+
   const reportsDir = path.join(rootDir, 'tools', 'reports');
   const metrics = {
     timestamp: new Date().toISOString(),
@@ -56,12 +56,12 @@ function collectMetrics() {
     tests: {},
     git: {}
   };
-  
+
   // Métricas de performance
   const perfDir = path.join(reportsDir, 'performance');
   if (fs.existsSync(perfDir)) {
     const perfTypes = ['build', 'test', 'install', 'lint'];
-    
+
     perfTypes.forEach(type => {
       const latestPath = path.join(perfDir, `performance-${type}-latest.json`);
       if (fs.existsSync(latestPath)) {
@@ -79,16 +79,19 @@ function collectMetrics() {
       }
     });
   }
-  
+
   // Métricas de bundles
   const bundleDir = path.join(reportsDir, 'bundle-analysis');
   if (fs.existsSync(bundleDir)) {
-    const bundleFiles = fs.readdirSync(bundleDir)
+    const bundleFiles = fs
+      .readdirSync(bundleDir)
       .filter(f => f.includes('-latest.json'));
-    
+
     bundleFiles.forEach(file => {
       try {
-        const data = JSON.parse(fs.readFileSync(path.join(bundleDir, file), 'utf8'));
+        const data = JSON.parse(
+          fs.readFileSync(path.join(bundleDir, file), 'utf8')
+        );
         metrics.bundles[data.app] = {
           total: data.total,
           client: data.client.size,
@@ -101,13 +104,15 @@ function collectMetrics() {
       }
     });
   }
-  
+
   // Métricas de dependencias
   try {
-    const packageJson = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8')
+    );
     const deps = packageJson.dependencies || {};
     const devDeps = packageJson.devDependencies || {};
-    
+
     metrics.dependencies = {
       production: Object.keys(deps).length,
       development: Object.keys(devDeps).length,
@@ -118,14 +123,14 @@ function collectMetrics() {
   } catch (error) {
     log('yellow', `⚠️  Error leyendo dependencias: ${error.message}`);
   }
-  
+
   // Métricas de tests
   try {
-    const testOutput = execSync('pnpm test --reporter=json', { 
-      stdio: 'pipe', 
-      cwd: rootDir 
+    const testOutput = execSync('pnpm test --reporter=json', {
+      stdio: 'pipe',
+      cwd: rootDir
     }).toString();
-    
+
     // Parsear output de tests (esto puede variar según el runner)
     metrics.tests = {
       total: 0,
@@ -145,33 +150,56 @@ function collectMetrics() {
       error: 'Could not run tests'
     };
   }
-  
+
   // Métricas de Git
   try {
     const gitStats = {
-      branch: execSync('git branch --show-current', { stdio: 'pipe', cwd: rootDir }).toString().trim(),
-      lastCommit: execSync('git log -1 --format="%H %s %an %ad"', { stdio: 'pipe', cwd: rootDir }).toString().trim(),
-      uncommittedChanges: execSync('git status --porcelain', { stdio: 'pipe', cwd: rootDir }).toString().split('\\n').filter(l => l.trim()).length,
-      totalCommits: parseInt(execSync('git rev-list --count HEAD', { stdio: 'pipe', cwd: rootDir }).toString().trim())
+      branch: execSync('git branch --show-current', {
+        stdio: 'pipe',
+        cwd: rootDir
+      })
+        .toString()
+        .trim(),
+      lastCommit: execSync('git log -1 --format="%H %s %an %ad"', {
+        stdio: 'pipe',
+        cwd: rootDir
+      })
+        .toString()
+        .trim(),
+      uncommittedChanges: execSync('git status --porcelain', {
+        stdio: 'pipe',
+        cwd: rootDir
+      })
+        .toString()
+        .split('\\n')
+        .filter(l => l.trim()).length,
+      totalCommits: parseInt(
+        execSync('git rev-list --count HEAD', { stdio: 'pipe', cwd: rootDir })
+          .toString()
+          .trim()
+      )
     };
-    
+
     metrics.git = gitStats;
   } catch (error) {
     log('yellow', `⚠️  Error leyendo Git stats: ${error.message}`);
   }
-  
+
   return metrics;
 }
 
 function getWorkspacePackages() {
   const packagesDir = path.join(rootDir, 'packages/@sync');
   if (!fs.existsSync(packagesDir)) return [];
-  
-  return fs.readdirSync(packagesDir)
+
+  return fs
+    .readdirSync(packagesDir)
     .filter(name => {
       const packagePath = path.join(packagesDir, name);
-      return fs.statSync(packagePath).isDirectory() && 
-             fs.existsSync(path.join(packagePath, 'package.json'));
+      return (
+        fs.statSync(packagePath).isDirectory() &&
+        fs.existsSync(path.join(packagePath, 'package.json'))
+      );
     })
     .map(name => `@sync/${name}`);
 }
@@ -179,13 +207,14 @@ function getWorkspacePackages() {
 function getWorkspaceApps() {
   const appsDir = path.join(rootDir, 'apps');
   if (!fs.existsSync(appsDir)) return [];
-  
-  return fs.readdirSync(appsDir)
-    .filter(name => {
-      const appPath = path.join(appsDir, name);
-      return fs.statSync(appPath).isDirectory() && 
-             fs.existsSync(path.join(appPath, 'package.json'));
-    });
+
+  return fs.readdirSync(appsDir).filter(name => {
+    const appPath = path.join(appsDir, name);
+    return (
+      fs.statSync(appPath).isDirectory() &&
+      fs.existsSync(path.join(appPath, 'package.json'))
+    );
+  });
 }
 
 function generateDashboardHTML(metrics) {
@@ -502,17 +531,20 @@ function getTestStatus(testMetrics) {
 }
 
 function getTotalBundleSize(bundles) {
-  const total = Object.values(bundles).reduce((sum, bundle) => sum + (bundle.client || 0), 0);
+  const total = Object.values(bundles).reduce(
+    (sum, bundle) => sum + (bundle.client || 0),
+    0
+  );
   return formatBytes(total);
 }
 
 function generateBuildDetails(performance) {
   let html = '';
-  
+
   Object.entries(performance).forEach(([type, data]) => {
     const status = data.success ? '✅' : '❌';
     const statusClass = data.success ? 'status-good' : 'status-error';
-    
+
     html += `
       <div class="detail-item">
         <span>${status} ${type.charAt(0).toUpperCase() + type.slice(1)}</span>
@@ -520,13 +552,16 @@ function generateBuildDetails(performance) {
       </div>
     `;
   });
-  
-  return html || '<div class="detail-item"><span>No build data available</span></div>';
+
+  return (
+    html ||
+    '<div class="detail-item"><span>No build data available</span></div>'
+  );
 }
 
 function generateBundleDetails(bundles) {
   let html = '';
-  
+
   Object.entries(bundles).forEach(([app, data]) => {
     html += `
       <div class="detail-item">
@@ -535,15 +570,18 @@ function generateBundleDetails(bundles) {
       </div>
     `;
   });
-  
-  return html || '<div class="detail-item"><span>No bundle data available</span></div>';
+
+  return (
+    html ||
+    '<div class="detail-item"><span>No bundle data available</span></div>'
+  );
 }
 
 function generateGitDetails(git) {
   if (!git.branch) {
     return '<div class="detail-item"><span>No Git data available</span></div>';
   }
-  
+
   return `
     <div class="detail-item">
       <span>Branch</span>
@@ -583,10 +621,10 @@ function generateWorkspaceDetails(dependencies) {
 
 function saveDashboard(html, outputDir) {
   fs.mkdirSync(outputDir, { recursive: true });
-  
+
   const dashboardPath = path.join(outputDir, 'dashboard.html');
   fs.writeFileSync(dashboardPath, html);
-  
+
   log('green', `📊 Dashboard generado: ${dashboardPath}`);
   return dashboardPath;
 }
@@ -596,27 +634,27 @@ function serveDashboard(html, port = 3001) {
     res.writeHead(200, { 'Content-Type': 'text/html' });
     res.end(html);
   });
-  
+
   server.listen(port, () => {
     log('green', `🌐 Dashboard servido en: http://localhost:${port}`);
     log('cyan', '   Presiona Ctrl+C para detener el servidor');
   });
-  
+
   return server;
 }
 
 function exportMetrics(metrics, outputDir) {
   fs.mkdirSync(outputDir, { recursive: true });
-  
+
   // Exportar JSON
   const jsonPath = path.join(outputDir, 'metrics.json');
   fs.writeFileSync(jsonPath, JSON.stringify(metrics, null, 2));
-  
+
   // Exportar CSV
   const csvData = generateCSV(metrics);
   const csvPath = path.join(outputDir, 'metrics.csv');
   fs.writeFileSync(csvPath, csvData);
-  
+
   log('green', `📊 Métricas exportadas:`);
   log('cyan', `   JSON: ${jsonPath}`);
   log('cyan', `   CSV: ${csvPath}`);
@@ -624,24 +662,24 @@ function exportMetrics(metrics, outputDir) {
 
 function generateCSV(metrics) {
   let csv = 'Metric,Value,Unit,Timestamp\\n';
-  
+
   // Performance metrics
   Object.entries(metrics.performance).forEach(([type, data]) => {
     csv += `${type}_duration,${data.duration},ms,${data.timestamp}\\n`;
     csv += `${type}_success,${data.success ? 1 : 0},boolean,${data.timestamp}\\n`;
   });
-  
+
   // Bundle metrics
   Object.entries(metrics.bundles).forEach(([app, data]) => {
     csv += `${app}_bundle_size,${data.client},bytes,${data.timestamp}\\n`;
     csv += `${app}_total_size,${data.total},bytes,${data.timestamp}\\n`;
   });
-  
+
   // Dependency metrics
   csv += `dependencies_total,${metrics.dependencies.total},count,${metrics.timestamp}\\n`;
   csv += `dependencies_production,${metrics.dependencies.production},count,${metrics.timestamp}\\n`;
   csv += `dependencies_development,${metrics.dependencies.development},count,${metrics.timestamp}\\n`;
-  
+
   return csv;
 }
 
@@ -649,32 +687,37 @@ function main() {
   const args = process.argv.slice(2);
   const serve = args.includes('--serve');
   const exportData = args.includes('--export');
-  const port = parseInt(args.find(arg => arg.startsWith('--port='))?.split('=')[1]) || 3001;
-  
+  const port =
+    parseInt(args.find(arg => arg.startsWith('--port='))?.split('=')[1]) ||
+    3001;
+
   log('blue', '📊 Metrics Dashboard - Sync Platform');
-  
+
   // Recolectar métricas
   const metrics = collectMetrics();
-  
+
   // Generar dashboard HTML
   const html = generateDashboardHTML(metrics);
-  
+
   // Guardar dashboard
   const outputDir = path.join(rootDir, 'tools', 'reports', 'dashboard');
   const dashboardPath = saveDashboard(html, outputDir);
-  
+
   // Exportar métricas si se solicita
   if (exportData) {
     exportMetrics(metrics, outputDir);
   }
-  
+
   // Servir dashboard si se solicita
   if (serve) {
     serveDashboard(html, port);
   } else {
     log('blue', '\\n🎯 Próximos pasos:');
     log('yellow', `• Abrir dashboard: open ${dashboardPath}`);
-    log('yellow', `• Servir dashboard: node tools/scripts/metrics-dashboard.js --serve`);
+    log(
+      'yellow',
+      `• Servir dashboard: node tools/scripts/metrics-dashboard.js --serve`
+    );
     log('yellow', '• Configurar auto-refresh en CI/CD');
     log('yellow', '• Integrar alertas para métricas críticas');
   }

@@ -1,6 +1,6 @@
 /**
  * Hook useEncryption
- * 
+ *
  * Hook de Svelte para gestionar el estado y operaciones de encriptación.
  * Requirements: 17.4, 17.5
  */
@@ -38,7 +38,10 @@ export function createEncryptionHook(encryptionService) {
         error: null
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Falló la inicialización de encriptación';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Falló la inicialización de encriptación';
       set({
         isInitialized: false,
         isLoading: false,
@@ -111,7 +114,7 @@ export function createEncryptionHook(encryptionService) {
   return {
     // Suscripción al store
     subscribe,
-    
+
     // Acciones
     initializeWithPin,
     clearEncryption,
@@ -120,9 +123,12 @@ export function createEncryptionHook(encryptionService) {
     encryptSensitiveFields,
     decryptSensitiveFields,
     isInitialized,
-    
+
     // Stores derivados
-    isReady: derived(encryptionState, $state => $state.isInitialized && !$state.isLoading),
+    isReady: derived(
+      encryptionState,
+      $state => $state.isInitialized && !$state.isLoading
+    ),
     error: derived(encryptionState, $state => $state.error),
     isLoading: derived(encryptionState, $state => $state.isLoading)
   };
@@ -134,9 +140,11 @@ export function createEncryptionHook(encryptionService) {
  */
 export function useEncryption(encryptionService) {
   if (!encryptionService) {
-    console.warn('useEncryption: encryptionService no proporcionado. Use createEncryptionHook() en su lugar.');
+    console.warn(
+      'useEncryption: encryptionService no proporcionado. Use createEncryptionHook() en su lugar.'
+    );
     return null;
   }
-  
+
   return createEncryptionHook(encryptionService);
 }

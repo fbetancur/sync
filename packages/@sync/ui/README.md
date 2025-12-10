@@ -4,11 +4,13 @@ Componentes UI compartidos para aplicaciones de la Plataforma Sync.
 
 ## Descripción
 
-Este paquete proporciona componentes Svelte reutilizables, stores y hooks que son comunes en todas las aplicaciones de la Plataforma Sync.
+Este paquete proporciona componentes Svelte reutilizables, stores y hooks que son comunes en todas
+las aplicaciones de la Plataforma Sync.
 
 ## Componentes
 
 ### PinEntry
+
 Componente para entrada segura de PIN para inicializar encriptación.
 
 ```svelte
@@ -17,15 +19,16 @@ Componente para entrada segura de PIN para inicializar encriptación.
   import { encryptionService } from '@sync/core';
 </script>
 
-<PinEntry 
+<PinEntry
   {encryptionService}
   title="Ingrese su PIN"
-  on:success={(event) => console.log('PIN configurado')}
+  on:success={event => console.log('PIN configurado')}
   on:cancel={() => console.log('Cancelado')}
 />
 ```
 
 ### ErrorBoundary
+
 Componente para capturar y manejar errores en componentes hijos.
 
 ```svelte
@@ -42,6 +45,7 @@ Componente para capturar y manejar errores en componentes hijos.
 ## Hooks
 
 ### useEncryption
+
 Hook para gestionar el estado de encriptación.
 
 ```javascript
@@ -52,6 +56,7 @@ const encryption = createEncryptionHook(encryptionService);
 ```
 
 ### useBackgroundSync
+
 Hook para integración de sincronización en segundo plano.
 
 ```javascript
@@ -64,6 +69,7 @@ const backgroundSync = createBackgroundSyncHook(backgroundSyncManager, syncManag
 ## Stores
 
 ### Sync Store
+
 Gestión del estado de sincronización.
 
 ```javascript
@@ -74,6 +80,7 @@ const syncStore = createSyncStore(syncManager);
 ```
 
 ### Auth Store
+
 Gestión del estado de autenticación.
 
 ```javascript

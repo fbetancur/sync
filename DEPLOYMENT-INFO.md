@@ -10,17 +10,20 @@
 ## 🌐 URLs de la Aplicación
 
 ### Production (Principal)
+
 - **URL**: https://microcreditos-pwa.vercel.app
 - **Alias**: https://microcreditos-f8zl7k4k9-fbetancurs-projects.vercel.app
 - **Estado**: ● Ready
 - **Ambiente**: Production
 
 ### Preview (Última versión)
+
 - **URL**: https://microcreditos-a43840xoo-fbetancurs-projects.vercel.app
 - **Estado**: ● Ready
 - **Ambiente**: Production
 
 ### Dashboard
+
 - **Proyecto**: https://vercel.com/fbetancurs-projects/microcreditos-pwa
 - **Settings**: https://vercel.com/fbetancurs-projects/microcreditos-pwa/settings
 
@@ -29,6 +32,7 @@
 ## 📊 Información del Build
 
 ### Build Exitoso
+
 ```
 ✓ 201 modules transformed
 ✓ built in 2.32s
@@ -42,6 +46,7 @@ files generated
 ```
 
 ### Assets Generados
+
 - `dist/registerSW.js` - 0.13 kB
 - `dist/manifest.webmanifest` - 0.50 kB
 - `dist/index.html` - 0.58 kB (gzip: 0.34 kB)
@@ -64,6 +69,7 @@ Las siguientes variables están configuradas en Vercel:
 ## 🔧 Configuración de Vercel
 
 ### Framework Detectado
+
 - **Framework**: Vite
 - **Build Command**: `npm run build`
 - **Output Directory**: `dist`
@@ -71,6 +77,7 @@ Las siguientes variables están configuradas en Vercel:
 - **Dev Command**: `npm run dev`
 
 ### Features Habilitadas
+
 - ✅ Automatic deployments (Git push)
 - ✅ Preview deployments (Pull Requests)
 - ✅ HTTPS automático
@@ -119,6 +126,7 @@ Para habilitar deployments automáticos:
 3. Conecta tu repositorio (GitHub/GitLab/Bitbucket)
 
 Una vez conectado:
+
 - **Push a main** → Deploy automático a Production
 - **Push a otras ramas** → Deploy automático a Preview
 - **Pull Requests** → Deploy de preview con URL única
@@ -128,6 +136,7 @@ Una vez conectado:
 ## 🧪 Testing en Producción
 
 ### 1. Probar Login
+
 ```
 URL: https://microcreditos-pwa.vercel.app/login
 Email: cobrador@demo.com
@@ -135,16 +144,19 @@ Password: [tu contraseña]
 ```
 
 ### 2. Probar Conexión
+
 ```
 URL: https://microcreditos-pwa.vercel.app/test-connection
 ```
 
 ### 3. Lighthouse Audit
+
 ```bash
 lighthouse https://microcreditos-pwa.vercel.app --view
 ```
 
 Objetivos:
+
 - PWA: 100
 - Performance: >90
 - Accessibility: >90
@@ -156,12 +168,14 @@ Objetivos:
 ## 🔐 Seguridad
 
 ### Headers Configurados
+
 - ✅ `X-Content-Type-Options: nosniff`
 - ✅ `X-Frame-Options: DENY`
 - ✅ `X-XSS-Protection: 1; mode=block`
 - ✅ `Service-Worker-Allowed: /`
 
 ### HTTPS
+
 - ✅ HTTPS habilitado automáticamente
 - ✅ Certificado SSL automático
 - ✅ HTTP → HTTPS redirect automático
@@ -171,7 +185,9 @@ Objetivos:
 ## 📈 Monitoreo
 
 ### Vercel Analytics (Opcional)
+
 Para habilitar analytics:
+
 1. Ve a Settings > Analytics
 2. Habilita "Web Analytics"
 3. Verás métricas de:
@@ -181,7 +197,9 @@ Para habilitar analytics:
    - Performance metrics
 
 ### Logs
+
 Ver logs en tiempo real:
+
 ```bash
 vercel logs https://microcreditos-pwa.vercel.app
 ```

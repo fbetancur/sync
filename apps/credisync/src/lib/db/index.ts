@@ -1,6 +1,6 @@
 /**
  * IndexedDB Database with Dexie.js
- * 
+ *
  * This module implements the local database for the PWA using Dexie.js wrapper for IndexedDB.
  * It provides offline-first storage with support for:
  * - Multi-tenancy
@@ -8,7 +8,7 @@
  * - Sync queue management
  * - Audit logging
  * - Checksum verification
- * 
+ *
  * Requirements: 2.1, 2.7
  */
 
@@ -278,13 +278,13 @@ export class MicrocreditosDB extends Dexie {
     this.version(1).stores({
       // Core tables with optimized indexes
       tenants: 'id, nombre, activo',
-      
+
       users: 'id, tenant_id, email, [tenant_id+activo]',
-      
+
       rutas: 'id, tenant_id, nombre, activa, [tenant_id+activa]',
-      
+
       productos_credito: 'id, tenant_id, activo, [tenant_id+activo]',
-      
+
       clientes: `
         id,
         tenant_id,
@@ -295,7 +295,7 @@ export class MicrocreditosDB extends Dexie {
         [tenant_id+estado],
         [tenant_id+numero_documento]
       `,
-      
+
       creditos: `
         id,
         tenant_id,
@@ -308,7 +308,7 @@ export class MicrocreditosDB extends Dexie {
         [cobrador_id+estado],
         [tenant_id+ruta_id+estado]
       `,
-      
+
       cuotas: `
         id,
         credito_id,
@@ -320,7 +320,7 @@ export class MicrocreditosDB extends Dexie {
         [credito_id+estado],
         [tenant_id+estado+fecha_programada]
       `,
-      
+
       pagos: `
         id,
         tenant_id,
@@ -334,7 +334,7 @@ export class MicrocreditosDB extends Dexie {
         [cobrador_id+fecha],
         [synced+fecha]
       `,
-      
+
       // Sync and audit tables
       sync_queue: `
         ++id,
@@ -346,7 +346,7 @@ export class MicrocreditosDB extends Dexie {
         priority,
         [synced+priority+timestamp]
       `,
-      
+
       audit_log: `
         ++id,
         timestamp,
@@ -358,7 +358,7 @@ export class MicrocreditosDB extends Dexie {
         [aggregate_type+aggregate_id+timestamp],
         [user_id+timestamp]
       `,
-      
+
       change_log: `
         ++id,
         timestamp,
@@ -368,9 +368,9 @@ export class MicrocreditosDB extends Dexie {
         [synced+timestamp],
         [table_name+record_id]
       `,
-      
+
       checksums: 'record_key, checksum, timestamp',
-      
+
       app_state: 'key, value, updated_at'
     });
   }
@@ -413,7 +413,7 @@ export class MicrocreditosDB extends Dexie {
       audit_log: await this.audit_log.count(),
       change_log: await this.change_log.count(),
       checksums: await this.checksums.count(),
-      app_state: await this.app_state.count(),
+      app_state: await this.app_state.count()
     };
 
     return stats;
@@ -423,35 +423,39 @@ export class MicrocreditosDB extends Dexie {
    * Clear all data (for testing or reset)
    */
   async clearAll(): Promise<void> {
-    await this.transaction('rw', [
-      this.tenants,
-      this.users,
-      this.rutas,
-      this.productos_credito,
-      this.clientes,
-      this.creditos,
-      this.cuotas,
-      this.pagos,
-      this.sync_queue,
-      this.audit_log,
-      this.change_log,
-      this.checksums,
-      this.app_state,
-    ], async () => {
-      await this.tenants.clear();
-      await this.users.clear();
-      await this.rutas.clear();
-      await this.productos_credito.clear();
-      await this.clientes.clear();
-      await this.creditos.clear();
-      await this.cuotas.clear();
-      await this.pagos.clear();
-      await this.sync_queue.clear();
-      await this.audit_log.clear();
-      await this.change_log.clear();
-      await this.checksums.clear();
-      await this.app_state.clear();
-    });
+    await this.transaction(
+      'rw',
+      [
+        this.tenants,
+        this.users,
+        this.rutas,
+        this.productos_credito,
+        this.clientes,
+        this.creditos,
+        this.cuotas,
+        this.pagos,
+        this.sync_queue,
+        this.audit_log,
+        this.change_log,
+        this.checksums,
+        this.app_state
+      ],
+      async () => {
+        await this.tenants.clear();
+        await this.users.clear();
+        await this.rutas.clear();
+        await this.productos_credito.clear();
+        await this.clientes.clear();
+        await this.creditos.clear();
+        await this.cuotas.clear();
+        await this.pagos.clear();
+        await this.sync_queue.clear();
+        await this.audit_log.clear();
+        await this.change_log.clear();
+        await this.checksums.clear();
+        await this.app_state.clear();
+      }
+    );
 
     console.log('✅ All data cleared from IndexedDB');
   }
@@ -471,6 +475,6 @@ export const db = new MicrocreditosDB();
  * Initialize the database on module load
  * This ensures the database is ready before any operations
  */
-db.initialize().catch((error) => {
+db.initialize().catch(error => {
   console.error('Failed to initialize database:', error);
 });

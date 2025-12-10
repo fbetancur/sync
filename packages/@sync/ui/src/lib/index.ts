@@ -1,6 +1,6 @@
 /**
  * @sync/ui - Shared UI components for Sync Platform
- * 
+ *
  * This package provides reusable UI components, stores, and actions
  * that can be shared across all applications in the Sync Platform.
  */

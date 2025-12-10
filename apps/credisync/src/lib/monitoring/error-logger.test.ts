@@ -1,6 +1,6 @@
 /**
  * Tests for Error Logger
- * 
+ *
  * Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6
  */
 
@@ -14,15 +14,15 @@ describe('ErrorLogger', () => {
   beforeEach(async () => {
     // Clear database
     await db.app_state.clear();
-    
+
     // Get fresh instance
     // @ts-ignore - accessing private static for testing
     ErrorLogger.instance = undefined;
     logger = ErrorLogger.getInstance();
-    
+
     // Initialize without Sentry DSN (local-only mode)
     logger.initialize({
-      enableLocalLogs: true,
+      enableLocalLogs: true
     });
   });
 
@@ -61,7 +61,7 @@ describe('ErrorLogger', () => {
     it('should log error with context', async () => {
       await logger.logError('Test error', {
         user_id: 'user-123',
-        action: 'test_action',
+        action: 'test_action'
       });
 
       const logs = await logger.getLocalLogs();
@@ -100,7 +100,7 @@ describe('ErrorLogger', () => {
         password: 'secret123',
         token: 'abc123',
         api_key: 'key123',
-        normal_field: 'normal_value',
+        normal_field: 'normal_value'
       });
 
       const logs = await logger.getLocalLogs();
@@ -114,7 +114,7 @@ describe('ErrorLogger', () => {
       await logger.logError('Test error', {
         telefono: '3001234567',
         telefono_2: '3009876543',
-        other_field: 'value',
+        other_field: 'value'
       });
 
       const logs = await logger.getLocalLogs();
@@ -130,9 +130,9 @@ describe('ErrorLogger', () => {
           password: 'secret',
           profile: {
             name: 'John',
-            api_key: 'key123',
-          },
-        },
+            api_key: 'key123'
+          }
+        }
       });
 
       const logs = await logger.getLocalLogs();
@@ -143,7 +143,7 @@ describe('ErrorLogger', () => {
 
     it('should filter sensitive patterns from strings', async () => {
       await logger.logError('Test error', {
-        message: 'User password is secret123 and token is abc-def-123',
+        message: 'User password is secret123 and token is abc-def-123'
       });
 
       const logs = await logger.getLocalLogs();
@@ -159,7 +159,7 @@ describe('ErrorLogger', () => {
         name: 'test_operation',
         value: 150,
         timestamp: Date.now(),
-        tags: { component: 'test' },
+        tags: { component: 'test' }
       });
 
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -200,7 +200,7 @@ describe('ErrorLogger', () => {
           id: 'user-123',
           email: 'user@example.com',
           username: 'testuser',
-          tenant_id: 'tenant-1',
+          tenant_id: 'tenant-1'
         });
       }).not.toThrow();
     });
@@ -208,7 +208,7 @@ describe('ErrorLogger', () => {
     it('should clear user context', () => {
       logger.setUser({
         id: 'user-123',
-        email: 'user@example.com',
+        email: 'user@example.com'
       });
 
       expect(() => {
@@ -220,12 +220,9 @@ describe('ErrorLogger', () => {
   describe('Breadcrumbs', () => {
     it('should add breadcrumb', () => {
       expect(() => {
-        logger.addBreadcrumb(
-          'User clicked button',
-          'ui.click',
-          'info',
-          { button_id: 'submit' }
-        );
+        logger.addBreadcrumb('User clicked button', 'ui.click', 'info', {
+          button_id: 'submit'
+        });
       }).not.toThrow();
     });
 
@@ -284,9 +281,7 @@ describe('ErrorLogger', () => {
       db.app_state.put = vi.fn().mockRejectedValue(new Error('DB error'));
 
       // Should not throw
-      await expect(
-        logger.logError('Test error')
-      ).resolves.not.toThrow();
+      await expect(logger.logError('Test error')).resolves.not.toThrow();
 
       // Restore
       db.app_state.put = originalPut;

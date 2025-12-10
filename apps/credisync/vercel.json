@@ -3,7 +3,7 @@
   "name": "credisync",
   "buildCommand": "cd ../.. && pnpm build:packages && pnpm build:credisync",
   "outputDirectory": "dist",
-  "devCommand": "cd ../.. && pnpm dev:credisync", 
+  "devCommand": "cd ../.. && pnpm dev:credisync",
   "installCommand": "cd ../.. && pnpm install",
   "framework": "vite",
   "rewrites": [

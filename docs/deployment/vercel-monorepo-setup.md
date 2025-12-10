@@ -2,13 +2,14 @@
 
 ## 🎯 Estrategia: Proyectos Separados
 
-Cada aplicación del monorepo se deploya como un **proyecto independiente** en Vercel para máxima flexibilidad y escalabilidad.
+Cada aplicación del monorepo se deploya como un **proyecto independiente** en Vercel para máxima
+flexibilidad y escalabilidad.
 
 ## 📱 Aplicaciones y URLs
 
-| Aplicación | URL de Producción | Estado |
-|------------|-------------------|---------|
-| CrediSync  | `credisync.vercel.app` | ✅ Activo |
+| Aplicación | URL de Producción       | Estado    |
+| ---------- | ----------------------- | --------- |
+| CrediSync  | `credisync.vercel.app`  | ✅ Activo |
 | HealthSync | `healthsync.vercel.app` | 🚧 Futuro |
 | SurveySync | `surveysync.vercel.app` | 🚧 Futuro |
 
@@ -17,8 +18,9 @@ Cada aplicación del monorepo se deploya como un **proyecto independiente** en V
 ### CrediSync (Proyecto Principal)
 
 **Configuración en Vercel Dashboard:**
+
 - **Project Name**: `credisync`
-- **Repository**: `fbetancur/sync` 
+- **Repository**: `fbetancur/sync`
 - **Root Directory**: `apps/credisync/`
 - **Build Command**: `cd ../.. && pnpm build:credisync`
 - **Install Command**: `cd ../.. && pnpm install`
@@ -26,6 +28,7 @@ Cada aplicación del monorepo se deploya como un **proyecto independiente** en V
 - **Framework**: `vite`
 
 **Variables de Entorno:**
+
 ```env
 VITE_SUPABASE_URL=https://hmnlriywocnpiktflehr.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -36,6 +39,7 @@ VITE_APP_NAME=CrediSyncApp
 ### HealthSync (Futuro)
 
 **Configuración en Vercel Dashboard:**
+
 - **Project Name**: `healthsync`
 - **Repository**: `fbetancur/sync`
 - **Root Directory**: `apps/healthsync/`
@@ -47,6 +51,7 @@ VITE_APP_NAME=CrediSyncApp
 ### SurveySync (Futuro)
 
 **Configuración en Vercel Dashboard:**
+
 - **Project Name**: `surveysync`
 - **Repository**: `fbetancur/sync`
 - **Root Directory**: `apps/surveysync/`
@@ -59,9 +64,12 @@ VITE_APP_NAME=CrediSyncApp
 
 ### Deployment Strategy
 
-Por ahora, cada proyecto se deploya en cada push para asegurar que siempre esté actualizado. En el futuro se puede configurar un `ignoreCommand` más sofisticado para deployar solo cuando hay cambios relevantes.
+Por ahora, cada proyecto se deploya en cada push para asegurar que siempre esté actualizado. En el
+futuro se puede configurar un `ignoreCommand` más sofisticado para deployar solo cuando hay cambios
+relevantes.
 
 **Deployment actual:**
+
 - ✅ **Se deploya** en cada push al repositorio
 - ✅ **Garantiza** que la aplicación esté siempre actualizada
 - ✅ **Simplifica** el proceso de deployment inicial
@@ -69,6 +77,7 @@ Por ahora, cada proyecto se deploya en cada push para asegurar que siempre esté
 ### Build Dependencies
 
 El orden de build es importante:
+
 1. `@sync/types` (sin dependencias)
 2. `@sync/core` (depende de types)
 3. `@sync/ui` (depende de core)
@@ -84,7 +93,7 @@ cd apps/credisync
 vercel --prod
 
 # HealthSync (cuando esté listo)
-cd apps/healthsync  
+cd apps/healthsync
 vercel --prod
 
 # SurveySync (cuando esté listo)
@@ -107,21 +116,25 @@ vercel
 ## 📊 Ventajas de esta Estrategia
 
 ### ✅ Deployment Independiente
+
 - Cada app se deploya solo cuando es necesario
 - Rollback independiente por aplicación
 - URLs limpias y profesionales
 
 ### ✅ Escalabilidad
+
 - Agregar nueva app = crear nuevo proyecto en Vercel
 - Sin afectar deployments existentes
 - Configuración aislada por aplicación
 
 ### ✅ Performance
+
 - Builds paralelos posibles
 - Cache independiente por proyecto
 - Optimización específica por aplicación
 
 ### ✅ Gestión Simplificada
+
 - Un repositorio, múltiples proyectos
 - Shared packages automáticamente disponibles
 - Configuración centralizada en el monorepo
@@ -129,6 +142,7 @@ vercel
 ## 🔧 Troubleshooting
 
 ### Error: "Command failed"
+
 ```bash
 # Verificar que pnpm está instalado
 pnpm --version
@@ -138,12 +152,14 @@ pnpm build:credisync
 ```
 
 ### Error: "Dependencies not found"
+
 ```bash
 # Verificar que el install command es correcto
 cd ../.. && pnpm install
 ```
 
 ### Error: "Output directory not found"
+
 ```bash
 # Verificar que el output directory es correcto
 ls apps/credisync/dist/
@@ -152,6 +168,7 @@ ls apps/credisync/dist/
 ## 📋 Checklist de Deployment
 
 ### Para CrediSync (Actual):
+
 - [x] vercel.json configurado
 - [x] Build command funciona
 - [x] Variables de entorno configuradas
@@ -162,6 +179,7 @@ ls apps/credisync/dist/
 - [x] URL: https://credisync-green.vercel.app/
 
 ### Para HealthSync (Preparado):
+
 - [x] vercel.json configurado
 - [x] Workflow de CI/CD creado
 - [x] Variables de entorno preparadas
@@ -172,6 +190,7 @@ ls apps/credisync/dist/
 - [ ] Deployment activado
 
 ### Para SurveySync (Preparado):
+
 - [x] vercel.json configurado
 - [x] Workflow de CI/CD creado
 - [x] Variables de entorno preparadas

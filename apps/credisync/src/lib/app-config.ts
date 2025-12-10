@@ -1,13 +1,18 @@
 /**
  * Configuración centralizada para CrediSync
- * 
+ *
  * Este archivo define la configuración de la aplicación usando el API factory
  * de @sync/core para inicializar todos los servicios de manera centralizada.
- * 
+ *
  * Requirements: 4.4, 4.5, 4.6
  */
 
-import { createSyncApp, createDevConfig, createProdConfig, type SyncApp } from '@sync/core';
+import {
+  createSyncApp,
+  createDevConfig,
+  createProdConfig,
+  type SyncApp
+} from '@sync/core';
 
 // ============================================================================
 // CONFIGURACIÓN DE LA APLICACIÓN
@@ -25,7 +30,9 @@ function createAppConfig() {
     return createDevConfig('credisync');
   } else {
     if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Variables de entorno de Supabase requeridas en producción');
+      throw new Error(
+        'Variables de entorno de Supabase requeridas en producción'
+      );
     }
     return createProdConfig('credisync', supabaseUrl, supabaseKey);
   }
@@ -49,7 +56,7 @@ export const crediSyncApp: SyncApp = createSyncApp(createAppConfig());
  * Exportar servicios individuales para mantener compatibilidad
  * con el código existente durante la migración
  */
-export const { 
+export const {
   db,
   checksum,
   sync: syncManager,
@@ -106,8 +113,10 @@ export async function shutdownCrediSync(): Promise<void> {
  */
 export async function clearAllData(): Promise<void> {
   if (crediSyncApp.isStarted) {
-    throw new Error('No se puede limpiar datos mientras la aplicación está iniciada');
+    throw new Error(
+      'No se puede limpiar datos mientras la aplicación está iniciada'
+    );
   }
-  
+
   await crediSyncApp.clearData();
 }

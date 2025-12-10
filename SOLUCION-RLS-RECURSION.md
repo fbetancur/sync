@@ -3,6 +3,7 @@
 ## El Problema
 
 Estás viendo el error:
+
 ```
 infinite recursion detected in policy for relation "users"
 Código: 42P17
@@ -19,21 +20,22 @@ CREATE POLICY "Users can view users in their tenant"
   USING (tenant_id = (SELECT tenant_id FROM users WHERE id = auth.uid()));
 ```
 
-Cuando intentas acceder a la tabla `users`, la política intenta consultar la tabla `users` para verificar el `tenant_id`, lo cual requiere verificar la política nuevamente, creando un loop infinito.
+Cuando intentas acceder a la tabla `users`, la política intenta consultar la tabla `users` para
+verificar el `tenant_id`, lo cual requiere verificar la política nuevamente, creando un loop
+infinito.
 
 ## Solución
 
-He creado un script SQL que corrige este problema usando una función `SECURITY DEFINER` que rompe la recursión.
+He creado un script SQL que corrige este problema usando una función `SECURITY DEFINER` que rompe la
+recursión.
 
 ### Paso 1: Ejecutar el Script de Corrección
 
-1. Ve a Supabase SQL Editor:
-   https://supabase.com/dashboard/project/hmnlriywocnpiktflehr/sql
+1. Ve a Supabase SQL Editor: https://supabase.com/dashboard/project/hmnlriywocnpiktflehr/sql
 
 2. Click en **"New query"**
 
-3. Copia y pega el contenido del archivo:
-   `microcreditos-pwa/supabase/04-fix-rls-recursion.sql`
+3. Copia y pega el contenido del archivo: `microcreditos-pwa/supabase/04-fix-rls-recursion.sql`
 
 4. Click en **"Run"** (o presiona Ctrl+Enter)
 
@@ -57,10 +59,13 @@ El script hace tres cosas:
    - Borra la política recursiva de `tenants`
 
 2. **Crea una función helper**:
+
    ```sql
    CREATE FUNCTION get_user_tenant_id()
    ```
-   Esta función usa `SECURITY DEFINER` para obtener el `tenant_id` sin activar las políticas RLS, rompiendo la recursión.
+
+   Esta función usa `SECURITY DEFINER` para obtener el `tenant_id` sin activar las políticas RLS,
+   rompiendo la recursión.
 
 3. **Crea políticas corregidas**:
    - Política para ver usuarios del mismo tenant (usando la función)
@@ -94,10 +99,12 @@ Si después de ejecutar el script sigues viendo el error:
 ## Siguiente Paso
 
 Una vez corregido el error de recursión:
+
 - ✅ Podrás ver la conexión exitosa
 - ✅ Podrás acceder a los datos de tu tenant
 - ✅ Podrás continuar con la Fase 2 del proyecto
 
 ---
 
-**¿Necesitas ayuda?** Si el error persiste después de ejecutar el script, comparte un screenshot del resultado de la ejecución del SQL.
+**¿Necesitas ayuda?** Si el error persiste después de ejecutar el script, comparte un screenshot del
+resultado de la ejecución del SQL.

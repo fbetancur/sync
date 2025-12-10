@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-12-10T13:06:26.717Z",
+  "baseline": {
+    "timestamp": "2025-12-10T13:05:37.592Z",
+    "build": {
+      "success": true,
+      "duration": 23347,
+      "output": "\n> sync-platform@1.0.0 build C:\\Users\\code\\Desktop\\sync\n> pnpm build:packages && pnpm build:apps\n\n\n> sync-platform@1.0.0 build:packages C:\\Users\\code\\Desktop\\sync\n> pnpm --filter @sync/types build && pnpm --filter @sync/core build && pnpm --filter @sync/ui build\n\n\n> @sync/types@1.0.0 build C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\types\n> tsc\n\n\n> @sync/core@1.0.0 build C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\core\n> tsc\n\n\n> @sync/ui@1.0.0 build C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\ui\n> svelte-package\n\nsrc\\lib -> dist\n\n> sync-platform@1.0.0 build:apps C:\\Users\\code\\Desktop\\sync\n> pnpm --filter credisync build\n\n\n> credisync@1.0.0 build C:\\Users\\code\\Desktop\\sync\\apps\\credisync\n> vite build\n\n\u001b[36mvite v7.2.7 \u001b[32mbuilding client environment for production...\u001b[36m\u001b[39m\ntransforming...\n\u001b[32m✓\u001b[39m 495 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mdist/\u001b[22m\u001b[32mregisterSW.js              \u001b[39m\u001b[1m\u001b[2m  0.13 kB\u001b[22m\u001b[1m\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[32mmanifest.webmanifest       \u001b[39m\u001b[1m\u001b[2m  0.53 kB\u001b[22m\u001b[1m\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m  1.41 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   0.63 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[35massets/index-uQfnJLpQ.css  \u001b[39m\u001b[1m\u001b[2m  2.94 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   0.90 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/index-k8DTMukN.js   \u001b[39m\u001b[1m\u001b[33m627.63 kB\u001b[39m\u001b[22m\u001b[2m │ gzip: 193.68 kB\u001b[22m\n\u001b[32m✓ built in 3.84s\u001b[39m\n\nPWA v1.2.0\nmode      generateSW\nprecache  11 entries (1072.80 KiB)\nfiles generated\n  dist/sw.js\n  dist/workbox-fbd075aa.js\n",
+      "command": "pnpm build",
+      "description": "Measuring build time"
+    },
+    "bundle": {
+      "success": true,
+      "duration": 81,
+      "output": "\u001b[34m📊 Bundle Analyzer - Sync Platform\u001b[0m\n\u001b[34m🔍 Analizando todas las apps...\u001b[0m\n\u001b[36m📊 Analizando bundle de credisync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:credisync\u001b[0m\n\u001b[36m📊 Analizando bundle de healthsync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\healthsync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:healthsync\u001b[0m\n\u001b[36m📊 Analizando bundle de surveysync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\surveysync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:surveysync\u001b[0m\n\u001b[34m\\n🎯 Próximos pasos:\u001b[0m\n\u001b[33m• Revisar archivos grandes y considerar code splitting\u001b[0m\n\u001b[33m• Optimizar imports y dependencias no utilizadas\u001b[0m\n\u001b[33m• Configurar compresión en servidor\u001b[0m\n\u001b[33m• Monitorear cambios en tamaño con cada deploy\u001b[0m\n",
+      "command": "node tools/scripts/bundle-analyzer.js --all",
+      "description": "Measuring bundle sizes"
+    },
+    "install": {
+      "success": true,
+      "duration": 21223,
+      "output": " WARN  using --force I sure hope you know what you are doing\nScope: all 7 workspace projects\nLockfile is up to date, resolution step is skipped\nProgress: resolved 1, reused 0, downloaded 0, added 0\nPackages: +672\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\nProgress: resolved 672, reused 132, downloaded 0, added 0\nProgress: resolved 672, reused 376, downloaded 0, added 0\nProgress: resolved 672, reused 604, downloaded 0, added 5\nProgress: resolved 672, reused 604, downloaded 1, added 48\nProgress: resolved 672, reused 604, downloaded 3, added 70\nProgress: resolved 672, reused 604, downloaded 5, added 123\nProgress: resolved 672, reused 604, downloaded 7, added 136\nProgress: resolved 672, reused 604, downloaded 9, added 159\nProgress: resolved 672, reused 604, downloaded 14, added 201\nProgress: resolved 672, reused 604, downloaded 24, added 220\nProgress: resolved 672, reused 604, downloaded 39, added 261\nProgress: resolved 672, reused 604, downloaded 43, added 292\nProgress: resolved 672, reused 604, downloaded 49, added 360\nProgress: resolved 672, reused 604, downloaded 57, added 430\nProgress: resolved 672, reused 604, downloaded 62, added 462\nProgress: resolved 672, reused 604, downloaded 68, added 558\nProgress: resolved 672, reused 604, downloaded 68, added 670\nProgress: resolved 672, reused 604, downloaded 68, added 671\nProgress: resolved 672, reused 604, downloaded 68, added 672, done\n\n╭ Warning ─────────────────────────────────────────────────────────────────────╮\n│                                                                              │\n│   Ignored build scripts: esbuild@0.25.12.                                    │\n│   Run \"pnpm approve-builds\" to pick which dependencies should be allowed     │\n│   to run scripts.                                                            │\n│                                                                              │\n╰──────────────────────────────────────────────────────────────────────────────╯\nDone in 21s using pnpm v10.25.0\n",
+      "command": "pnpm install --force",
+      "description": "Measuring install time"
+    }
+  },
+  "improved": {
+    "timestamp": "2025-12-10T13:06:22.254Z",
+    "build": {
+      "success": false,
+      "duration": 4376,
+      "error": "Command failed: pnpm build",
+      "command": "pnpm build",
+      "description": "Measuring improved build time"
+    },
+    "bundle": {
+      "success": true,
+      "duration": 86,
+      "output": "\u001b[34m📊 Bundle Analyzer - Sync Platform\u001b[0m\n\u001b[34m🔍 Analizando todas las apps...\u001b[0m\n\u001b[36m📊 Analizando bundle de credisync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:credisync\u001b[0m\n\u001b[36m📊 Analizando bundle de healthsync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\healthsync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:healthsync\u001b[0m\n\u001b[36m📊 Analizando bundle de surveysync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\surveysync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:surveysync\u001b[0m\n\u001b[34m\\n🎯 Próximos pasos:\u001b[0m\n\u001b[33m• Revisar archivos grandes y considerar code splitting\u001b[0m\n\u001b[33m• Optimizar imports y dependencias no utilizadas\u001b[0m\n\u001b[33m• Configurar compresión en servidor\u001b[0m\n\u001b[33m• Monitorear cambios en tamaño con cada deploy\u001b[0m\n",
+      "command": "node tools/scripts/bundle-analyzer.js --all",
+      "description": "Measuring improved bundle sizes"
+    },
+    "install": null
+  },
+  "optimizations": [
+    "TypeScript config optimized: tsconfig.json",
+    "TypeScript config optimized: packages/@sync/core/tsconfig.json",
+    "TypeScript config optimized: packages/@sync/types/tsconfig.json",
+    "Vite config optimized: apps/credisync/vite.config.ts"
+  ],
+  "improvements": {
+    "build": null,
+    "bundle": null
+  },
+  "recommendations": [
+    "Monitorear performance después de optimizaciones",
+    "Ejecutar tests para validar que no se rompió funcionalidad"
+  ]
+}

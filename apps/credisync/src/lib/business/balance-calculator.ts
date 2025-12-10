@@ -1,12 +1,12 @@
 /**
  * Balance Calculator Module
- * 
+ *
  * This module implements balance and arrears calculations including:
  * - Saldo pendiente (outstanding balance) calculation from pagos
  * - Días de atraso (days overdue) calculation
  * - Cuotas pagadas (paid installments) counter
  * - Automatic recalculation on pago registration
- * 
+ *
  * Requirements: 3.3, 3.4, 12.5, 12.6, 13.1, 13.4
  */
 
@@ -74,7 +74,7 @@ export class BalanceCalculator {
 
       const valorCuota = credito.total_a_pagar / credito.numero_cuotas;
       const cuotasEstimadas = Math.floor(totalPagado / valorCuota);
-      
+
       // Never exceed total number of cuotas
       return Math.min(cuotasEstimadas, credito.numero_cuotas);
     }
@@ -87,7 +87,11 @@ export class BalanceCalculator {
    * Calculate dias_atraso (days overdue)
    * Compares current date with scheduled payment dates
    */
-  calculateDiasAtraso(credito: Credito, pagos: Pago[], currentDate: Date = new Date()): number {
+  calculateDiasAtraso(
+    credito: Credito,
+    pagos: Pago[],
+    currentDate: Date = new Date()
+  ): number {
     if (!credito.cuotas || credito.cuotas.length === 0) {
       return 0;
     }
@@ -96,7 +100,9 @@ export class BalanceCalculator {
     const cuotasVencidas = credito.cuotas
       .filter(cuota => cuota.estado !== 'pagada')
       .filter(cuota => cuota.fecha_programada < currentDate)
-      .sort((a, b) => a.fecha_programada.getTime() - b.fecha_programada.getTime());
+      .sort(
+        (a, b) => a.fecha_programada.getTime() - b.fecha_programada.getTime()
+      );
 
     if (cuotasVencidas.length === 0) {
       return 0;
@@ -104,7 +110,8 @@ export class BalanceCalculator {
 
     // Calculate days between oldest overdue cuota and current date
     const oldestVencida = cuotasVencidas[0];
-    const diffTime = currentDate.getTime() - oldestVencida.fecha_programada.getTime();
+    const diffTime =
+      currentDate.getTime() - oldestVencida.fecha_programada.getTime();
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
     return Math.max(0, diffDays);
@@ -113,11 +120,15 @@ export class BalanceCalculator {
   /**
    * Calculate complete balance information
    */
-  calculateBalance(credito: Credito, pagos: Pago[], currentDate: Date = new Date()): BalanceResult {
+  calculateBalance(
+    credito: Credito,
+    pagos: Pago[],
+    currentDate: Date = new Date()
+  ): BalanceResult {
     return {
       saldo_pendiente: this.calculateSaldoPendiente(credito, pagos),
       cuotas_pagadas: this.calculateCuotasPagadas(credito, pagos),
-      dias_atraso: this.calculateDiasAtraso(credito, pagos, currentDate),
+      dias_atraso: this.calculateDiasAtraso(credito, pagos, currentDate)
     };
   }
 
@@ -154,9 +165,15 @@ export class BalanceCalculator {
   /**
    * Update cuotas status to mark overdue ones
    */
-  updateCuotasVencidas(cuotas: Cuota[], currentDate: Date = new Date()): Cuota[] {
+  updateCuotasVencidas(
+    cuotas: Cuota[],
+    currentDate: Date = new Date()
+  ): Cuota[] {
     return cuotas.map(cuota => {
-      if (cuota.estado === 'pendiente' && cuota.fecha_programada < currentDate) {
+      if (
+        cuota.estado === 'pendiente' &&
+        cuota.fecha_programada < currentDate
+      ) {
         return { ...cuota, estado: 'vencida' };
       }
       return cuota;
@@ -191,7 +208,7 @@ export class BalanceCalculator {
 
     return {
       ...balance,
-      cuotas: updatedCuotas,
+      cuotas: updatedCuotas
     };
   }
 }

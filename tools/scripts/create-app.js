@@ -32,58 +32,61 @@ function validateAppName(name) {
     log('red', '❌ Nombre de app requerido');
     return false;
   }
-  
+
   if (!/^[a-z][a-z0-9-]*$/.test(name)) {
-    log('red', '❌ Nombre inválido. Usa solo letras minúsculas, números y guiones');
+    log(
+      'red',
+      '❌ Nombre inválido. Usa solo letras minúsculas, números y guiones'
+    );
     return false;
   }
-  
+
   if (name.length < 3 || name.length > 20) {
     log('red', '❌ Nombre debe tener entre 3 y 20 caracteres');
     return false;
   }
-  
+
   return true;
 }
 
 function createPackageJson(appName, appDisplayName) {
   return {
     name: appName,
-    version: "1.0.0",
+    version: '1.0.0',
     description: `${appDisplayName} - PWA offline-first application`,
-    type: "module",
+    type: 'module',
     scripts: {
-      dev: "vite",
-      build: "vite build",
-      preview: "vite preview",
-      test: "vitest",
-      "test:ui": "vitest --ui",
-      "test:coverage": "vitest --coverage",
-      lint: "eslint . --ext .js,.ts,.svelte",
-      format: "prettier --write .",
-      clean: "rm -rf dist"
+      dev: 'vite',
+      build: 'vite build',
+      preview: 'vite preview',
+      test: 'vitest',
+      'test:ui': 'vitest --ui',
+      'test:coverage': 'vitest --coverage',
+      lint: 'eslint . --ext .js,.ts,.svelte',
+      format: 'prettier --write .',
+      clean: 'rm -rf dist'
     },
     dependencies: {
-      "@sync/core": "workspace:*",
-      "@sync/types": "workspace:*",
-      "@sync/ui": "workspace:*",
-      "@supabase/supabase-js": "^2.87.1",
-      "dexie": "^4.2.1",
-      "zod": "^4.1.13"
+      '@sync/core': 'workspace:*',
+      '@sync/types': 'workspace:*',
+      '@sync/ui': 'workspace:*',
+      '@supabase/supabase-js': '^2.87.1',
+      dexie: '^4.2.1',
+      zod: '^4.1.13'
     },
     devDependencies: {
-      "@sveltejs/vite-plugin-svelte": "^6.2.1",
-      "@testing-library/svelte": "^5.2.9",
-      "@types/node": "^24.10.2",
-      "eslint": "^9.39.1",
-      "jsdom": "^27.3.0",
-      "prettier": "^3.7.4",
-      "svelte": "^5.45.8",
-      "svelte-check": "^4.3.4",
-      "typescript": "~5.9.3",
-      "vite": "^7.2.7",
-      "vite-plugin-pwa": "^1.2.0",
-      "vitest": "^4.0.15"
+      '@sveltejs/vite-plugin-svelte': '^6.2.1',
+      '@testing-library/svelte': '^5.2.9',
+      '@types/node': '^24.10.2',
+      eslint: '^9.39.1',
+      jsdom: '^27.3.0',
+      prettier: '^3.7.4',
+      svelte: '^5.45.8',
+      'svelte-check': '^4.3.4',
+      typescript: '~5.9.3',
+      vite: '^7.2.7',
+      'vite-plugin-pwa': '^1.2.0',
+      vitest: '^4.0.15'
     }
   };
 }
@@ -133,56 +136,57 @@ export default defineConfig({
 
 function createVercelJson(appName, appDisplayName) {
   return {
-    "$schema": "https://openapi.vercel.sh/vercel.json",
+    $schema: 'https://openapi.vercel.sh/vercel.json',
     name: appName,
     buildCommand: `cd ../.. && pnpm build:packages && pnpm build:${appName}`,
-    outputDirectory: "dist",
+    outputDirectory: 'dist',
     devCommand: `cd ../.. && pnpm dev:${appName}`,
-    installCommand: "cd ../.. && pnpm install",
-    framework: "vite",
+    installCommand: 'cd ../.. && pnpm install',
+    framework: 'vite',
     rewrites: [
       {
-        source: "/(.*)",
-        destination: "/index.html"
+        source: '/(.*)',
+        destination: '/index.html'
       }
     ],
     headers: [
       {
-        source: "/service-worker.js",
+        source: '/service-worker.js',
         headers: [
           {
-            key: "Cache-Control",
-            value: "public, max-age=0, must-revalidate"
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate'
           },
           {
-            key: "Service-Worker-Allowed",
-            value: "/"
+            key: 'Service-Worker-Allowed',
+            value: '/'
           }
         ]
       },
       {
-        source: "/(.*)",
+        source: '/(.*)',
         headers: [
           {
-            key: "X-Content-Type-Options",
-            value: "nosniff"
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
           },
           {
-            key: "X-Frame-Options",
-            value: "DENY"
+            key: 'X-Frame-Options',
+            value: 'DENY'
           },
           {
-            key: "X-XSS-Protection",
-            value: "1; mode=block"
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
           }
         ]
       }
     ],
     build: {
       env: {
-        VITE_SUPABASE_URL: "https://hmnlriywocnpiktflehr.supabase.co",
-        VITE_SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtbmxyaXl3b2NucGlrdGZsZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzMDE4MzIsImV4cCI6MjA4MDg3NzgzMn0.P4ZZdWAPgby89Rc8yYAZB9f2bwRrRuLEsS_6peobkf4",
-        VITE_APP_VERSION: "1.0.0",
+        VITE_SUPABASE_URL: 'https://hmnlriywocnpiktflehr.supabase.co',
+        VITE_SUPABASE_ANON_KEY:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhtbmxyaXl3b2NucGlrdGZsZWhyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjUzMDE4MzIsImV4cCI6MjA4MDg3NzgzMn0.P4ZZdWAPgby89Rc8yYAZB9f2bwRrRuLEsS_6peobkf4',
+        VITE_APP_VERSION: '1.0.0',
         VITE_APP_NAME: `${appDisplayName}App`
       }
     }
@@ -399,89 +403,86 @@ Ver [documentación del monorepo](../../docs/) para más información.`;
 
 function createApp(appName, template = 'basic') {
   log('blue', `🚀 Creando nueva aplicación: ${appName}`);
-  
+
   if (!validateAppName(appName)) {
     return false;
   }
-  
+
   const appDir = path.join(rootDir, 'apps', appName);
   const appDisplayName = appName.charAt(0).toUpperCase() + appName.slice(1);
-  
+
   // Verificar que no existe
   if (fs.existsSync(appDir)) {
     log('red', `❌ La aplicación ${appName} ya existe`);
     return false;
   }
-  
+
   try {
     // Crear estructura de directorios
     log('cyan', '📁 Creando estructura de directorios...');
     fs.mkdirSync(appDir, { recursive: true });
     fs.mkdirSync(path.join(appDir, 'src'), { recursive: true });
     fs.mkdirSync(path.join(appDir, 'public'), { recursive: true });
-    
+
     // Crear archivos de configuración
     log('cyan', '⚙️ Creando archivos de configuración...');
-    
+
     // package.json
     fs.writeFileSync(
       path.join(appDir, 'package.json'),
       JSON.stringify(createPackageJson(appName, appDisplayName), null, 2)
     );
-    
+
     // vite.config.ts
     fs.writeFileSync(
       path.join(appDir, 'vite.config.ts'),
       createViteConfig(appName)
     );
-    
+
     // vercel.json
     fs.writeFileSync(
       path.join(appDir, 'vercel.json'),
       JSON.stringify(createVercelJson(appName, appDisplayName), null, 2)
     );
-    
+
     // .env.example
     fs.writeFileSync(
       path.join(appDir, '.env.example'),
       createEnvExample(appName, appDisplayName)
     );
-    
+
     // Crear archivos de aplicación
     log('cyan', '📱 Creando archivos de aplicación...');
-    
+
     // index.html
     fs.writeFileSync(
       path.join(appDir, 'index.html'),
       createIndexHtml(appDisplayName)
     );
-    
+
     // src/main.ts
     fs.writeFileSync(
       path.join(appDir, 'src', 'main.ts'),
       createMainTs(appDisplayName)
     );
-    
+
     // src/App.svelte
     fs.writeFileSync(
       path.join(appDir, 'src', 'App.svelte'),
       createAppSvelte(appDisplayName)
     );
-    
+
     // src/app.css
-    fs.writeFileSync(
-      path.join(appDir, 'src', 'app.css'),
-      createAppCss()
-    );
-    
+    fs.writeFileSync(path.join(appDir, 'src', 'app.css'), createAppCss());
+
     // README.md
     fs.writeFileSync(
       path.join(appDir, 'README.md'),
       createReadme(appName, appDisplayName)
     );
-    
+
     log('green', `✅ Aplicación ${appName} creada exitosamente`);
-    
+
     // Instrucciones
     log('yellow', '\n📋 Próximos pasos:');
     log('yellow', `1. cd apps/${appName}`);
@@ -492,7 +493,7 @@ function createApp(appName, template = 'basic') {
     log('yellow', `   - "build:${appName}": "pnpm --filter ${appName} build"`);
     log('yellow', `   - "test:${appName}": "pnpm --filter ${appName} test"`);
     log('yellow', `5. pnpm dev:${appName}`);
-    
+
     return true;
   } catch (error) {
     log('red', `❌ Error creando aplicación: ${error.message}`);
@@ -504,17 +505,20 @@ function main() {
   const args = process.argv.slice(2);
   const appName = args[0];
   const template = args[1] || 'basic';
-  
+
   log('blue', '🛠️  Generador de Aplicaciones - Sync Platform');
-  
+
   if (!appName) {
-    log('red', '❌ Uso: node tools/scripts/create-app.js <app-name> [template]');
+    log(
+      'red',
+      '❌ Uso: node tools/scripts/create-app.js <app-name> [template]'
+    );
     log('yellow', '\nEjemplos:');
     log('yellow', '  node tools/scripts/create-app.js myapp');
     log('yellow', '  node tools/scripts/create-app.js my-awesome-app basic');
     process.exit(1);
   }
-  
+
   const success = createApp(appName, template);
   process.exit(success ? 0 : 1);
 }

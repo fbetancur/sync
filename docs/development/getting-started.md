@@ -151,10 +151,10 @@ describe('myFunction', () => {
   it('should return expected result', () => {
     // Arrange
     const input = 'test';
-    
+
     // Act
     const result = myFunction(input);
-    
+
     // Assert
     expect(result).toBe('expected');
   });
@@ -239,12 +239,14 @@ pnpm validate-env
 ### Problemas Comunes
 
 **Error: "Cannot find module '@sync/core'"**
+
 ```bash
 # Construir packages primero
 pnpm build:packages
 ```
 
 **Tests fallan después de cambios**
+
 ```bash
 # Limpiar y reconstruir
 pnpm clean
@@ -254,6 +256,7 @@ pnpm test
 ```
 
 **Problemas de linting**
+
 ```bash
 # Instalar dependencias de linting
 pnpm lint-fix --install-deps
@@ -261,6 +264,7 @@ pnpm lint-fix --fix
 ```
 
 **Variables de entorno no funcionan**
+
 ```bash
 # Validar configuración
 pnpm validate-env

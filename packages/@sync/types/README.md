@@ -4,7 +4,8 @@ Shared TypeScript types and interfaces for Sync Platform.
 
 ## Overview
 
-This package provides all the TypeScript type definitions used across the Sync Platform monorepo, ensuring type consistency between applications and packages.
+This package provides all the TypeScript type definitions used across the Sync Platform monorepo,
+ensuring type consistency between applications and packages.
 
 ## Type Categories
 
@@ -35,6 +36,7 @@ import type { ComponentProps } from '@sync/types/ui';
 ## Type Structure
 
 ### Base Entity
+
 All entities extend from `BaseEntity`:
 
 ```typescript
@@ -49,6 +51,7 @@ interface BaseEntity {
 ```
 
 ### Syncable Entity
+
 Entities that support CRDT synchronization extend `SyncableEntity`:
 
 ```typescript

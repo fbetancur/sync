@@ -1,13 +1,13 @@
 /**
  * Multi-Layer Storage Manager
- * 
+ *
  * Implements redundant storage across 3 layers:
  * - Layer 1: IndexedDB (primary)
  * - Layer 2: LocalStorage (backup)
  * - Layer 3: Cache API (tertiary backup)
- * 
+ *
  * Ensures atomic writes and automatic recovery on failure.
- * 
+ *
  * Requirements: 2.2, 2.3, 2.4, 2.5
  */
 
@@ -60,7 +60,7 @@ export class StorageManager {
     const result: StorageWriteResult = {
       success: false,
       layersWritten: [],
-      errors: [],
+      errors: []
     };
 
     const { tableName, recordId, skipBackup = false } = options;
@@ -92,16 +92,19 @@ export class StorageManager {
       }
 
       result.success = true;
-      console.log(`✅ Data written to ${result.layersWritten.length} layer(s):`, result.layersWritten);
-      
+      console.log(
+        `✅ Data written to ${result.layersWritten.length} layer(s):`,
+        result.layersWritten
+      );
+
       return result;
     } catch (error) {
       result.errors.push(`IndexedDB: ${error}`);
       console.error('❌ Atomic write failed:', error);
-      
+
       // Attempt rollback
       await this.rollback(tableName, recordId, result.layersWritten);
-      
+
       throw new Error(`Atomic write failed: ${error}`);
     }
   }
@@ -121,7 +124,7 @@ export class StorageManager {
         return {
           success: true,
           data,
-          source: 'indexeddb',
+          source: 'indexeddb'
         };
       }
     } catch (error) {
@@ -138,7 +141,7 @@ export class StorageManager {
         return {
           success: true,
           data,
-          source: 'localstorage',
+          source: 'localstorage'
         };
       }
     } catch (error) {
@@ -156,7 +159,7 @@ export class StorageManager {
         return {
           success: true,
           data,
-          source: 'cache',
+          source: 'cache'
         };
       }
     } catch (error) {
@@ -167,7 +170,7 @@ export class StorageManager {
       success: false,
       data: null,
       source: null,
-      error: 'Data not found in any storage layer',
+      error: 'Data not found in any storage layer'
     };
   }
 
@@ -214,7 +217,7 @@ export class StorageManager {
     const serialized = JSON.stringify({
       data,
       timestamp: Date.now(),
-      version: 1,
+      version: 1
     });
 
     // Check storage quota
@@ -228,7 +231,10 @@ export class StorageManager {
       localStorage.setItem(key, serialized);
     } catch (error) {
       // Handle quota exceeded
-      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+      if (
+        error instanceof DOMException &&
+        error.name === 'QuotaExceededError'
+      ) {
         console.warn('⚠️ LocalStorage quota exceeded, cleaning old entries');
         await this.cleanOldLocalStorageEntries();
         // Retry
@@ -265,13 +271,13 @@ export class StorageManager {
 
   private async cleanOldLocalStorageEntries(): Promise<void> {
     const keys = Object.keys(localStorage);
-    const backupKeys = keys.filter((key) =>
+    const backupKeys = keys.filter(key =>
       key.startsWith(this.LOCALSTORAGE_PREFIX)
     );
 
     // Parse and sort by timestamp
     const entries = backupKeys
-      .map((key) => {
+      .map(key => {
         try {
           const data = JSON.parse(localStorage.getItem(key) || '{}');
           return { key, timestamp: data.timestamp || 0 };
@@ -310,13 +316,13 @@ export class StorageManager {
       JSON.stringify({
         data,
         timestamp: Date.now(),
-        version: 1,
+        version: 1
       }),
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-Backup-Layer': 'cache-api',
-        },
+          'X-Backup-Layer': 'cache-api'
+        }
       }
     );
 
@@ -400,10 +406,10 @@ export class StorageManager {
   async clearBackups(): Promise<void> {
     // Clear LocalStorage backups
     const keys = Object.keys(localStorage);
-    const backupKeys = keys.filter((key) =>
+    const backupKeys = keys.filter(key =>
       key.startsWith(this.LOCALSTORAGE_PREFIX)
     );
-    backupKeys.forEach((key) => localStorage.removeItem(key));
+    backupKeys.forEach(key => localStorage.removeItem(key));
 
     // Clear Cache API backups
     if ('caches' in window) {
@@ -426,7 +432,7 @@ export class StorageManager {
       indexedDB: 0,
       localStorage: 0,
       cacheAPI: 0,
-      total: 0,
+      total: 0
     };
 
     // IndexedDB size (approximate)
@@ -441,7 +447,7 @@ export class StorageManager {
     // LocalStorage size
     try {
       const keys = Object.keys(localStorage);
-      const backupKeys = keys.filter((key) =>
+      const backupKeys = keys.filter(key =>
         key.startsWith(this.LOCALSTORAGE_PREFIX)
       );
       stats.localStorage = backupKeys.reduce((total, key) => {

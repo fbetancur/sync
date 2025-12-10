@@ -1,6 +1,6 @@
 /**
  * Tests for Multi-Layer Storage Manager
- * 
+ *
  * Verifies atomic writes, fallback reads, and recovery mechanisms
  */
 
@@ -14,7 +14,7 @@ describe('StorageManager', () => {
   beforeEach(async () => {
     storageManager = new StorageManager();
     await db.open();
-    
+
     // Clear all storage layers
     await db.clearAll();
     localStorage.clear();
@@ -42,12 +42,12 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       const result = await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
-        recordId: 'test-1',
+        recordId: 'test-1'
       });
 
       expect(result.success).toBe(true);
@@ -68,13 +68,13 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       const result = await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
         recordId: 'test-2',
-        skipBackup: true,
+        skipBackup: true
       });
 
       expect(result.success).toBe(true);
@@ -89,7 +89,7 @@ describe('StorageManager', () => {
       await expect(
         storageManager.writeAtomic(testData, {
           tableName: 'non_existent_table',
-          recordId: 'test-3',
+          recordId: 'test-3'
         })
       ).rejects.toThrow();
     });
@@ -107,17 +107,17 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
-        recordId: 'test-4',
+        recordId: 'test-4'
       });
 
       const result = await storageManager.readWithFallback({
         tableName: 'tenants',
-        recordId: 'test-4',
+        recordId: 'test-4'
       });
 
       expect(result.success).toBe(true);
@@ -136,13 +136,13 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       // Write to all layers
       await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
-        recordId: 'test-5',
+        recordId: 'test-5'
       });
 
       // Delete from IndexedDB to simulate failure
@@ -151,7 +151,7 @@ describe('StorageManager', () => {
       // Should recover from LocalStorage
       const result = await storageManager.readWithFallback({
         tableName: 'tenants',
-        recordId: 'test-5',
+        recordId: 'test-5'
       });
 
       expect(result.success).toBe(true);
@@ -175,13 +175,13 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       // Write to all layers
       await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
-        recordId: 'test-6',
+        recordId: 'test-6'
       });
 
       // Delete from IndexedDB and LocalStorage
@@ -191,7 +191,7 @@ describe('StorageManager', () => {
       // Should fail gracefully when all layers are unavailable
       const result = await storageManager.readWithFallback({
         tableName: 'tenants',
-        recordId: 'test-6',
+        recordId: 'test-6'
       });
 
       // In test environment without Cache API, this should fail
@@ -203,7 +203,7 @@ describe('StorageManager', () => {
     it('should return null when data not found in any layer', async () => {
       const result = await storageManager.readWithFallback({
         tableName: 'tenants',
-        recordId: 'non-existent',
+        recordId: 'non-existent'
       });
 
       expect(result.success).toBe(false);
@@ -225,12 +225,12 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
-        recordId: 'test-7',
+        recordId: 'test-7'
       });
 
       const stats = await storageManager.getStorageStats();
@@ -255,16 +255,16 @@ describe('StorageManager', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       await storageManager.writeAtomic(testData, {
         tableName: 'tenants',
-        recordId: 'test-8',
+        recordId: 'test-8'
       });
 
       // Verify backups exist
-      const keysBefore = Object.keys(localStorage).filter(k => 
+      const keysBefore = Object.keys(localStorage).filter(k =>
         k.startsWith('pwa_backup_')
       );
       expect(keysBefore.length).toBeGreaterThan(0);
@@ -273,7 +273,7 @@ describe('StorageManager', () => {
       await storageManager.clearBackups();
 
       // Verify backups cleared
-      const keysAfter = Object.keys(localStorage).filter(k => 
+      const keysAfter = Object.keys(localStorage).filter(k =>
         k.startsWith('pwa_backup_')
       );
       expect(keysAfter.length).toBe(0);

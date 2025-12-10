@@ -7,11 +7,7 @@ module.exports = {
     node: true,
     browser: false
   },
-  ignorePatterns: [
-    'node_modules/',
-    'dist/',
-    'coverage/'
-  ],
+  ignorePatterns: ['node_modules/', 'dist/', 'coverage/'],
   // Reglas muy estrictas para types
   rules: {
     ...require('../../../.eslintrc.shared.cjs').rules,

@@ -1,11 +1,16 @@
 /**
  * Tests for Balance Calculator
- * 
+ *
  * Requirements: 3.3, 3.4, 12.5, 12.6, 13.1, 13.4
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { BalanceCalculator, type Pago, type Credito, type Cuota } from './balance-calculator';
+import {
+  BalanceCalculator,
+  type Pago,
+  type Credito,
+  type Cuota
+} from './balance-calculator';
 
 describe('BalanceCalculator', () => {
   let calculator: BalanceCalculator;
@@ -20,12 +25,22 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 100000, fecha: Date.now() },
-        { id: 'pago-2', credito_id: 'credito-1', monto: 50000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 100000,
+          fecha: Date.now()
+        },
+        {
+          id: 'pago-2',
+          credito_id: 'credito-1',
+          monto: 50000,
+          fecha: Date.now()
+        }
       ];
 
       const saldo = calculator.calculateSaldoPendiente(credito, pagos);
@@ -38,11 +53,16 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 1100000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 1100000,
+          fecha: Date.now()
+        }
       ];
 
       const saldo = calculator.calculateSaldoPendiente(credito, pagos);
@@ -55,11 +75,16 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 1200000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 1200000,
+          fecha: Date.now()
+        }
       ];
 
       const saldo = calculator.calculateSaldoPendiente(credito, pagos);
@@ -72,12 +97,22 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 100000, fecha: Date.now() },
-        { id: 'pago-2', credito_id: 'credito-2', monto: 50000, fecha: Date.now() }, // Different credit
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 100000,
+          fecha: Date.now()
+        },
+        {
+          id: 'pago-2',
+          credito_id: 'credito-2',
+          monto: 50000,
+          fecha: Date.now()
+        } // Different credit
       ];
 
       const saldo = calculator.calculateSaldoPendiente(credito, pagos);
@@ -90,7 +125,7 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const saldo = calculator.calculateSaldoPendiente(credito, []);
@@ -102,9 +137,24 @@ describe('BalanceCalculator', () => {
   describe('calculateCuotasPagadas', () => {
     it('should count paid cuotas from cuotas array', () => {
       const cuotas: Cuota[] = [
-        { numero: 1, valor: 36667, fecha_programada: new Date(), estado: 'pagada' },
-        { numero: 2, valor: 36667, fecha_programada: new Date(), estado: 'pagada' },
-        { numero: 3, valor: 36667, fecha_programada: new Date(), estado: 'pendiente' },
+        {
+          numero: 1,
+          valor: 36667,
+          fecha_programada: new Date(),
+          estado: 'pagada'
+        },
+        {
+          numero: 2,
+          valor: 36667,
+          fecha_programada: new Date(),
+          estado: 'pagada'
+        },
+        {
+          numero: 3,
+          valor: 36667,
+          fecha_programada: new Date(),
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -112,7 +162,7 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 30,
-        cuotas,
+        cuotas
       };
 
       const pagadas = calculator.calculateCuotasPagadas(credito, []);
@@ -125,12 +175,22 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1200000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 40000, fecha: Date.now() },
-        { id: 'pago-2', credito_id: 'credito-1', monto: 40000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 40000,
+          fecha: Date.now()
+        },
+        {
+          id: 'pago-2',
+          credito_id: 'credito-1',
+          monto: 40000,
+          fecha: Date.now()
+        }
       ];
 
       const pagadas = calculator.calculateCuotasPagadas(credito, pagos);
@@ -144,7 +204,7 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const pagadas = calculator.calculateCuotasPagadas(credito, []);
@@ -161,14 +221,14 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 10), // Dec 10 - 10 days overdue
-          estado: 'pendiente',
+          estado: 'pendiente'
         },
         {
           numero: 2,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 15), // Dec 15 - 5 days overdue
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -176,10 +236,14 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 30,
-        cuotas,
+        cuotas
       };
 
-      const diasAtraso = calculator.calculateDiasAtraso(credito, [], currentDate);
+      const diasAtraso = calculator.calculateDiasAtraso(
+        credito,
+        [],
+        currentDate
+      );
 
       expect(diasAtraso).toBe(10); // Oldest overdue cuota
     });
@@ -191,8 +255,8 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 25), // Dec 25 - future
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -200,10 +264,14 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 30,
-        cuotas,
+        cuotas
       };
 
-      const diasAtraso = calculator.calculateDiasAtraso(credito, [], currentDate);
+      const diasAtraso = calculator.calculateDiasAtraso(
+        credito,
+        [],
+        currentDate
+      );
 
       expect(diasAtraso).toBe(0);
     });
@@ -215,14 +283,14 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 10), // Dec 10 - but paid
-          estado: 'pagada',
+          estado: 'pagada'
         },
         {
           numero: 2,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 15), // Dec 15 - 5 days overdue
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -230,10 +298,14 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 30,
-        cuotas,
+        cuotas
       };
 
-      const diasAtraso = calculator.calculateDiasAtraso(credito, [], currentDate);
+      const diasAtraso = calculator.calculateDiasAtraso(
+        credito,
+        [],
+        currentDate
+      );
 
       expect(diasAtraso).toBe(5); // Only counts unpaid cuota
     });
@@ -243,7 +315,7 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 1100000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 30,
+        numero_cuotas: 30
       };
 
       const diasAtraso = calculator.calculateDiasAtraso(credito, []);
@@ -260,20 +332,20 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 10),
-          estado: 'pagada',
+          estado: 'pagada'
         },
         {
           numero: 2,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 15),
-          estado: 'pendiente',
+          estado: 'pendiente'
         },
         {
           numero: 3,
           valor: 36667,
           fecha_programada: new Date(2024, 11, 25),
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -281,11 +353,16 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 110000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 3,
-        cuotas,
+        cuotas
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 36667, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 36667,
+          fecha: Date.now()
+        }
       ];
 
       const balance = calculator.calculateBalance(credito, pagos, currentDate);
@@ -299,9 +376,24 @@ describe('BalanceCalculator', () => {
   describe('updateCuotasStatus', () => {
     it('should mark cuotas as paid based on payment amount', () => {
       const cuotas: Cuota[] = [
-        { numero: 1, valor: 40000, fecha_programada: new Date(), estado: 'pendiente' },
-        { numero: 2, valor: 40000, fecha_programada: new Date(), estado: 'pendiente' },
-        { numero: 3, valor: 40000, fecha_programada: new Date(), estado: 'pendiente' },
+        {
+          numero: 1,
+          valor: 40000,
+          fecha_programada: new Date(),
+          estado: 'pendiente'
+        },
+        {
+          numero: 2,
+          valor: 40000,
+          fecha_programada: new Date(),
+          estado: 'pendiente'
+        },
+        {
+          numero: 3,
+          valor: 40000,
+          fecha_programada: new Date(),
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -309,11 +401,16 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 120000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 3,
-        cuotas,
+        cuotas
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 80000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 80000,
+          fecha: Date.now()
+        }
       ];
 
       const updatedCuotas = calculator.updateCuotasStatus(credito, pagos);
@@ -325,8 +422,18 @@ describe('BalanceCalculator', () => {
 
     it('should handle partial payments', () => {
       const cuotas: Cuota[] = [
-        { numero: 1, valor: 40000, fecha_programada: new Date(), estado: 'pendiente' },
-        { numero: 2, valor: 40000, fecha_programada: new Date(), estado: 'pendiente' },
+        {
+          numero: 1,
+          valor: 40000,
+          fecha_programada: new Date(),
+          estado: 'pendiente'
+        },
+        {
+          numero: 2,
+          valor: 40000,
+          fecha_programada: new Date(),
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -334,11 +441,16 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 80000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 2,
-        cuotas,
+        cuotas
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 30000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 30000,
+          fecha: Date.now()
+        }
       ];
 
       const updatedCuotas = calculator.updateCuotasStatus(credito, pagos);
@@ -353,7 +465,7 @@ describe('BalanceCalculator', () => {
         id: 'credito-1',
         total_a_pagar: 120000,
         fecha_desembolso: Date.now(),
-        numero_cuotas: 3,
+        numero_cuotas: 3
       };
 
       const updatedCuotas = calculator.updateCuotasStatus(credito, []);
@@ -370,17 +482,20 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 10), // Past
-          estado: 'pendiente',
+          estado: 'pendiente'
         },
         {
           numero: 2,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 25), // Future
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
-      const updatedCuotas = calculator.updateCuotasVencidas(cuotas, currentDate);
+      const updatedCuotas = calculator.updateCuotasVencidas(
+        cuotas,
+        currentDate
+      );
 
       expect(updatedCuotas[0].estado).toBe('vencida');
       expect(updatedCuotas[1].estado).toBe('pendiente');
@@ -393,11 +508,14 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 10), // Past but paid
-          estado: 'pagada',
-        },
+          estado: 'pagada'
+        }
       ];
 
-      const updatedCuotas = calculator.updateCuotasVencidas(cuotas, currentDate);
+      const updatedCuotas = calculator.updateCuotasVencidas(
+        cuotas,
+        currentDate
+      );
 
       expect(updatedCuotas[0].estado).toBe('pagada');
     });
@@ -411,20 +529,20 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 10),
-          estado: 'pendiente',
+          estado: 'pendiente'
         },
         {
           numero: 2,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 15),
-          estado: 'pendiente',
+          estado: 'pendiente'
         },
         {
           numero: 3,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 25),
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -432,14 +550,23 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 120000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 3,
-        cuotas,
+        cuotas
       };
 
       const pagos: Pago[] = [
-        { id: 'pago-1', credito_id: 'credito-1', monto: 80000, fecha: Date.now() },
+        {
+          id: 'pago-1',
+          credito_id: 'credito-1',
+          monto: 80000,
+          fecha: Date.now()
+        }
       ];
 
-      const result = calculator.recalculateAfterPago(credito, pagos, currentDate);
+      const result = calculator.recalculateAfterPago(
+        credito,
+        pagos,
+        currentDate
+      );
 
       expect(result.saldo_pendiente).toBe(40000); // 120000 - 80000
       expect(result.cuotas_pagadas).toBe(2);
@@ -456,14 +583,14 @@ describe('BalanceCalculator', () => {
           numero: 1,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 10),
-          estado: 'pendiente',
+          estado: 'pendiente'
         },
         {
           numero: 2,
           valor: 40000,
           fecha_programada: new Date(2024, 11, 15),
-          estado: 'pendiente',
-        },
+          estado: 'pendiente'
+        }
       ];
 
       const credito: Credito = {
@@ -471,12 +598,16 @@ describe('BalanceCalculator', () => {
         total_a_pagar: 80000,
         fecha_desembolso: Date.now(),
         numero_cuotas: 2,
-        cuotas,
+        cuotas
       };
 
       const pagos: Pago[] = []; // No payments
 
-      const result = calculator.recalculateAfterPago(credito, pagos, currentDate);
+      const result = calculator.recalculateAfterPago(
+        credito,
+        pagos,
+        currentDate
+      );
 
       expect(result.cuotas[0].estado).toBe('vencida');
       expect(result.cuotas[1].estado).toBe('vencida');

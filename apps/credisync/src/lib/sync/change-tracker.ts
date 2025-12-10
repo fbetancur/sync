@@ -1,9 +1,9 @@
 /**
  * Change Tracker - Differential Sync (Delta Sync)
- * 
+ *
  * Tracks all changes to records and creates compressed deltas for efficient sync.
  * Instead of sending entire records, only sends what changed.
- * 
+ *
  * Requirements: 5.3, 5.6, 5.7
  */
 
@@ -41,7 +41,7 @@ export class ChangeTracker {
       record_id: recordId,
       operation,
       changes,
-      synced: false,
+      synced: false
     };
 
     const id = await db.change_log.add(entry);
@@ -51,11 +51,14 @@ export class ChangeTracker {
   /**
    * Get pending changes for a specific record
    */
-  async getPendingChanges(tableName: string, recordId: string): Promise<ChangeLogEntry[]> {
+  async getPendingChanges(
+    tableName: string,
+    recordId: string
+  ): Promise<ChangeLogEntry[]> {
     return await db.change_log
       .where('[table_name+record_id]')
       .equals([tableName, recordId])
-      .and((entry) => !entry.synced)
+      .and(entry => !entry.synced)
       .sortBy('timestamp');
   }
 
@@ -63,7 +66,9 @@ export class ChangeTracker {
    * Get all pending changes
    */
   async getAllPendingChanges(): Promise<ChangeLogEntry[]> {
-    return await db.change_log.filter((entry) => !entry.synced).sortBy('timestamp');
+    return await db.change_log
+      .filter(entry => !entry.synced)
+      .sortBy('timestamp');
   }
 
   /**
@@ -94,7 +99,7 @@ export class ChangeTracker {
         record_id: recordId,
         changes: compressed,
         compressed: true,
-        timestamp: Math.max(...entries.map((e) => e.timestamp)),
+        timestamp: Math.max(...entries.map(e => e.timestamp))
       });
     }
 
@@ -116,7 +121,7 @@ export class ChangeTracker {
           field: '__deleted__',
           oldValue: null,
           newValue: true,
-          timestamp: entry.timestamp,
+          timestamp: entry.timestamp
         });
         continue;
       }
@@ -128,7 +133,7 @@ export class ChangeTracker {
             field,
             oldValue: null,
             newValue: value,
-            timestamp: entry.timestamp,
+            timestamp: entry.timestamp
           });
         }
         continue;
@@ -146,7 +151,7 @@ export class ChangeTracker {
             field,
             oldValue: null, // We don't track old values in change log
             newValue: value,
-            timestamp: entry.timestamp,
+            timestamp: entry.timestamp
           });
         }
       }
@@ -158,7 +163,9 @@ export class ChangeTracker {
   /**
    * Create batches for upload (group changes by priority)
    */
-  async createUploadBatches(maxBatchSize: number = 50): Promise<DeltaBatch[][]> {
+  async createUploadBatches(
+    maxBatchSize: number = 50
+  ): Promise<DeltaBatch[][]> {
     const pending = await this.getAllPendingChanges();
     const compressed = this.compressChanges(pending);
 
@@ -193,7 +200,10 @@ export class ChangeTracker {
         await this.applyDelta(delta);
         applied++;
       } catch (error) {
-        console.error(`Failed to apply delta for ${delta.table_name}:${delta.record_id}`, error);
+        console.error(
+          `Failed to apply delta for ${delta.table_name}:${delta.record_id}`,
+          error
+        );
       }
     }
 
@@ -210,7 +220,7 @@ export class ChangeTracker {
     }
 
     // Check if record is deleted
-    const isDeleted = delta.changes.some((c) => c.field === '__deleted__');
+    const isDeleted = delta.changes.some(c => c.field === '__deleted__');
     if (isDeleted) {
       await table.delete(delta.record_id);
       return;
@@ -241,7 +251,7 @@ export class ChangeTracker {
    */
   async markChangesSynced(tableName: string, recordId: string): Promise<void> {
     const changes = await this.getPendingChanges(tableName, recordId);
-    const ids = changes.map((c) => c.id!);
+    const ids = changes.map(c => c.id!);
 
     for (const id of ids) {
       await db.change_log.update(id, { synced: true });
@@ -255,10 +265,10 @@ export class ChangeTracker {
     const cutoffTime = Date.now() - daysOld * 24 * 60 * 60 * 1000;
 
     const oldChanges = await db.change_log
-      .filter((entry) => entry.synced && entry.timestamp < cutoffTime)
+      .filter(entry => entry.synced && entry.timestamp < cutoffTime)
       .toArray();
 
-    const ids = oldChanges.map((c) => c.id!);
+    const ids = oldChanges.map(c => c.id!);
     await db.change_log.bulkDelete(ids);
 
     return ids.length;
@@ -274,8 +284,8 @@ export class ChangeTracker {
     byTable: Record<string, number>;
   }> {
     const all = await db.change_log.toArray();
-    const pending = all.filter((c) => !c.synced);
-    const synced = all.filter((c) => c.synced);
+    const pending = all.filter(c => !c.synced);
+    const synced = all.filter(c => c.synced);
 
     const byTable: Record<string, number> = {};
     for (const change of pending) {
@@ -286,7 +296,7 @@ export class ChangeTracker {
       total: all.length,
       pending: pending.length,
       synced: synced.length,
-      byTable,
+      byTable
     };
   }
 

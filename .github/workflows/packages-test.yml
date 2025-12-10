@@ -19,27 +19,27 @@ jobs:
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Lint packages
         run: pnpm --filter './packages/@sync/*' lint
-        
+
       - name: Type check packages
         run: pnpm --filter './packages/@sync/*' run tsc --noEmit
 
@@ -50,24 +50,24 @@ jobs:
     strategy:
       matrix:
         package: ['@sync/types', '@sync/core', '@sync/ui']
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build dependencies
         run: |
           if [ "${{ matrix.package }}" = "@sync/core" ]; then
@@ -76,10 +76,10 @@ jobs:
             pnpm --filter @sync/types build
             pnpm --filter @sync/core build
           fi
-        
+
       - name: Test ${{ matrix.package }}
         run: pnpm --filter ${{ matrix.package }} test --coverage
-        
+
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
         with:
@@ -91,27 +91,27 @@ jobs:
   build-test:
     name: Build Test
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build all packages
         run: pnpm build:packages
-        
+
       - name: Verify build outputs
         run: |
           # Verify @sync/types
@@ -119,19 +119,19 @@ jobs:
             echo "❌ @sync/types build failed"
             exit 1
           fi
-          
+
           # Verify @sync/core
           if [ ! -f "packages/@sync/core/dist/index.js" ]; then
             echo "❌ @sync/core build failed"
             exit 1
           fi
-          
+
           # Verify @sync/ui
           if [ ! -f "packages/@sync/ui/dist/index.js" ]; then
             echo "❌ @sync/ui build failed"
             exit 1
           fi
-          
+
           echo "✅ All packages built successfully"
 
   # Job 4: Integration Test
@@ -139,27 +139,27 @@ jobs:
     name: Integration Test
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, unit-tests, build-test]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
-          
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        
+
       - name: Build packages
         run: pnpm build:packages
-        
+
       - name: Test package integration
         run: |
           # Test that CrediSync can import and use all packages

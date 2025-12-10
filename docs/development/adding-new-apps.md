@@ -15,6 +15,7 @@ node tools/scripts/create-app.js --help
 ```
 
 El generador creará automáticamente:
+
 - Estructura de directorios
 - `package.json` configurado
 - Archivos de configuración (Vite, TypeScript, etc.)
@@ -132,11 +133,7 @@ export default defineConfig({
       "@sync/*": ["../../packages/@sync/*/src"]
     }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.svelte",
-    "tests/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.svelte", "tests/**/*.ts"]
 }
 ```
 
@@ -191,11 +188,11 @@ export { config };
   <header>
     <h1>My New App</h1>
   </header>
-  
+
   <main>
     <slot />
   </main>
-  
+
   <footer>
     <p>&copy; 2024 Sync Platform</p>
   </footer>
@@ -207,7 +204,7 @@ export { config };
     display: flex;
     flex-direction: column;
   }
-  
+
   main {
     flex: 1;
   }
@@ -221,9 +218,9 @@ export { config };
 <script lang="ts">
   import { Button } from '@sync/ui';
   import { app } from '$lib/app-config';
-  
+
   let status = 'Initializing...';
-  
+
   $: if (app.isReady) {
     status = 'Ready!';
   }
@@ -236,10 +233,8 @@ export { config };
 <div class="container">
   <h1>Welcome to My New App</h1>
   <p>Status: {status}</p>
-  
-  <Button on:click={() => console.log('Hello!')}>
-    Get Started
-  </Button>
+
+  <Button on:click={() => console.log('Hello!')}>Get Started</Button>
 </div>
 
 <style>
@@ -301,7 +296,7 @@ name: Deploy MyNewApp
 on:
   push:
     branches: [main]
-    paths: 
+    paths:
       - 'apps/my-new-app/**'
       - 'packages/**'
   pull_request:
@@ -321,7 +316,7 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
-      
+
       - run: pnpm install
       - run: pnpm test:packages
       - run: pnpm --filter my-new-app test
@@ -397,7 +392,7 @@ describe('Button Component', () => {
     const { getByText } = render(Button, {
       props: { text: 'Click me' }
     });
-    
+
     expect(getByText('Click me')).toBeInTheDocument();
   });
 
@@ -406,7 +401,7 @@ describe('Button Component', () => {
     const { getByRole } = render(Button, {
       props: { text: 'Click me', onClick: handleClick }
     });
-    
+
     await fireEvent.click(getByRole('button'));
     expect(handleClick).toHaveBeenCalled();
   });
@@ -416,6 +411,7 @@ describe('Button Component', () => {
 ## ✅ Checklist de Nueva App
 
 ### Configuración Inicial
+
 - [ ] Estructura de directorios creada
 - [ ] `package.json` configurado
 - [ ] Configuración de Vite y TypeScript
@@ -423,18 +419,21 @@ describe('Button Component', () => {
 - [ ] App config implementada
 
 ### Desarrollo
+
 - [ ] Layout y páginas básicas
 - [ ] Integración con packages compartidos
 - [ ] Componentes específicos de la app
 - [ ] Tests básicos implementados
 
 ### Deployment
+
 - [ ] `vercel.json` configurado
 - [ ] GitHub Actions creado
 - [ ] Variables de entorno en Vercel
 - [ ] Proyecto de Vercel creado
 
 ### Integración
+
 - [ ] Scripts agregados al root `package.json`
 - [ ] Workspace agregado a `pnpm-workspace.yaml`
 - [ ] Documentación actualizada

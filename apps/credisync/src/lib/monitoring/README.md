@@ -34,7 +34,7 @@ errorLogger.initialize({
   environment: import.meta.env.MODE,
   release: import.meta.env.VITE_APP_VERSION,
   tracesSampleRate: 0.1,
-  enableLocalLogs: true,
+  enableLocalLogs: true
 });
 ```
 
@@ -54,7 +54,7 @@ try {
 } catch (error) {
   await errorLogger.logError(error as Error, {
     user_id: userId,
-    action: 'register_pago',
+    action: 'register_pago'
   });
 }
 
@@ -80,7 +80,7 @@ errorLogger.logPerformance({
   name: 'page_load',
   value: 1500,
   timestamp: Date.now(),
-  tags: { page: 'dashboard' },
+  tags: { page: 'dashboard' }
 });
 ```
 
@@ -92,7 +92,7 @@ errorLogger.setUser({
   id: user.id,
   email: user.email,
   username: user.nombre,
-  tenant_id: user.tenant_id,
+  tenant_id: user.tenant_id
 });
 
 // Limpiar usuario al cerrar sesión
@@ -103,12 +103,9 @@ errorLogger.clearUser();
 
 ```typescript
 // Agregar breadcrumb para contexto
-errorLogger.addBreadcrumb(
-  'Usuario hizo clic en botón',
-  'ui.click',
-  'info',
-  { button_id: 'submit_pago' }
-);
+errorLogger.addBreadcrumb('Usuario hizo clic en botón', 'ui.click', 'info', {
+  button_id: 'submit_pago'
+});
 ```
 
 ### Error Boundary Component
@@ -139,9 +136,9 @@ Ejemplo:
 ```typescript
 await errorLogger.logError('Error', {
   user_id: 'user-123',
-  password: 'secret123',  // Se filtra automáticamente
+  password: 'secret123', // Se filtra automáticamente
   telefono: '3001234567', // Se filtra automáticamente
-  nombre: 'Juan Pérez',   // No se filtra
+  nombre: 'Juan Pérez' // No se filtra
 });
 
 // En Sentry verás:
@@ -168,13 +165,15 @@ await errorLogger.clearLocalLogs();
 ## Modo Local-Only
 
 Si no configuras `VITE_SENTRY_DSN`, el sistema funciona en modo local-only:
+
 - Los errores se guardan en IndexedDB
 - No se envía nada a Sentry
 - Útil para desarrollo y testing
 
 ## Integración con Audit Log
 
-Los errores críticos (nivel 'error') también se registran automáticamente en el audit log para trazabilidad completa.
+Los errores críticos (nivel 'error') también se registran automáticamente en el audit log para
+trazabilidad completa.
 
 ## Testing
 

@@ -1,9 +1,9 @@
 /**
  * Property-based tests for SyncQueue
- * 
+ *
  * Property 2: Sync Queue Ordering
  * Validates: Requirements 5.2
- * 
+ *
  * Tests that the sync queue always returns operations in the correct order:
  * - Lower priority number = higher priority (1 is highest)
  * - Within same priority, older timestamp comes first
@@ -29,15 +29,21 @@ describe('SyncQueue - Property-Based Tests', () => {
           // Generate array of random operations
           fc.array(
             fc.record({
-              tableName: fc.constantFrom('pagos', 'creditos', 'clientes', 'rutas', 'users'),
+              tableName: fc.constantFrom(
+                'pagos',
+                'creditos',
+                'clientes',
+                'rutas',
+                'users'
+              ),
               recordId: fc.uuid(),
               operation: fc.constantFrom('INSERT', 'UPDATE', 'DELETE'),
               priority: fc.integer({ min: 1, max: 5 }),
-              timestamp: fc.integer({ min: 1000000000000, max: 9999999999999 }),
+              timestamp: fc.integer({ min: 1000000000000, max: 9999999999999 })
             }),
             { minLength: 5, maxLength: 50 }
           ),
-          async (operations) => {
+          async operations => {
             // Clear queue before each test
             await db.sync_queue.clear();
 
@@ -89,11 +95,11 @@ describe('SyncQueue - Property-Based Tests', () => {
             fc.record({
               recordId: fc.uuid(),
               priority: fc.integer({ min: 1, max: 3 }),
-              timestamp: fc.integer({ min: 1000000000000, max: 1000000100000 }),
+              timestamp: fc.integer({ min: 1000000000000, max: 1000000100000 })
             }),
             { minLength: 10, maxLength: 30 }
           ),
-          async (operations) => {
+          async operations => {
             // Clear queue
             await db.sync_queue.clear();
 
@@ -102,9 +108,14 @@ describe('SyncQueue - Property-Based Tests', () => {
 
             // Add shuffled operations
             for (const op of shuffled) {
-              const id = await syncQueue.addToQueue('pagos', op.recordId, 'INSERT', {
-                priority: op.priority,
-              });
+              const id = await syncQueue.addToQueue(
+                'pagos',
+                op.recordId,
+                'INSERT',
+                {
+                  priority: op.priority
+                }
+              );
               await db.sync_queue.update(id, { timestamp: op.timestamp });
             }
 
@@ -138,34 +149,61 @@ describe('SyncQueue - Property-Based Tests', () => {
             numPagos: fc.integer({ min: 1, max: 10 }),
             numCreditos: fc.integer({ min: 1, max: 10 }),
             numClientes: fc.integer({ min: 1, max: 10 }),
-            baseTimestamp: fc.integer({ min: 1000000000000, max: 9999999999999 }),
+            baseTimestamp: fc.integer({
+              min: 1000000000000,
+              max: 9999999999999
+            })
           }),
           async ({ numPagos, numCreditos, numClientes, baseTimestamp }) => {
             // Clear queue
             await db.sync_queue.clear();
 
             // Add operations in mixed order
-            const operations: Array<{ type: string; id: number; timestamp: number }> = [];
+            const operations: Array<{
+              type: string;
+              id: number;
+              timestamp: number;
+            }> = [];
 
             // Add clientes (priority 3)
             for (let i = 0; i < numClientes; i++) {
-              const id = await syncQueue.addToQueue('clientes', `c${i}`, 'INSERT');
+              const id = await syncQueue.addToQueue(
+                'clientes',
+                `c${i}`,
+                'INSERT'
+              );
               await db.sync_queue.update(id, { timestamp: baseTimestamp + i });
-              operations.push({ type: 'clientes', id, timestamp: baseTimestamp + i });
+              operations.push({
+                type: 'clientes',
+                id,
+                timestamp: baseTimestamp + i
+              });
             }
 
             // Add creditos (priority 2)
             for (let i = 0; i < numCreditos; i++) {
-              const id = await syncQueue.addToQueue('creditos', `cr${i}`, 'INSERT');
+              const id = await syncQueue.addToQueue(
+                'creditos',
+                `cr${i}`,
+                'INSERT'
+              );
               await db.sync_queue.update(id, { timestamp: baseTimestamp + i });
-              operations.push({ type: 'creditos', id, timestamp: baseTimestamp + i });
+              operations.push({
+                type: 'creditos',
+                id,
+                timestamp: baseTimestamp + i
+              });
             }
 
             // Add pagos (priority 1)
             for (let i = 0; i < numPagos; i++) {
               const id = await syncQueue.addToQueue('pagos', `p${i}`, 'INSERT');
               await db.sync_queue.update(id, { timestamp: baseTimestamp + i });
-              operations.push({ type: 'pagos', id, timestamp: baseTimestamp + i });
+              operations.push({
+                type: 'pagos',
+                id,
+                timestamp: baseTimestamp + i
+              });
             }
 
             // Get pending operations
@@ -185,7 +223,9 @@ describe('SyncQueue - Property-Based Tests', () => {
 
             // Last numClientes items should all be clientes
             for (let i = 0; i < numClientes; i++) {
-              expect(pending[numPagos + numCreditos + i].table_name).toBe('clientes');
+              expect(pending[numPagos + numCreditos + i].table_name).toBe(
+                'clientes'
+              );
               expect(pending[numPagos + numCreditos + i].priority).toBe(3);
             }
           }
@@ -200,7 +240,7 @@ describe('SyncQueue - Property-Based Tests', () => {
           fc.record({
             priority: fc.integer({ min: 1, max: 3 }),
             timestamp: fc.integer({ min: 1000000000000, max: 9999999999999 }),
-            count: fc.integer({ min: 2, max: 10 }),
+            count: fc.integer({ min: 2, max: 10 })
           }),
           async ({ priority, timestamp, count }) => {
             // Clear queue
@@ -209,9 +249,14 @@ describe('SyncQueue - Property-Based Tests', () => {
             // Add multiple operations with same priority and timestamp
             const ids: number[] = [];
             for (let i = 0; i < count; i++) {
-              const id = await syncQueue.addToQueue('pagos', `p${i}`, 'INSERT', {
-                priority,
-              });
+              const id = await syncQueue.addToQueue(
+                'pagos',
+                `p${i}`,
+                'INSERT',
+                {
+                  priority
+                }
+              );
               await db.sync_queue.update(id, { timestamp });
               ids.push(id);
             }
@@ -238,8 +283,8 @@ describe('SyncQueue - Property-Based Tests', () => {
             totalOps: fc.integer({ min: 10, max: 30 }),
             syncedIndices: fc.array(fc.integer({ min: 0, max: 29 }), {
               minLength: 1,
-              maxLength: 10,
-            }),
+              maxLength: 10
+            })
           }),
           async ({ totalOps, syncedIndices }) => {
             // Clear queue
@@ -248,15 +293,22 @@ describe('SyncQueue - Property-Based Tests', () => {
             // Add operations
             const ids: number[] = [];
             for (let i = 0; i < totalOps; i++) {
-              const id = await syncQueue.addToQueue('pagos', `p${i}`, 'INSERT', {
-                priority: (i % 3) + 1,
-              });
+              const id = await syncQueue.addToQueue(
+                'pagos',
+                `p${i}`,
+                'INSERT',
+                {
+                  priority: (i % 3) + 1
+                }
+              );
               await db.sync_queue.update(id, { timestamp: 1000000000000 + i });
               ids.push(id);
             }
 
             // Mark some as synced (use Set to avoid duplicates)
-            const validIndices = [...new Set(syncedIndices.filter((idx) => idx < totalOps))];
+            const validIndices = [
+              ...new Set(syncedIndices.filter(idx => idx < totalOps))
+            ];
             for (const idx of validIndices) {
               await syncQueue.markAsSynced(ids[idx]);
             }
@@ -282,7 +334,7 @@ describe('SyncQueue - Property-Based Tests', () => {
         fc.asyncProperty(
           fc.record({
             totalOps: fc.integer({ min: 20, max: 50 }),
-            limit: fc.integer({ min: 1, max: 15 }),
+            limit: fc.integer({ min: 1, max: 15 })
           }),
           async ({ totalOps, limit }) => {
             // Clear queue
@@ -290,9 +342,14 @@ describe('SyncQueue - Property-Based Tests', () => {
 
             // Add operations with random priorities
             for (let i = 0; i < totalOps; i++) {
-              const id = await syncQueue.addToQueue('pagos', `p${i}`, 'INSERT', {
-                priority: (i % 4) + 1,
-              });
+              const id = await syncQueue.addToQueue(
+                'pagos',
+                `p${i}`,
+                'INSERT',
+                {
+                  priority: (i % 4) + 1
+                }
+              );
               await db.sync_queue.update(id, { timestamp: 1000000000000 + i });
             }
 

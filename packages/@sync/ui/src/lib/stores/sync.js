@@ -1,6 +1,6 @@
 /**
  * Store de Sincronización
- * 
+ *
  * Store reactivo para el estado de sincronización global
  */
 
@@ -40,23 +40,23 @@ export function createSyncStore(syncManager) {
 
   return {
     subscribe,
-    
+
     /**
      * Iniciar sincronización
      */
     async startSync() {
       update(state => ({ ...state, isSyncing: true, error: null }));
-      
+
       try {
         const result = await syncManager.sync();
-        
+
         update(state => ({
           ...state,
           isSyncing: false,
           lastSync: Date.now(),
           error: result.success ? null : result.errors.join(', ')
         }));
-        
+
         return result;
       } catch (error) {
         update(state => ({

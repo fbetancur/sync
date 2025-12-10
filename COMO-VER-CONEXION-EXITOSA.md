@@ -4,11 +4,14 @@
 
 El servidor de desarrollo está corriendo en: **http://localhost:5173**
 
-La página de test muestra un **warning ⚠️** porque las políticas RLS (Row Level Security) están bloqueando el acceso anónimo. **Esto es el comportamiento correcto y esperado** - significa que tu base de datos está protegida.
+La página de test muestra un **warning ⚠️** porque las políticas RLS (Row Level Security) están
+bloqueando el acceso anónimo. **Esto es el comportamiento correcto y esperado** - significa que tu
+base de datos está protegida.
 
 ## ¿Por qué no veo "✅ Conexión exitosa"?
 
-Las políticas RLS requieren que estés autenticado para acceder a los datos. Sin autenticación, Supabase bloquea el acceso (por seguridad).
+Las políticas RLS requieren que estés autenticado para acceder a los datos. Sin autenticación,
+Supabase bloquea el acceso (por seguridad).
 
 ## Solución: Autenticarte
 
@@ -20,12 +23,14 @@ Las políticas RLS requieren que estés autenticado para acceder a los datos. Si
 ### Paso 2: Ingresar credenciales
 
 Usa las credenciales del usuario que creaste en Supabase:
+
 - **Email**: cobrador@demo.com (o el que hayas creado)
 - **Password**: La contraseña que configuraste en Supabase Authentication
 
 ### Paso 3: Ver la conexión exitosa
 
 Después del login exitoso:
+
 - Serás redirigido automáticamente a la página de test
 - Ahora verás **"✅ Conexión exitosa a Supabase"**
 - También verás tu email en "Estado de Auth"
@@ -44,6 +49,7 @@ Si solo quieres verificar que la conexión funciona sin autenticarte:
 ## Navegación
 
 Desde cualquier página puedes:
+
 - **Volver al inicio**: Click en "Volver al inicio"
 - **Ir a Login**: Click en "🔐 Login"
 - **Recargar test**: Click en "🔄 Recargar Test"
@@ -76,10 +82,10 @@ VALUES (
 
 ## Resumen
 
-✅ **La conexión a Supabase está funcionando correctamente**
-✅ **Las políticas RLS están protegiendo tus datos**
-✅ **Solo necesitas autenticarte para ver "Conexión exitosa"**
+✅ **La conexión a Supabase está funcionando correctamente** ✅ **Las políticas RLS están
+protegiendo tus datos** ✅ **Solo necesitas autenticarte para ver "Conexión exitosa"**
 
 ---
 
-**Siguiente paso**: Una vez que veas la conexión exitosa, podemos continuar con la Fase 2 (Core Data Layer - IndexedDB)
+**Siguiente paso**: Una vez que veas la conexión exitosa, podemos continuar con la Fase 2 (Core Data
+Layer - IndexedDB)

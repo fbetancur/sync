@@ -2,7 +2,8 @@
 
 ## 🎯 Estrategia de Variables de Entorno
 
-Cada aplicación del monorepo tiene su propia configuración de variables de entorno, permitiendo configuración independiente mientras comparte recursos comunes como Supabase.
+Cada aplicación del monorepo tiene su propia configuración de variables de entorno, permitiendo
+configuración independiente mientras comparte recursos comunes como Supabase.
 
 ## 📁 Estructura de Archivos
 
@@ -116,6 +117,7 @@ VITE_APP_NAME=CrediSyncApp
 ### **HealthSync** (Por configurar)
 
 **Cuando se active**:
+
 1. Crear proyecto en Vercel
 2. Configurar variables en Dashboard
 3. Usar las mismas credenciales de Supabase
@@ -124,6 +126,7 @@ VITE_APP_NAME=CrediSyncApp
 ### **SurveySync** (Por configurar)
 
 **Cuando se active**:
+
 1. Crear proyecto en Vercel
 2. Configurar variables en Dashboard
 3. Usar las mismas credenciales de Supabase
@@ -132,6 +135,7 @@ VITE_APP_NAME=CrediSyncApp
 ## 🔄 Migración de Variables
 
 ### **Estado Actual**:
+
 - ✅ **Root `.env.local`**: Variables legacy (mantener por compatibilidad)
 - ✅ **CrediSync**: Variables migradas y funcionando
 - ✅ **HealthSync**: Template preparado
@@ -139,7 +143,8 @@ VITE_APP_NAME=CrediSyncApp
 
 ### **Proceso de Migración**:
 
-1. **Mantener compatibilidad**: El root `.env.local` se mantiene para no romper configuraciones existentes
+1. **Mantener compatibilidad**: El root `.env.local` se mantiene para no romper configuraciones
+   existentes
 2. **Apps específicas**: Cada app tiene su propio `.env.local`
 3. **Templates**: Cada app tiene su `.env.example` para nuevos desarrolladores
 4. **Vercel**: Variables configuradas por proyecto
@@ -147,12 +152,14 @@ VITE_APP_NAME=CrediSyncApp
 ## 📋 Setup para Nuevos Desarrolladores
 
 ### **1. Clonar repositorio**
+
 ```bash
 git clone https://github.com/fbetancur/sync.git
 cd sync
 ```
 
 ### **2. Instalar dependencias**
+
 ```bash
 pnpm install
 ```
@@ -160,6 +167,7 @@ pnpm install
 ### **3. Configurar variables por app**
 
 **Para CrediSync**:
+
 ```bash
 cd apps/credisync
 cp .env.example .env.local
@@ -167,6 +175,7 @@ cp .env.example .env.local
 ```
 
 **Para HealthSync** (cuando esté listo):
+
 ```bash
 cd apps/healthsync
 cp .env.example .env.local
@@ -174,6 +183,7 @@ cp .env.example .env.local
 ```
 
 **Para SurveySync** (cuando esté listo):
+
 ```bash
 cd apps/surveysync
 cp .env.example .env.local
@@ -191,17 +201,20 @@ cp .env.example .env.local
 
 ## 🔒 Seguridad
 
-### **Variables Públicas** (VITE_*):
+### **Variables Públicas** (VITE\_\*):
+
 - ✅ Seguras para el frontend
 - ✅ Se incluyen en el bundle
 - ✅ Visibles en el navegador
 
 ### **Variables Privadas**:
+
 - ❌ **NO usar** variables privadas en Vite
-- ❌ **NO incluir** secrets en variables VITE_*
+- ❌ **NO incluir** secrets en variables VITE\_\*
 - ✅ **Usar** variables de servidor si es necesario
 
 ### **Buenas Prácticas**:
+
 - ✅ Usar `.env.example` como template
 - ✅ Nunca commitear `.env.local`
 - ✅ Documentar todas las variables
@@ -210,6 +223,7 @@ cp .env.example .env.local
 ## 🎯 Variables Compartidas vs Específicas
 
 ### **Compartidas** (Todas las apps):
+
 ```env
 VITE_SUPABASE_URL=...
 VITE_SUPABASE_ANON_KEY=...
@@ -221,12 +235,14 @@ VITE_DEBUG_ENABLED=false
 ### **Específicas por App**:
 
 **CrediSync**:
+
 ```env
 VITE_APP_NAME=CrediSyncApp
 VITE_APP_THEME_COLOR=#1e40af
 ```
 
 **HealthSync**:
+
 ```env
 VITE_APP_NAME=HealthSyncApp
 VITE_APP_THEME_COLOR=#059669
@@ -235,6 +251,7 @@ VITE_ENABLE_BIOMETRIC_AUTH=true
 ```
 
 **SurveySync**:
+
 ```env
 VITE_APP_NAME=SurveySyncApp
 VITE_APP_THEME_COLOR=#7c3aed
@@ -245,6 +262,7 @@ VITE_MAX_OFFLINE_RESPONSES=1000
 ## 🔧 Troubleshooting
 
 ### **Error: "Environment variable not found"**
+
 ```bash
 # Verificar que existe .env.local en la app
 ls apps/credisync/.env.local
@@ -254,12 +272,14 @@ grep VITE_SUPABASE_URL apps/credisync/.env.local
 ```
 
 ### **Error: "Supabase connection failed"**
+
 ```bash
 # Verificar credenciales
 curl -I https://hmnlriywocnpiktflehr.supabase.co/rest/v1/
 ```
 
 ### **Variables no se cargan en desarrollo**
+
 ```bash
 # Verificar que Vite está leyendo el archivo correcto
 pnpm dev:credisync --debug

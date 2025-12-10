@@ -1,9 +1,9 @@
 /**
  * Error Logging and Monitoring Service
- * 
+ *
  * Integrates Sentry for error tracking and performance monitoring.
  * Provides local error logging and sensitive data filtering.
- * 
+ *
  * Requirements: 20.1, 20.2, 20.3, 20.4, 20.5, 20.6
  */
 
@@ -47,7 +47,7 @@ const SENSITIVE_PATTERNS = [
   /token/gi,
   /api[_-]?key/gi,
   /secret/gi,
-  /authorization/gi,
+  /authorization/gi
 ];
 
 const SENSITIVE_KEYS = [
@@ -60,7 +60,7 @@ const SENSITIVE_KEYS = [
   'numero_documento',
   'telefono',
   'telefono_2',
-  'telefono_fiador',
+  'telefono_fiador'
 ];
 
 // ============================================================================
@@ -108,33 +108,34 @@ export class ErrorLogger {
         Sentry.init({
           dsn: options.dsn,
           environment: options.environment || 'development',
-          release: options.release || import.meta.env.VITE_APP_VERSION || '1.0.0',
-          
+          release:
+            options.release || import.meta.env.VITE_APP_VERSION || '1.0.0',
+
           // Performance monitoring
           tracesSampleRate: options.tracesSampleRate || 0.1,
-          
+
           // Integrations
           integrations: [
             Sentry.browserTracingIntegration(),
             Sentry.replayIntegration({
               maskAllText: true,
-              blockAllMedia: true,
-            }),
+              blockAllMedia: true
+            })
           ],
-          
+
           // Replay sampling
           replaysSessionSampleRate: 0.1,
           replaysOnErrorSampleRate: 1.0,
-          
+
           // Before send hook to filter sensitive data
           beforeSend: (event, hint) => {
             return this.filterSensitiveData(event);
           },
-          
+
           // Before breadcrumb hook
-          beforeBreadcrumb: (breadcrumb) => {
+          beforeBreadcrumb: breadcrumb => {
             return this.filterSensitiveBreadcrumb(breadcrumb);
-          },
+          }
         });
 
         this.initialized = true;
@@ -172,14 +173,14 @@ export class ErrorLogger {
         stack: errorStack,
         context: filteredContext,
         app_version: import.meta.env.VITE_APP_VERSION || '1.0.0',
-        sent_to_sentry: this.initialized,
+        sent_to_sentry: this.initialized
       });
     }
 
     // Send to Sentry if initialized
     if (this.initialized && Sentry.isInitialized()) {
       try {
-        Sentry.withScope((scope) => {
+        Sentry.withScope(scope => {
           // Add context
           if (filteredContext) {
             Object.entries(filteredContext).forEach(([key, value]) => {
@@ -215,8 +216,8 @@ export class ErrorLogger {
           data: {
             message: errorMessage,
             stack: errorStack,
-            context: filteredContext,
-          },
+            context: filteredContext
+          }
         });
       } catch (auditError) {
         console.error('Failed to log error to audit log:', auditError);
@@ -232,12 +233,15 @@ export class ErrorLogger {
     if (this.initialized && Sentry.isInitialized()) {
       Sentry.metrics.distribution(metric.name, metric.value, {
         tags: metric.tags,
-        unit: 'millisecond',
+        unit: 'millisecond'
       });
     }
 
     // Log locally
-    console.log(`📊 Performance: ${metric.name} = ${metric.value}ms`, metric.tags);
+    console.log(
+      `📊 Performance: ${metric.name} = ${metric.value}ms`,
+      metric.tags
+    );
   }
 
   /**
@@ -254,7 +258,7 @@ export class ErrorLogger {
       Sentry.setUser({
         id: user.id,
         email: user.email,
-        username: user.username,
+        username: user.username
       });
 
       // Set tenant as tag
@@ -289,7 +293,7 @@ export class ErrorLogger {
         category,
         level: level as Sentry.SeverityLevel,
         data: data ? this.filterSensitiveObject(data) : undefined,
-        timestamp: Date.now() / 1000,
+        timestamp: Date.now() / 1000
       });
     }
   }
@@ -302,7 +306,9 @@ export class ErrorLogger {
     // Filter request data
     if (event.request) {
       if (event.request.headers) {
-        event.request.headers = this.filterSensitiveObject(event.request.headers);
+        event.request.headers = this.filterSensitiveObject(
+          event.request.headers
+        );
       }
       if (event.request.data) {
         event.request.data = this.filterSensitiveObject(event.request.data);
@@ -319,16 +325,18 @@ export class ErrorLogger {
 
     // Filter contexts
     if (event.contexts) {
-      Object.keys(event.contexts).forEach((key) => {
+      Object.keys(event.contexts).forEach(key => {
         if (event.contexts![key]) {
-          event.contexts![key] = this.filterSensitiveObject(event.contexts![key]);
+          event.contexts![key] = this.filterSensitiveObject(
+            event.contexts![key]
+          );
         }
       });
     }
 
     // Filter exception values
     if (event.exception?.values) {
-      event.exception.values = event.exception.values.map((exception) => {
+      event.exception.values = event.exception.values.map(exception => {
         if (exception.value) {
           exception.value = this.filterSensitiveString(exception.value);
         }
@@ -343,7 +351,9 @@ export class ErrorLogger {
    * Filter sensitive data from breadcrumb
    * Requirements: 20.5, 20.6
    */
-  private filterSensitiveBreadcrumb(breadcrumb: Sentry.Breadcrumb): Sentry.Breadcrumb | null {
+  private filterSensitiveBreadcrumb(
+    breadcrumb: Sentry.Breadcrumb
+  ): Sentry.Breadcrumb | null {
     if (breadcrumb.data) {
       breadcrumb.data = this.filterSensitiveObject(breadcrumb.data);
     }
@@ -365,13 +375,17 @@ export class ErrorLogger {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map((item) => this.filterSensitiveObject(item));
+      return obj.map(item => this.filterSensitiveObject(item));
     }
 
     const filtered: any = {};
     for (const [key, value] of Object.entries(obj)) {
       // Check if key is sensitive
-      if (SENSITIVE_KEYS.some((pattern) => key.toLowerCase().includes(pattern.toLowerCase()))) {
+      if (
+        SENSITIVE_KEYS.some(pattern =>
+          key.toLowerCase().includes(pattern.toLowerCase())
+        )
+      ) {
         filtered[key] = '[FILTERED]';
       } else if (typeof value === 'string') {
         filtered[key] = this.filterSensitiveString(value);
@@ -392,7 +406,7 @@ export class ErrorLogger {
   private filterSensitiveString(str: string): string {
     let filtered = str;
 
-    SENSITIVE_PATTERNS.forEach((pattern) => {
+    SENSITIVE_PATTERNS.forEach(pattern => {
       filtered = filtered.replace(pattern, '[FILTERED]');
     });
 
@@ -421,7 +435,7 @@ export class ErrorLogger {
       await db.app_state.put({
         key: 'error_logs',
         value: logs,
-        updated_at: Date.now(),
+        updated_at: Date.now()
       });
     } catch (error) {
       console.error('Failed to log error locally:', error);
@@ -472,7 +486,7 @@ export class ErrorLogger {
         name,
         value: duration,
         timestamp: Date.now(),
-        tags,
+        tags
       });
 
       return result;
@@ -483,7 +497,7 @@ export class ErrorLogger {
         name: `${name}_error`,
         value: duration,
         timestamp: Date.now(),
-        tags: { ...tags, error: 'true' },
+        tags: { ...tags, error: 'true' }
       });
 
       throw error;

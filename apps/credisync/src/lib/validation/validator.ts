@@ -1,13 +1,13 @@
 /**
  * Multi-level Validator Module
- * 
+ *
  * This module implements multi-level validation:
  * 1. UI-level validation (real-time)
  * 2. Business logic validation (pre-save)
  * 3. Post-save integrity checks
  * 4. Periodic background validation
  * 5. Pre-sync validation
- * 
+ *
  * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7
  */
 
@@ -19,7 +19,7 @@ import {
   cuotaSchema,
   type ValidationResult,
   validateData,
-  getValidationErrors,
+  getValidationErrors
 } from './schemas';
 
 // ============================================================================
@@ -101,7 +101,7 @@ export class Validator {
       errors.push({
         field: 'tenant_id',
         message: 'Tenant no existe',
-        code: 'REFERENTIAL_INTEGRITY',
+        code: 'REFERENTIAL_INTEGRITY'
       });
     }
 
@@ -116,7 +116,7 @@ export class Validator {
       valid: errors.length === 0,
       errors,
       warnings,
-      corrected,
+      corrected
     };
   }
 
@@ -146,7 +146,7 @@ export class Validator {
       valid: errors.length === 0,
       errors,
       warnings,
-      corrected,
+      corrected
     };
   }
 
@@ -163,7 +163,7 @@ export class Validator {
 
     // Validate schema
     let schemaResult: ValidationResult<any>;
-    
+
     switch (entityType) {
       case 'cliente':
         schemaResult = validateData(clienteSchema, data);
@@ -191,7 +191,7 @@ export class Validator {
         errors.push({
           field: 'checksum',
           message: 'Checksum requerido para sincronización',
-          code: 'MISSING_CHECKSUM',
+          code: 'MISSING_CHECKSUM'
         });
       }
     }
@@ -205,7 +205,7 @@ export class Validator {
       valid: errors.length === 0,
       errors,
       warnings,
-      corrected: false,
+      corrected: false
     };
   }
 
@@ -222,13 +222,13 @@ export class Validator {
 
     // Validate documento is unique (would check database in real implementation)
     // This is a placeholder for the actual check
-    
+
     // Validate GPS coordinates if provided
     if (data.latitud && !data.longitud) {
       errors.push({
         field: 'longitud',
         message: 'Longitud requerida cuando se proporciona latitud',
-        code: 'INCOMPLETE_GPS',
+        code: 'INCOMPLETE_GPS'
       });
     }
 
@@ -236,7 +236,7 @@ export class Validator {
       errors.push({
         field: 'latitud',
         message: 'Latitud requerida cuando se proporciona longitud',
-        code: 'INCOMPLETE_GPS',
+        code: 'INCOMPLETE_GPS'
       });
     }
 
@@ -246,7 +246,9 @@ export class Validator {
       const newEstado = data.estado;
 
       if (oldEstado === 'bloqueado' && newEstado === 'activo') {
-        warnings.push('Cambio de estado bloqueado → activo requiere aprobación');
+        warnings.push(
+          'Cambio de estado bloqueado → activo requiere aprobación'
+        );
       }
     }
 
@@ -254,7 +256,7 @@ export class Validator {
       valid: errors.length === 0,
       errors,
       warnings,
-      corrected: false,
+      corrected: false
     };
   }
 
@@ -266,21 +268,24 @@ export class Validator {
     const warnings: string[] = [];
 
     // Validate calculated fields match
-    const expectedTotal = data.monto_original * (1 + data.interes_porcentaje / 100);
+    const expectedTotal =
+      data.monto_original * (1 + data.interes_porcentaje / 100);
     const tolerance = 1; // Allow 1 peso difference due to rounding
 
     if (Math.abs(data.total_a_pagar - expectedTotal) > tolerance) {
       errors.push({
         field: 'total_a_pagar',
         message: `Total a pagar (${data.total_a_pagar}) no coincide con cálculo esperado (${expectedTotal})`,
-        code: 'CALCULATION_MISMATCH',
+        code: 'CALCULATION_MISMATCH'
       });
     }
 
     // Validate cuota value
     const expectedCuota = Math.round(data.total_a_pagar / data.numero_cuotas);
     if (Math.abs(data.valor_cuota - expectedCuota) > tolerance) {
-      warnings.push(`Valor cuota (${data.valor_cuota}) difiere del esperado (${expectedCuota})`);
+      warnings.push(
+        `Valor cuota (${data.valor_cuota}) difiere del esperado (${expectedCuota})`
+      );
     }
 
     // Validate estado transitions
@@ -292,7 +297,7 @@ export class Validator {
         errors.push({
           field: 'estado',
           message: 'No se puede reactivar un crédito pagado',
-          code: 'INVALID_STATE_TRANSITION',
+          code: 'INVALID_STATE_TRANSITION'
         });
       }
     }
@@ -302,7 +307,7 @@ export class Validator {
       errors.push({
         field: 'saldo_pendiente',
         message: 'Saldo pendiente no puede ser negativo',
-        code: 'INVALID_BALANCE',
+        code: 'INVALID_BALANCE'
       });
     }
 
@@ -310,7 +315,7 @@ export class Validator {
       valid: errors.length === 0,
       errors,
       warnings,
-      corrected: false,
+      corrected: false
     };
   }
 
@@ -326,7 +331,7 @@ export class Validator {
       errors.push({
         field: 'monto',
         message: 'Monto debe ser mayor a cero',
-        code: 'INVALID_AMOUNT',
+        code: 'INVALID_AMOUNT'
       });
     }
 
@@ -341,7 +346,7 @@ export class Validator {
       errors.push({
         field: 'fecha',
         message: 'Fecha de pago no puede ser futura',
-        code: 'FUTURE_DATE',
+        code: 'FUTURE_DATE'
       });
     }
 
@@ -350,7 +355,7 @@ export class Validator {
       errors.push({
         field: 'checksum',
         message: 'Checksum requerido para pagos',
-        code: 'MISSING_CHECKSUM',
+        code: 'MISSING_CHECKSUM'
       });
     }
 
@@ -358,7 +363,7 @@ export class Validator {
       valid: errors.length === 0,
       errors,
       warnings,
-      corrected: false,
+      corrected: false
     };
   }
 }

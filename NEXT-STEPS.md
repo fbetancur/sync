@@ -46,6 +46,7 @@
    - Crea dos políticas:
 
 **Política 1: Upload**
+
 ```sql
 CREATE POLICY "Cobradores can upload their comprobantes"
 ON storage.objects FOR INSERT
@@ -56,6 +57,7 @@ WITH CHECK (
 ```
 
 **Política 2: View**
+
 ```sql
 CREATE POLICY "Cobradores can view their comprobantes"
 ON storage.objects FOR SELECT
@@ -102,6 +104,7 @@ Si quieres datos de prueba (rutas, productos, clientes):
 ### 5. Probar la Conexión
 
 1. Inicia el servidor de desarrollo:
+
    ```bash
    npm run dev
    ```
@@ -116,14 +119,16 @@ Si quieres datos de prueba (rutas, productos, clientes):
    - Para ver "✅ Conexión exitosa", tienes dos opciones:
 
 **Opción A (Recomendada): Login con usuario de prueba**
-   - Click en "🔐 Login" desde la página de test
-   - Ingresa las credenciales del usuario que creaste en el paso 3
-   - Después del login exitoso, verás "✅ Conexión exitosa a Supabase"
+
+- Click en "🔐 Login" desde la página de test
+- Ingresa las credenciales del usuario que creaste en el paso 3
+- Después del login exitoso, verás "✅ Conexión exitosa a Supabase"
 
 **Opción B: Permitir acceso público temporal (solo para testing)**
-   - Ejecuta el script `supabase/03-fix-rls-for-testing.sql` en Supabase SQL Editor
-   - Esto permite acceso público a la tabla tenants (NO recomendado para producción)
-   - Recarga la página de test
+
+- Ejecuta el script `supabase/03-fix-rls-for-testing.sql` en Supabase SQL Editor
+- Esto permite acceso público a la tabla tenants (NO recomendado para producción)
+- Recarga la página de test
 
 ## 📋 Checklist de Verificación
 
@@ -139,18 +144,22 @@ Si quieres datos de prueba (rutas, productos, clientes):
 ## 🐛 Troubleshooting
 
 ### Error: "relation does not exist"
+
 - Verifica que ejecutaste `01-schema-only.sql` completo
 - Verifica que estás en el proyecto correcto de Supabase
 
 ### Error: "new row violates row-level security policy"
+
 - Verifica que las políticas RLS están creadas
 - Verifica que el usuario está autenticado
 
 ### Error: "Failed to fetch"
+
 - Verifica que las variables en `.env.local` son correctas
 - Verifica que la URL de Supabase es accesible
 
 ### La página de test no carga
+
 - Verifica que el servidor de desarrollo está corriendo
 - Verifica que no hay errores en la consola del navegador
 
@@ -159,6 +168,7 @@ Si quieres datos de prueba (rutas, productos, clientes):
 Una vez completados estos pasos, estaremos listos para:
 
 **Fase 2: Core Data Layer**
+
 - Task 5: Implement IndexedDB with Dexie.js
 - Task 6: Implement multi-layer storage system
 - Task 7: Implement checksum and integrity verification
@@ -166,6 +176,7 @@ Una vez completados estos pasos, estaremos listos para:
 ## 📞 Ayuda
 
 Si encuentras problemas:
+
 1. Revisa la documentación en `supabase/README.md`
 2. Verifica los logs en la consola del navegador (F12)
 3. Revisa los logs de Supabase en el dashboard

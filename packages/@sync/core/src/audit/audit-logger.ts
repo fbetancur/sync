@@ -1,10 +1,10 @@
 /**
  * Sistema de Logger de Auditoría
- * 
+ *
  * Implementa un log de auditoría inmutable con cadena de hash tipo blockchain.
  * Cada operación crítica se registra como un evento con contexto completo.
  * Los eventos están enlazados vía cadena de hash SHA-256 para asegurar inmutabilidad.
- * 
+ *
  * Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7
  */
 
@@ -58,7 +58,11 @@ export interface AuditEventMetadata {
 }
 
 export interface FraudPattern {
-  type: 'rapid_payments' | 'impossible_location' | 'duplicate_payment' | 'suspicious_amount';
+  type:
+    | 'rapid_payments'
+    | 'impossible_location'
+    | 'duplicate_payment'
+    | 'suspicious_amount';
   severity: 'low' | 'medium' | 'high';
   description: string;
   events: AuditLogEntry[];
@@ -165,7 +169,7 @@ export class AuditLogger {
       data: eventData.data,
       metadata,
       previous_hash: this.lastHash,
-      hash: '', // Se calculará
+      hash: '' // Se calculará
     };
 
     // Calcular hash
@@ -199,7 +203,7 @@ export class AuditLogger {
       aggregate_id: event.aggregate_id,
       data: event.data,
       metadata: event.metadata,
-      previous_hash: event.previous_hash,
+      previous_hash: event.previous_hash
     });
 
     // Calcular hash SHA-256
@@ -207,7 +211,9 @@ export class AuditLogger {
     const data = encoder.encode(eventString);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashHex = hashArray
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
 
     return hashHex;
   }
@@ -220,7 +226,10 @@ export class AuditLogger {
     partial?: Partial<AuditEventMetadata>
   ): Promise<AuditEventMetadata> {
     // Obtener tipo de conexión
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
     const connectionType = connection?.effectiveType || 'unknown';
 
     // Obtener nivel de batería
@@ -236,12 +245,13 @@ export class AuditLogger {
 
     return {
       ip_address: partial?.ip_address || null,
-      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+      user_agent:
+        typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
       app_version: '1.0.0', // Se puede configurar externamente
       latitude: partial?.latitude || null,
       longitude: partial?.longitude || null,
       connection_type: connectionType,
-      battery_level: batteryLevel,
+      battery_level: batteryLevel
     };
   }
 
@@ -265,7 +275,7 @@ export class AuditLogger {
       if (event.previous_hash !== previousHash) {
         errors.push(
           `Evento ${event.sequence}: previous_hash no coincide. ` +
-          `Esperado ${previousHash}, obtenido ${event.previous_hash}`
+            `Esperado ${previousHash}, obtenido ${event.previous_hash}`
         );
       }
 
@@ -274,7 +284,7 @@ export class AuditLogger {
       if (calculatedHash !== event.hash) {
         errors.push(
           `Evento ${event.sequence}: hash no coincide. ` +
-          `Esperado ${event.hash}, calculado ${calculatedHash}`
+            `Esperado ${event.hash}, calculado ${calculatedHash}`
         );
       }
 
@@ -283,7 +293,7 @@ export class AuditLogger {
 
     return {
       valid: errors.length === 0,
-      errors,
+      errors
     };
   }
 
@@ -309,9 +319,9 @@ export class AuditLogger {
     // Filtrar por aggregate_id y timestamp
     const targetTimestamp = timestamp || Date.now();
     const events = allEvents
-      .filter((e: AuditLogEntry) => 
-        e.aggregate_id === aggregateId && 
-        e.timestamp <= targetTimestamp
+      .filter(
+        (e: AuditLogEntry) =>
+          e.aggregate_id === aggregateId && e.timestamp <= targetTimestamp
       )
       .sort((a: AuditLogEntry, b: AuditLogEntry) => a.timestamp - b.timestamp);
 
@@ -363,9 +373,10 @@ export class AuditLogger {
 
     // Patrón 1: Pagos rápidos (más de 10 pagos en 5 minutos)
     const recentPayments = events.filter(
-      (e: AuditLogEntry) => e.event_type === 'CREATE' && 
-           e.aggregate_type === 'pago' && 
-           e.timestamp > now - 300000
+      (e: AuditLogEntry) =>
+        e.event_type === 'CREATE' &&
+        e.aggregate_type === 'pago' &&
+        e.timestamp > now - 300000
     );
 
     if (recentPayments.length > 10) {
@@ -373,24 +384,25 @@ export class AuditLogger {
         type: 'rapid_payments',
         severity: 'high',
         description: `${recentPayments.length} pagos en 5 minutos`,
-        events: recentPayments,
+        events: recentPayments
       });
     }
 
     // Patrón 2: Ubicación imposible (movimiento > 100km en < 10 minutos)
     const paymentsWithLocation = events
-      .filter((e: AuditLogEntry) => 
-        e.event_type === 'CREATE' && 
-        e.aggregate_type === 'pago' &&
-        e.metadata.latitude && 
-        e.metadata.longitude
+      .filter(
+        (e: AuditLogEntry) =>
+          e.event_type === 'CREATE' &&
+          e.aggregate_type === 'pago' &&
+          e.metadata.latitude &&
+          e.metadata.longitude
       )
       .sort((a: AuditLogEntry, b: AuditLogEntry) => a.timestamp - b.timestamp);
 
     for (let i = 1; i < paymentsWithLocation.length; i++) {
       const prev = paymentsWithLocation[i - 1];
       const curr = paymentsWithLocation[i];
-      
+
       const timeDiff = curr.timestamp - prev.timestamp;
       const distance = this.calculateDistance(
         prev.metadata.latitude!,
@@ -405,14 +417,15 @@ export class AuditLogger {
           type: 'impossible_location',
           severity: 'high',
           description: `Se movió ${distance.toFixed(1)}km en ${(timeDiff / 60000).toFixed(1)} minutos`,
-          events: [prev, curr],
+          events: [prev, curr]
         });
       }
     }
 
     // Patrón 3: Pagos duplicados (mismo monto, mismo cliente, dentro de 1 minuto)
     const paymentEvents = events.filter(
-      (e: AuditLogEntry) => e.event_type === 'CREATE' && e.aggregate_type === 'pago'
+      (e: AuditLogEntry) =>
+        e.event_type === 'CREATE' && e.aggregate_type === 'pago'
     );
 
     for (let i = 0; i < paymentEvents.length; i++) {
@@ -421,7 +434,8 @@ export class AuditLogger {
         const p2 = paymentEvents[j];
 
         if (
-          p1.data && p2.data &&
+          p1.data &&
+          p2.data &&
           p1.data.cliente_id === p2.data.cliente_id &&
           p1.data.monto === p2.data.monto &&
           Math.abs(p1.timestamp - p2.timestamp) < 60000
@@ -430,7 +444,7 @@ export class AuditLogger {
             type: 'duplicate_payment',
             severity: 'medium',
             description: `Pago duplicado de ${p1.data.monto} para el mismo cliente`,
-            events: [p1, p2],
+            events: [p1, p2]
           });
         }
       }
@@ -446,7 +460,7 @@ export class AuditLogger {
         type: 'suspicious_amount',
         severity: 'medium',
         description: `${largePayments.length} pago(s) sobre 1M`,
-        events: largePayments,
+        events: largePayments
       });
     }
 
@@ -465,14 +479,14 @@ export class AuditLogger {
     const R = 6371; // Radio de la Tierra en km
     const dLat = this.toRad(lat2 - lat1);
     const dLon = this.toRad(lon2 - lon1);
-    
+
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(this.toRad(lat1)) *
-      Math.cos(this.toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-    
+        Math.cos(this.toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -544,7 +558,7 @@ export class AuditLogger {
     }
 
     const events = await this.db.audit_log.toArray();
-    
+
     const counts: Record<string, number> = {};
     for (const event of events) {
       counts[event.event_type] = (counts[event.event_type] || 0) + 1;

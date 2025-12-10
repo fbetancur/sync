@@ -6,7 +6,8 @@ Estás viendo el error: **"Invalid API key"** o **"supabase.rpc(...).catch is no
 
 ## Causa
 
-Supabase cambió el formato de las API keys. Las nuevas keys (`sb_publishable_...`) no funcionan con el cliente JavaScript antiguo.
+Supabase cambió el formato de las API keys. Las nuevas keys (`sb_publishable_...`) no funcionan con
+el cliente JavaScript antiguo.
 
 ## Solución: Obtener la API Key en Formato JWT (Legacy)
 
@@ -23,12 +24,15 @@ Supabase cambió el formato de las API keys. Las nuevas keys (`sb_publishable_..
 4. Si no la ves, scroll hacia abajo en la página
 
 #### Project URL
+
 ```
 https://hmnlriywocnpiktflehr.supabase.co
 ```
 
 #### API Keys
+
 Hay dos keys:
+
 - **anon / public**: Esta es la que necesitas (es segura para el frontend)
 - **service_role**: NO uses esta (es solo para backend)
 
@@ -47,7 +51,8 @@ VITE_APP_VERSION=1.0.0
 VITE_APP_NAME=Microcréditos PWA
 ```
 
-**IMPORTANTE**: 
+**IMPORTANTE**:
+
 - Copia la key **completa** desde Supabase
 - La key debe empezar con `eyJ...`
 - La key es muy larga (varios cientos de caracteres)
@@ -82,21 +87,22 @@ Nota: Es una sola línea muy larga, sin espacios ni saltos de línea.
 
 ## Si el Problema Persiste
 
-1. **Verifica que el proyecto existe**: Ve a https://supabase.com/dashboard y confirma que el proyecto `hmnlriywocnpiktflehr` está activo
+1. **Verifica que el proyecto existe**: Ve a https://supabase.com/dashboard y confirma que el
+   proyecto `hmnlriywocnpiktflehr` está activo
 2. **Regenera las keys**: En Settings > API, puedes regenerar las API keys si es necesario
 3. **Verifica la URL**: Asegúrate que la URL del proyecto es correcta
 
 ## Errores Comunes
 
-❌ **Key incompleta**: Copiaste solo parte de la key
-❌ **Key con espacios**: La key tiene espacios o saltos de línea
-❌ **Service role key**: Usaste la key incorrecta (debe ser "anon")
-❌ **Proyecto incorrecto**: La URL no corresponde a tu proyecto
-❌ **Servidor no reiniciado**: Olvidaste reiniciar después de cambiar .env.local
+❌ **Key incompleta**: Copiaste solo parte de la key ❌ **Key con espacios**: La key tiene espacios
+o saltos de línea ❌ **Service role key**: Usaste la key incorrecta (debe ser "anon") ❌ **Proyecto
+incorrecto**: La URL no corresponde a tu proyecto ❌ **Servidor no reiniciado**: Olvidaste reiniciar
+después de cambiar .env.local
 
 ## Siguiente Paso
 
 Una vez que actualices la API key correcta:
+
 1. Reinicia el servidor
 2. Recarga http://localhost:5173/test-connection
 3. Deberías ver el warning de RLS (que es correcto)
@@ -104,4 +110,5 @@ Una vez que actualices la API key correcta:
 
 ---
 
-**¿Necesitas ayuda?** Comparte un screenshot de tu Supabase Dashboard > Settings > API (sin mostrar las keys completas, solo los primeros caracteres).
+**¿Necesitas ayuda?** Comparte un screenshot de tu Supabase Dashboard > Settings > API (sin mostrar
+las keys completas, solo los primeros caracteres).

@@ -1,10 +1,10 @@
 /**
  * Checksum and Integrity Verification Module
- * 
+ *
  * This module implements checksum calculation and verification using Web Crypto API (SHA-256).
  * It provides integrity verification for critical records (pagos, creditos) and periodic
  * integrity checks with automatic recovery procedures.
- * 
+ *
  * Requirements: 2.6, 7.6
  */
 
@@ -50,18 +50,20 @@ export class ChecksumService {
     try {
       // Convert data to canonical JSON string
       const jsonString = JSON.stringify(this.canonicalize(data));
-      
+
       // Convert string to Uint8Array
       const encoder = new TextEncoder();
       const dataBuffer = encoder.encode(jsonString);
-      
+
       // Calculate SHA-256 hash
       const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-      
+
       // Convert hash to hex string
       const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-      
+      const hashHex = hashArray
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
       return hashHex;
     } catch (error) {
       console.error('Error calculating checksum:', error);
@@ -84,7 +86,7 @@ export class ChecksumService {
 
     const sorted: any = {};
     const keys = Object.keys(obj).sort();
-    
+
     for (const key of keys) {
       // Skip checksum field itself
       if (key === 'checksum') {
@@ -92,7 +94,7 @@ export class ChecksumService {
       }
       sorted[key] = this.canonicalize(obj[key]);
     }
-    
+
     return sorted;
   }
 
@@ -114,7 +116,7 @@ export class ChecksumService {
       observaciones: pago.observaciones,
       created_at: pago.created_at,
       created_by: pago.created_by,
-      device_id: pago.device_id,
+      device_id: pago.device_id
     };
 
     return this.calculateChecksum(checksumData);
@@ -123,7 +125,9 @@ export class ChecksumService {
   /**
    * Calculate checksum for a Credito record
    */
-  async calculateCreditoChecksum(credito: Omit<Credito, 'checksum'>): Promise<string> {
+  async calculateCreditoChecksum(
+    credito: Omit<Credito, 'checksum'>
+  ): Promise<string> {
     // Include critical fields that shouldn't change
     const checksumData = {
       id: credito.id,
@@ -136,7 +140,7 @@ export class ChecksumService {
       numero_cuotas: credito.numero_cuotas,
       fecha_desembolso: credito.fecha_desembolso,
       created_at: credito.created_at,
-      created_by: credito.created_by,
+      created_by: credito.created_by
     };
 
     return this.calculateChecksum(checksumData);
@@ -145,7 +149,9 @@ export class ChecksumService {
   /**
    * Calculate checksum for a Cliente record
    */
-  async calculateClienteChecksum(cliente: Omit<Cliente, 'checksum'>): Promise<string> {
+  async calculateClienteChecksum(
+    cliente: Omit<Cliente, 'checksum'>
+  ): Promise<string> {
     // Include identifying fields
     const checksumData = {
       id: cliente.id,
@@ -153,7 +159,7 @@ export class ChecksumService {
       numero_documento: cliente.numero_documento,
       nombre: cliente.nombre,
       created_at: cliente.created_at,
-      created_by: cliente.created_by,
+      created_by: cliente.created_by
     };
 
     return this.calculateChecksum(checksumData);
@@ -170,7 +176,7 @@ export class ChecksumService {
       valid: expected === actual,
       expected,
       actual,
-      corrupted: expected !== actual,
+      corrupted: expected !== actual
     };
   }
 
@@ -185,7 +191,7 @@ export class ChecksumService {
       valid: expected === actual,
       expected,
       actual,
-      corrupted: expected !== actual,
+      corrupted: expected !== actual
     };
   }
 
@@ -200,18 +206,22 @@ export class ChecksumService {
       valid: expected === actual,
       expected,
       actual,
-      corrupted: expected !== actual,
+      corrupted: expected !== actual
     };
   }
 
   /**
    * Store checksum in checksums table
    */
-  async storeChecksum(recordType: string, recordId: string, checksum: string): Promise<void> {
+  async storeChecksum(
+    recordType: string,
+    recordId: string,
+    checksum: string
+  ): Promise<void> {
     const entry: ChecksumEntry = {
       record_key: `${recordType}:${recordId}`,
       checksum,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     await db.checksums.put(entry);
@@ -220,7 +230,10 @@ export class ChecksumService {
   /**
    * Retrieve stored checksum
    */
-  async getStoredChecksum(recordType: string, recordId: string): Promise<string | null> {
+  async getStoredChecksum(
+    recordType: string,
+    recordId: string
+  ): Promise<string | null> {
     const entry = await db.checksums.get(`${recordType}:${recordId}`);
     return entry?.checksum || null;
   }
@@ -235,7 +248,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     try {
@@ -273,7 +286,7 @@ export class ChecksumService {
         recordType: 'system',
         recordId: 'integrity_check',
         error: `Integrity check failed: ${error}`,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
 
@@ -290,7 +303,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     const pagos = await db.pagos.toArray();
@@ -308,7 +321,7 @@ export class ChecksumService {
         }
 
         const verification = await this.verifyPagoChecksum(pago);
-        
+
         if (verification.valid) {
           result.valid++;
         } else {
@@ -317,7 +330,7 @@ export class ChecksumService {
             recordType: 'pago',
             recordId: pago.id,
             error: `Checksum mismatch: expected ${verification.expected}, got ${verification.actual}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
       } catch (error) {
@@ -325,7 +338,7 @@ export class ChecksumService {
           recordType: 'pago',
           recordId: pago.id,
           error: `Verification failed: ${error}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }
@@ -343,7 +356,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     const creditos = await db.creditos.toArray();
@@ -361,7 +374,7 @@ export class ChecksumService {
         }
 
         const verification = await this.verifyCreditoChecksum(credito);
-        
+
         if (verification.valid) {
           result.valid++;
         } else {
@@ -370,7 +383,7 @@ export class ChecksumService {
             recordType: 'credito',
             recordId: credito.id,
             error: `Checksum mismatch: expected ${verification.expected}, got ${verification.actual}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
       } catch (error) {
@@ -378,7 +391,7 @@ export class ChecksumService {
           recordType: 'credito',
           recordId: credito.id,
           error: `Verification failed: ${error}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }
@@ -396,7 +409,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     const clientes = await db.clientes.toArray();
@@ -414,7 +427,7 @@ export class ChecksumService {
         }
 
         const verification = await this.verifyClienteChecksum(cliente);
-        
+
         if (verification.valid) {
           result.valid++;
         } else {
@@ -423,7 +436,7 @@ export class ChecksumService {
             recordType: 'cliente',
             recordId: cliente.id,
             error: `Checksum mismatch: expected ${verification.expected}, got ${verification.actual}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
       } catch (error) {
@@ -431,7 +444,7 @@ export class ChecksumService {
           recordType: 'cliente',
           recordId: cliente.id,
           error: `Verification failed: ${error}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }
@@ -443,16 +456,18 @@ export class ChecksumService {
    * Start periodic integrity checks (every 5 minutes)
    */
   startPeriodicChecks(intervalMs: number = 5 * 60 * 1000): NodeJS.Timeout {
-    console.log(`🔍 Starting periodic integrity checks every ${intervalMs / 1000} seconds`);
-    
+    console.log(
+      `🔍 Starting periodic integrity checks every ${intervalMs / 1000} seconds`
+    );
+
     return setInterval(async () => {
       console.log('🔍 Running periodic integrity check...');
       const result = await this.performIntegrityCheck();
-      
+
       if (result.corrupted > 0) {
         console.warn(`⚠️ Found ${result.corrupted} corrupted records`);
       }
-      
+
       if (result.repaired > 0) {
         console.log(`✅ Repaired ${result.repaired} records`);
       }

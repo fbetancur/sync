@@ -1,6 +1,6 @@
 /**
  * Store de Autenticación
- * 
+ *
  * Store reactivo para el estado de autenticación global
  */
 
@@ -23,20 +23,20 @@ export function createAuthStore(authService, encryptionService) {
 
   return {
     subscribe,
-    
+
     /**
      * Iniciar sesión
      */
     async login(credentials) {
       update(state => ({ ...state, isLoading: true, error: null }));
-      
+
       try {
         let user = null;
-        
+
         if (authService && authService.login) {
           user = await authService.login(credentials);
         }
-        
+
         update(state => ({
           ...state,
           isAuthenticated: true,
@@ -44,7 +44,7 @@ export function createAuthStore(authService, encryptionService) {
           isLoading: false,
           error: null
         }));
-        
+
         return user;
       } catch (error) {
         update(state => ({
@@ -63,17 +63,17 @@ export function createAuthStore(authService, encryptionService) {
      */
     async logout() {
       update(state => ({ ...state, isLoading: true }));
-      
+
       try {
         if (authService && authService.logout) {
           await authService.logout();
         }
-        
+
         // Limpiar encriptación si está disponible
         if (encryptionService && encryptionService.clearEncryptionKey) {
           encryptionService.clearEncryptionKey();
         }
-        
+
         set({
           isAuthenticated: false,
           user: null,
@@ -98,12 +98,12 @@ export function createAuthStore(authService, encryptionService) {
       if (!encryptionService) {
         throw new Error('Servicio de encriptación no disponible');
       }
-      
+
       update(state => ({ ...state, isLoading: true, error: null }));
-      
+
       try {
         await encryptionService.initializeWithPin(pin);
-        
+
         update(state => ({
           ...state,
           encryptionReady: true,
@@ -149,8 +149,14 @@ export function createAuthStore(authService, encryptionService) {
 export const authStore = authState;
 
 // Stores derivados
-export const isAuthenticated = derived(authState, $state => $state.isAuthenticated);
+export const isAuthenticated = derived(
+  authState,
+  $state => $state.isAuthenticated
+);
 export const currentUser = derived(authState, $state => $state.user);
 export const authError = derived(authState, $state => $state.error);
 export const isAuthLoading = derived(authState, $state => $state.isLoading);
-export const isEncryptionReady = derived(authState, $state => $state.encryptionReady);
+export const isEncryptionReady = derived(
+  authState,
+  $state => $state.encryptionReady
+);

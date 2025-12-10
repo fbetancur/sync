@@ -4,7 +4,8 @@ Core offline-first infrastructure for Sync Platform.
 
 ## Overview
 
-This package provides the foundational infrastructure for building offline-first applications in the Sync Platform monorepo. It includes:
+This package provides the foundational infrastructure for building offline-first applications in the
+Sync Platform monorepo. It includes:
 
 - **Database Layer**: IndexedDB abstraction with Dexie
 - **Sync System**: Conflict resolution and data synchronization

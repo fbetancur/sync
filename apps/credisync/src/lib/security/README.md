@@ -29,7 +29,7 @@ const encrypted = await encryptionService.encrypt('datos-sensibles');
 console.log(encrypted);
 // {
 //   data: "base64-encrypted-data",
-//   iv: "base64-initialization-vector", 
+//   iv: "base64-initialization-vector",
 //   salt: "base64-salt"
 // }
 
@@ -44,10 +44,10 @@ console.log(decrypted); // "datos-sensibles"
 const cliente = {
   id: '123',
   nombre: 'Juan Pérez',
-  numero_documento: '12345678',  // Campo sensible
-  telefono: '+57300123456',      // Campo sensible
+  numero_documento: '12345678', // Campo sensible
+  telefono: '+57300123456', // Campo sensible
   direccion: 'Calle 123 #45-67', // Campo sensible
-  email: 'juan@example.com'      // No sensible
+  email: 'juan@example.com' // No sensible
 };
 
 // Encriptar campos sensibles automáticamente
@@ -91,9 +91,9 @@ const encrypted = await encryption.encrypt('datos');
 ```svelte
 <script>
   import PinEntry from '../components/PinEntry.svelte';
-  
+
   let showPinEntry = true;
-  
+
   function handlePinSuccess() {
     showPinEntry = false;
     // Encriptación inicializada, continuar con la app
@@ -101,10 +101,7 @@ const encrypted = await encryption.encrypt('datos');
 </script>
 
 {#if showPinEntry}
-  <PinEntry 
-    on:success={handlePinSuccess}
-    on:cancel={() => history.back()}
-  />
+  <PinEntry on:success={handlePinSuccess} on:cancel={() => history.back()} />
 {/if}
 ```
 
@@ -154,7 +151,7 @@ import { encryptionService } from '../security/encryption.service';
 async function saveCliente(cliente: Cliente) {
   // Encriptar campos sensibles antes de guardar
   const encryptedCliente = await encryptionService.encryptSensitiveFields(cliente);
-  
+
   // Guardar en IndexedDB
   await db.clientes.put(encryptedCliente);
 }
@@ -163,11 +160,11 @@ async function saveCliente(cliente: Cliente) {
 async function getCliente(id: string): Promise<Cliente> {
   // Leer de IndexedDB
   const encryptedCliente = await db.clientes.get(id);
-  
+
   if (!encryptedCliente) {
     throw new Error('Cliente no encontrado');
   }
-  
+
   // Desencriptar campos sensibles
   return await encryptionService.decryptSensitiveFields(encryptedCliente);
 }

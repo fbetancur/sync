@@ -1,6 +1,6 @@
 /**
  * Additional types for IndexedDB operations
- * 
+ *
  * This module provides utility types and interfaces for database operations
  */
 

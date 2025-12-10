@@ -1,9 +1,21 @@
-import { defineConfig } from 'vite'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { VitePWA } from 'vite-plugin-pwa'
+import { defineConfig } from 'vite';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
+  build: {
+    target: 'esnext',
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['svelte'],
+          utils: ['@sync/core', '@sync/types']
+        }
+      }
+    }
+  },
   plugins: [
     svelte(),
     VitePWA({
@@ -12,7 +24,8 @@ export default defineConfig({
       manifest: {
         name: 'CrediSyncApp',
         short_name: 'CrediSync',
-        description: 'Progressive Web App para gestión de microcréditos y cobranza en campo',
+        description:
+          'Progressive Web App para gestión de microcréditos y cobranza en campo',
         theme_color: '#1e40af',
         background_color: '#ffffff',
         display: 'standalone',
@@ -127,5 +140,5 @@ export default defineConfig({
         navigateFallback: 'index.html'
       }
     })
-  ],
-})
+  ]
+});

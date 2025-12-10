@@ -1,6 +1,6 @@
 /**
  * Tests para Resolución de Conflictos CRDT
- * 
+ *
  * Validates: Requirements 6.1, 6.2, 6.3, 6.4, 6.7
  */
 
@@ -81,7 +81,11 @@ describe('ConflictResolver', () => {
         version_vector: { device1: 1 },
         field_versions: {
           nombre: { value: 'Juan', timestamp: 1000, device_id: 'device1' },
-          telefono: { value: '123456789', timestamp: 1000, device_id: 'device1' }
+          telefono: {
+            value: '123456789',
+            timestamp: 1000,
+            device_id: 'device1'
+          }
         }
       };
 
@@ -92,7 +96,11 @@ describe('ConflictResolver', () => {
         version_vector: { device2: 1 },
         field_versions: {
           nombre: { value: 'Juan', timestamp: 1000, device_id: 'device1' },
-          direccion: { value: 'Calle 123', timestamp: 1100, device_id: 'device2' }
+          direccion: {
+            value: 'Calle 123',
+            timestamp: 1100,
+            device_id: 'device2'
+          }
         }
       };
 

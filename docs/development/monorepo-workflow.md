@@ -233,11 +233,11 @@ jobs:
     - pnpm install
     - pnpm test:packages
     - pnpm test:credisync
-  
+
   build:
     - pnpm build:packages
     - pnpm build:credisync
-  
+
   deploy:
     - vercel deploy --prod
 ```
@@ -346,18 +346,21 @@ import type { User } from '@sync/types';
 ### Problemas Comunes
 
 **"Cannot resolve @sync/core"**
+
 ```bash
 # Construir packages primero
 pnpm build:packages
 ```
 
 **"Circular dependency detected"**
+
 ```bash
 # Revisar imports entre packages
 pnpm list --depth=1
 ```
 
 **"Tests failing after package changes"**
+
 ```bash
 # Reconstruir todo
 pnpm clean

@@ -1,4 +1,5 @@
 # Quick Start Guide
+
 # PWA Offline-First para Gestión de Microcréditos
 
 ## 🚀 Inicio Rápido (5 minutos)
@@ -84,7 +85,7 @@ export class MicrocreditosDB extends Dexie {
   pagos!: Table<Pago>;
   clientes!: Table<Cliente>;
   creditos!: Table<Credito>;
-  
+
   constructor() {
     super('microcreditos_db');
     this.version(1).stores({
@@ -126,4 +127,3 @@ export const db = new MicrocreditosDB();
 ---
 
 **¡Éxito en tu implementación!** 🚀
-

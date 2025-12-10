@@ -1,6 +1,6 @@
 /**
  * Tests para la Capa de Base de Datos
- * 
+ *
  * Validates: Requirements 2.1, 2.7
  */
 
@@ -62,7 +62,7 @@ describe('MicrocreditosDB', () => {
         audit_log: 0,
         change_log: 0,
         checksums: 0,
-        app_state: 0,
+        app_state: 0
       });
     });
 
@@ -78,13 +78,13 @@ describe('MicrocreditosDB', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       });
 
       await db.app_state.add({
         key: 'test-key',
         value: 'test-value',
-        updated_at: Date.now(),
+        updated_at: Date.now()
       });
 
       const stats = await db.getStats();
@@ -108,13 +108,13 @@ describe('MicrocreditosDB', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       });
 
       await db.app_state.add({
         key: 'test-key',
         value: 'test-value',
-        updated_at: Date.now(),
+        updated_at: Date.now()
       });
 
       // Verificar que los datos existen
@@ -144,7 +144,7 @@ describe('MicrocreditosDB', () => {
         updated_at: Date.now(),
         version_vector: {},
         synced: false,
-        checksum: 'test-checksum',
+        checksum: 'test-checksum'
       };
 
       await db.tenants.add(tenant);
@@ -157,7 +157,7 @@ describe('MicrocreditosDB', () => {
       const state = {
         key: 'current-user',
         value: { id: 'user-1', name: 'Test User' },
-        updated_at: Date.now(),
+        updated_at: Date.now()
       };
 
       await db.app_state.add(state);
@@ -177,7 +177,7 @@ describe('MicrocreditosDB', () => {
         priority: 1,
         attempts: 0,
         last_attempt: null,
-        error: null,
+        error: null
       };
 
       const id = await db.sync_queue.add(queueItem);

@@ -1,6 +1,6 @@
 /**
  * Tipos adicionales para operaciones de IndexedDB
- * 
+ *
  * Este módulo proporciona tipos de utilidad e interfaces para operaciones de base de datos
  */
 

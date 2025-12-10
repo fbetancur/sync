@@ -1,11 +1,15 @@
 /**
  * Tests for CRDT Conflict Resolver
- * 
+ *
  * Requirements: 6.1, 6.2, 6.3, 6.4, 6.7
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ConflictResolver, type CRDTRecord, type FieldVersion } from './conflict-resolver';
+import {
+  ConflictResolver,
+  type CRDTRecord,
+  type FieldVersion
+} from './conflict-resolver';
 
 describe('ConflictResolver', () => {
   let resolver: ConflictResolver;
@@ -18,12 +22,12 @@ describe('ConflictResolver', () => {
     it('should never have conflicts for pagos', () => {
       const local: CRDTRecord = {
         id: 'pago-1',
-        monto: 50000,
+        monto: 50000
       };
 
       const remote: CRDTRecord = {
         id: 'pago-1',
-        monto: 60000,
+        monto: 60000
       };
 
       const result = resolver.resolveConflict(local, remote, 'pago');
@@ -38,12 +42,12 @@ describe('ConflictResolver', () => {
     it('should detect when local dominates', () => {
       const local: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 2, 'device-2': 1 },
+        version_vector: { 'device-1': 2, 'device-2': 1 }
       };
 
       const remote: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 1, 'device-2': 1 },
+        version_vector: { 'device-1': 1, 'device-2': 1 }
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');
@@ -55,12 +59,12 @@ describe('ConflictResolver', () => {
     it('should detect when remote dominates', () => {
       const local: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 1, 'device-2': 1 },
+        version_vector: { 'device-1': 1, 'device-2': 1 }
       };
 
       const remote: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 2, 'device-2': 1 },
+        version_vector: { 'device-1': 2, 'device-2': 1 }
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');
@@ -73,13 +77,13 @@ describe('ConflictResolver', () => {
       const local: CRDTRecord = {
         id: 'record-1',
         version_vector: { 'device-1': 2, 'device-2': 1 },
-        field_versions: {},
+        field_versions: {}
       };
 
       const remote: CRDTRecord = {
         id: 'record-1',
         version_vector: { 'device-1': 1, 'device-2': 2 },
-        field_versions: {},
+        field_versions: {}
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');
@@ -96,8 +100,8 @@ describe('ConflictResolver', () => {
         telefono: '123456',
         version_vector: { 'device-1': 1 },
         field_versions: {
-          nombre: { value: 'Juan', timestamp: 1000, device_id: 'device-1' },
-        },
+          nombre: { value: 'Juan', timestamp: 1000, device_id: 'device-1' }
+        }
       };
 
       const remote: CRDTRecord = {
@@ -106,8 +110,8 @@ describe('ConflictResolver', () => {
         telefono: '789012',
         version_vector: { 'device-2': 1 },
         field_versions: {
-          telefono: { value: '789012', timestamp: 2000, device_id: 'device-2' },
-        },
+          telefono: { value: '789012', timestamp: 2000, device_id: 'device-2' }
+        }
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');
@@ -123,8 +127,8 @@ describe('ConflictResolver', () => {
         nombre: 'Juan',
         version_vector: { 'device-1': 1 },
         field_versions: {
-          nombre: { value: 'Juan', timestamp: 1000, device_id: 'device-1' },
-        },
+          nombre: { value: 'Juan', timestamp: 1000, device_id: 'device-1' }
+        }
       };
 
       const remote: CRDTRecord = {
@@ -132,8 +136,8 @@ describe('ConflictResolver', () => {
         nombre: 'Pedro',
         version_vector: { 'device-2': 1 },
         field_versions: {
-          nombre: { value: 'Pedro', timestamp: 2000, device_id: 'device-2' },
-        },
+          nombre: { value: 'Pedro', timestamp: 2000, device_id: 'device-2' }
+        }
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');
@@ -148,8 +152,8 @@ describe('ConflictResolver', () => {
         nombre: 'Juan',
         version_vector: { 'device-1': 1 },
         field_versions: {
-          nombre: { value: 'Juan', timestamp: 1000, device_id: 'device-a' },
-        },
+          nombre: { value: 'Juan', timestamp: 1000, device_id: 'device-a' }
+        }
       };
 
       const remote: CRDTRecord = {
@@ -157,8 +161,8 @@ describe('ConflictResolver', () => {
         nombre: 'Pedro',
         version_vector: { 'device-2': 1 },
         field_versions: {
-          nombre: { value: 'Pedro', timestamp: 1000, device_id: 'device-b' },
-        },
+          nombre: { value: 'Pedro', timestamp: 1000, device_id: 'device-b' }
+        }
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');
@@ -191,7 +195,11 @@ describe('ConflictResolver', () => {
 
   describe('Field version creation', () => {
     it('should create field version with all required fields', () => {
-      const fieldVersion = resolver.createFieldVersion('test-value', 'device-1', 1000);
+      const fieldVersion = resolver.createFieldVersion(
+        'test-value',
+        'device-1',
+        1000
+      );
 
       expect(fieldVersion.value).toBe('test-value');
       expect(fieldVersion.device_id).toBe('device-1');
@@ -200,7 +208,10 @@ describe('ConflictResolver', () => {
 
     it('should use current timestamp if not provided', () => {
       const before = Date.now();
-      const fieldVersion = resolver.createFieldVersion('test-value', 'device-1');
+      const fieldVersion = resolver.createFieldVersion(
+        'test-value',
+        'device-1'
+      );
       const after = Date.now();
 
       expect(fieldVersion.timestamp).toBeGreaterThanOrEqual(before);
@@ -215,12 +226,12 @@ describe('ConflictResolver', () => {
         nombre: 'Juan',
         telefono: '123456',
         version_vector: { 'device-1': 1 },
-        field_versions: {},
+        field_versions: {}
       };
 
       const updates = {
         telefono: '789012',
-        direccion: 'Calle 123',
+        direccion: 'Calle 123'
       };
 
       const updated = resolver.updateRecord(record, updates, 'device-1');
@@ -234,10 +245,14 @@ describe('ConflictResolver', () => {
       const record: CRDTRecord = {
         id: 'record-1',
         version_vector: { 'device-1': 5 },
-        field_versions: {},
+        field_versions: {}
       };
 
-      const updated = resolver.updateRecord(record, { nombre: 'Juan' }, 'device-1');
+      const updated = resolver.updateRecord(
+        record,
+        { nombre: 'Juan' },
+        'device-1'
+      );
 
       expect(updated.version_vector?.['device-1']).toBe(6);
     });
@@ -245,10 +260,14 @@ describe('ConflictResolver', () => {
     it('should create field versions for updated fields', () => {
       const record: CRDTRecord = {
         id: 'record-1',
-        field_versions: {},
+        field_versions: {}
       };
 
-      const updated = resolver.updateRecord(record, { nombre: 'Juan' }, 'device-1');
+      const updated = resolver.updateRecord(
+        record,
+        { nombre: 'Juan' },
+        'device-1'
+      );
 
       expect(updated.field_versions?.nombre).toBeDefined();
       expect(updated.field_versions?.nombre.value).toBe('Juan');
@@ -260,12 +279,12 @@ describe('ConflictResolver', () => {
     it('should detect concurrent edits', () => {
       const record1: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 2, 'device-2': 1 },
+        version_vector: { 'device-1': 2, 'device-2': 1 }
       };
 
       const record2: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 1, 'device-2': 2 },
+        version_vector: { 'device-1': 1, 'device-2': 2 }
       };
 
       const areConcurrent = resolver.areConcurrent(record1, record2);
@@ -276,12 +295,12 @@ describe('ConflictResolver', () => {
     it('should detect non-concurrent edits when one dominates', () => {
       const record1: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 2, 'device-2': 2 },
+        version_vector: { 'device-1': 2, 'device-2': 2 }
       };
 
       const record2: CRDTRecord = {
         id: 'record-1',
-        version_vector: { 'device-1': 1, 'device-2': 2 },
+        version_vector: { 'device-1': 1, 'device-2': 2 }
       };
 
       const areConcurrent = resolver.areConcurrent(record1, record2);
@@ -299,8 +318,8 @@ describe('ConflictResolver', () => {
         telefono: '111111',
         version_vector: { 'device-1': 2, 'device-2': 1, 'device-3': 1 },
         field_versions: {
-          nombre: { value: 'Juan', timestamp: 2000, device_id: 'device-1' },
-        },
+          nombre: { value: 'Juan', timestamp: 2000, device_id: 'device-1' }
+        }
       };
 
       // Device 2 edits telefono
@@ -310,11 +329,15 @@ describe('ConflictResolver', () => {
         telefono: '222222',
         version_vector: { 'device-1': 1, 'device-2': 2, 'device-3': 1 },
         field_versions: {
-          telefono: { value: '222222', timestamp: 2000, device_id: 'device-2' },
-        },
+          telefono: { value: '222222', timestamp: 2000, device_id: 'device-2' }
+        }
       };
 
-      const result = resolver.resolveConflict(device1Edit, device2Edit, 'cliente');
+      const result = resolver.resolveConflict(
+        device1Edit,
+        device2Edit,
+        'cliente'
+      );
 
       expect(result.strategy).toBe('merged');
       expect(result.resolved.nombre).toBe('Juan'); // From device 1
@@ -329,8 +352,8 @@ describe('ConflictResolver', () => {
         direccion: 'Calle 1',
         version_vector: { 'device-1': 2 },
         field_versions: {
-          nombre: { value: 'Juan', timestamp: 2000, device_id: 'device-1' },
-        },
+          nombre: { value: 'Juan', timestamp: 2000, device_id: 'device-1' }
+        }
       };
 
       const remote: CRDTRecord = {
@@ -340,8 +363,8 @@ describe('ConflictResolver', () => {
         direccion: 'Calle 1',
         version_vector: { 'device-2': 2 },
         field_versions: {
-          telefono: { value: '222222', timestamp: 2000, device_id: 'device-2' },
-        },
+          telefono: { value: '222222', timestamp: 2000, device_id: 'device-2' }
+        }
       };
 
       const result = resolver.resolveConflict(local, remote, 'cliente');

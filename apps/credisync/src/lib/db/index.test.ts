@@ -1,6 +1,6 @@
 /**
  * Tests for IndexedDB Database
- * 
+ *
  * Comprehensive tests to verify database functionality
  */
 
@@ -45,7 +45,7 @@ describe('MicrocreditosDB', () => {
       ];
 
       const actualTables = db.tables.map(t => t.name);
-      
+
       expectedTables.forEach(tableName => {
         expect(actualTables).toContain(tableName);
       });

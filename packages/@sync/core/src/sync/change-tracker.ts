@@ -1,9 +1,9 @@
 /**
  * Seguidor de Cambios
- * 
+ *
  * Este módulo rastrea cambios en los datos locales para sincronización.
  * Será implementado completamente durante la migración.
- * 
+ *
  * Requirements: 5.3, 5.6
  */
 
@@ -63,13 +63,16 @@ export class ChangeTracker {
    */
   async createUploadBatches(changes: ChangeEntry[]): Promise<UploadBatch[]> {
     // Agrupar por tabla
-    const byTable = changes.reduce((acc, change) => {
-      if (!acc[change.table_name]) {
-        acc[change.table_name] = [];
-      }
-      acc[change.table_name].push(change);
-      return acc;
-    }, {} as Record<string, ChangeEntry[]>);
+    const byTable = changes.reduce(
+      (acc, change) => {
+        if (!acc[change.table_name]) {
+          acc[change.table_name] = [];
+        }
+        acc[change.table_name].push(change);
+        return acc;
+      },
+      {} as Record<string, ChangeEntry[]>
+    );
 
     // Crear lotes con prioridad
     const batches: UploadBatch[] = [];
@@ -77,7 +80,7 @@ export class ChangeTracker {
       batches.push({
         table,
         priority: this.getTablePriority(table),
-        changes: tableChanges,
+        changes: tableChanges
       });
     }
 

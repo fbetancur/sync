@@ -1,6 +1,6 @@
 /**
  * useEncryption Hook
- * 
+ *
  * Svelte hook for managing encryption state and operations.
  * Requirements: 17.4, 17.5
  */
@@ -42,7 +42,10 @@ export function useEncryption() {
         error: null
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to initialize encryption';
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : 'Failed to initialize encryption';
       set({
         isInitialized: false,
         isLoading: false,
@@ -88,7 +91,9 @@ export function useEncryption() {
   /**
    * Encrypt sensitive fields in an object
    */
-  async function encryptSensitiveFields(obj: Record<string, any>): Promise<Record<string, any>> {
+  async function encryptSensitiveFields(
+    obj: Record<string, any>
+  ): Promise<Record<string, any>> {
     if (!encryptionService.isInitialized()) {
       throw new Error('Encryption service not initialized');
     }
@@ -98,7 +103,9 @@ export function useEncryption() {
   /**
    * Decrypt sensitive fields in an object
    */
-  async function decryptSensitiveFields(obj: Record<string, any>): Promise<Record<string, any>> {
+  async function decryptSensitiveFields(
+    obj: Record<string, any>
+  ): Promise<Record<string, any>> {
     if (!encryptionService.isInitialized()) {
       throw new Error('Encryption service not initialized');
     }
@@ -115,7 +122,7 @@ export function useEncryption() {
   return {
     // Store subscription
     subscribe,
-    
+
     // Actions
     initializeWithPin,
     clearEncryption,
@@ -124,9 +131,12 @@ export function useEncryption() {
     encryptSensitiveFields,
     decryptSensitiveFields,
     isInitialized,
-    
+
     // Derived stores
-    isReady: derived(encryptionState, $state => $state.isInitialized && !$state.isLoading),
+    isReady: derived(
+      encryptionState,
+      $state => $state.isInitialized && !$state.isLoading
+    ),
     error: derived(encryptionState, $state => $state.error),
     isLoading: derived(encryptionState, $state => $state.isLoading)
   };

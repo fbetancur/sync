@@ -1,6 +1,6 @@
 /**
  * Tests para Verificación de Checksums e Integridad
- * 
+ *
  * Property 4: Integridad de Checksum
  * Validates: Requirements 2.6, 7.6
  */
@@ -27,7 +27,7 @@ describe('ChecksumService', () => {
 
     it('debería producir el mismo checksum para los mismos datos', async () => {
       const data = { id: '123', name: 'test', value: 100 };
-      
+
       const checksum1 = await checksumService.calculateChecksum(data);
       const checksum2 = await checksumService.calculateChecksum(data);
 
@@ -88,7 +88,7 @@ describe('ChecksumService', () => {
         sync_attempts: 0,
         last_sync_attempt: null,
         sync_error: null,
-        comprobante_foto_url: null,
+        comprobante_foto_url: null
       };
 
       const checksum = await checksumService.calculatePagoChecksum(pago);
@@ -119,7 +119,7 @@ describe('ChecksumService', () => {
         sync_attempts: 0,
         last_sync_attempt: null,
         sync_error: null,
-        comprobante_foto_url: null,
+        comprobante_foto_url: null
       };
 
       const checksum1 = await checksumService.calculatePagoChecksum(pago);
@@ -150,13 +150,13 @@ describe('ChecksumService', () => {
         sync_attempts: 0,
         last_sync_attempt: null,
         sync_error: null,
-        comprobante_foto_url: null,
+        comprobante_foto_url: null
       };
 
       const pago2 = {
         ...pago1,
         synced: true, // Campo mutable
-        sync_attempts: 5, // Campo mutable
+        sync_attempts: 5 // Campo mutable
       };
 
       const checksum1 = await checksumService.calculatePagoChecksum(pago1);
@@ -195,7 +195,7 @@ describe('ChecksumService', () => {
         excluir_domingos: true,
         version_vector: {},
         field_versions: {},
-        synced: false,
+        synced: false
       };
 
       const checksum = await checksumService.calculateCreditoChecksum(credito);
@@ -231,7 +231,7 @@ describe('ChecksumService', () => {
         excluir_domingos: true,
         version_vector: {},
         field_versions: {},
-        synced: false,
+        synced: false
       };
 
       const credito2 = {
@@ -239,11 +239,13 @@ describe('ChecksumService', () => {
         saldo_pendiente: 500000, // Campo mutable
         cuotas_pagadas: 15, // Campo mutable
         dias_atraso: 5, // Campo mutable
-        estado: 'vencido' as const, // Campo mutable
+        estado: 'vencido' as const // Campo mutable
       };
 
-      const checksum1 = await checksumService.calculateCreditoChecksum(credito1);
-      const checksum2 = await checksumService.calculateCreditoChecksum(credito2);
+      const checksum1 =
+        await checksumService.calculateCreditoChecksum(credito1);
+      const checksum2 =
+        await checksumService.calculateCreditoChecksum(credito2);
 
       // Los checksums deberían ser iguales porque los campos mutables se ignoran
       expect(checksum1).toBe(checksum2);
@@ -273,10 +275,11 @@ describe('ChecksumService', () => {
         sync_attempts: 0,
         last_sync_attempt: null,
         sync_error: null,
-        comprobante_foto_url: null,
+        comprobante_foto_url: null
       };
 
-      const checksum = await checksumService.calculatePagoChecksum(pagoSinChecksum);
+      const checksum =
+        await checksumService.calculatePagoChecksum(pagoSinChecksum);
       const pago = { ...pagoSinChecksum, checksum };
 
       const result = await checksumService.verifyPagoChecksum(pago);
@@ -309,7 +312,7 @@ describe('ChecksumService', () => {
         sync_attempts: 0,
         last_sync_attempt: null,
         sync_error: null,
-        comprobante_foto_url: null,
+        comprobante_foto_url: null
       };
 
       const pago = { ...pagoSinChecksum, checksum: 'checksum_invalido' };
@@ -344,10 +347,11 @@ describe('ChecksumService', () => {
         sync_attempts: 0,
         last_sync_attempt: null,
         sync_error: null,
-        comprobante_foto_url: null,
+        comprobante_foto_url: null
       };
 
-      const checksum = await checksumService.calculatePagoChecksum(pagoSinChecksum);
+      const checksum =
+        await checksumService.calculatePagoChecksum(pagoSinChecksum);
       const pago = { ...pagoSinChecksum, checksum };
 
       // Manipular los datos
@@ -366,20 +370,23 @@ describe('ChecksumService', () => {
       const recordId = 'pago-1';
       const checksum = 'abc123def456';
 
-      await expect(checksumService.storeChecksum(recordType, recordId, checksum))
-        .rejects.toThrow('Base de datos requerida para almacenar checksum');
+      await expect(
+        checksumService.storeChecksum(recordType, recordId, checksum)
+      ).rejects.toThrow('Base de datos requerida para almacenar checksum');
     });
 
     it('debería requerir base de datos para recuperar checksum', async () => {
-      await expect(checksumService.getStoredChecksum('pago', 'pago-1'))
-        .rejects.toThrow('Base de datos requerida para recuperar checksum');
+      await expect(
+        checksumService.getStoredChecksum('pago', 'pago-1')
+      ).rejects.toThrow('Base de datos requerida para recuperar checksum');
     });
   });
 
   describe('performIntegrityCheck', () => {
     it('debería requerir base de datos para verificación de integridad', async () => {
-      await expect(checksumService.performIntegrityCheck())
-        .rejects.toThrow('Base de datos requerida para verificación de integridad');
+      await expect(checksumService.performIntegrityCheck()).rejects.toThrow(
+        'Base de datos requerida para verificación de integridad'
+      );
     });
   });
 });

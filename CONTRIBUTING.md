@@ -1,6 +1,7 @@
 # Guía de Contribución - Sync Platform
 
-¡Gracias por tu interés en contribuir a Sync Platform! Esta guía te ayudará a entender cómo participar en el desarrollo del proyecto.
+¡Gracias por tu interés en contribuir a Sync Platform! Esta guía te ayudará a entender cómo
+participar en el desarrollo del proyecto.
 
 ## 📋 Tabla de Contenidos
 
@@ -15,7 +16,8 @@
 
 ## 🤝 Código de Conducta
 
-Este proyecto se adhiere a un código de conducta. Al participar, se espera que mantengas este código. Por favor reporta comportamientos inaceptables.
+Este proyecto se adhiere a un código de conducta. Al participar, se espera que mantengas este
+código. Por favor reporta comportamientos inaceptables.
 
 ### Nuestros Valores
 
@@ -201,18 +203,16 @@ function createUser(config: any): any {
 <!-- ✅ Bueno -->
 <script lang="ts">
   import type { User } from '@sync/types';
-  
+
   export let user: User;
   export let onEdit: (user: User) => void = () => {};
-  
+
   $: displayName = user.firstName + ' ' + user.lastName;
 </script>
 
 <div class="user-card">
   <h3>{displayName}</h3>
-  <button on:click={() => onEdit(user)}>
-    Edit
-  </button>
+  <button on:click={() => onEdit(user)}> Edit </button>
 </div>
 
 <style>
@@ -289,10 +289,10 @@ describe('SyncManager', () => {
     it('should sync data successfully', async () => {
       // Arrange
       const mockData = { id: '1', name: 'Test' };
-      
+
       // Act
       const result = await syncManager.syncData(mockData);
-      
+
       // Assert
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockData);
@@ -301,10 +301,9 @@ describe('SyncManager', () => {
     it('should handle sync errors', async () => {
       // Arrange
       const invalidData = null;
-      
+
       // Act & Assert
-      await expect(syncManager.syncData(invalidData))
-        .rejects.toThrow('Invalid data');
+      await expect(syncManager.syncData(invalidData)).rejects.toThrow('Invalid data');
     });
   });
 });
@@ -323,19 +322,19 @@ describe('Button Component', () => {
     const { getByText } = render(Button, {
       props: { text: 'Click me' }
     });
-    
+
     expect(getByText('Click me')).toBeInTheDocument();
   });
 
   it('should emit click event', async () => {
     const handleClick = vi.fn();
     const { getByRole } = render(Button, {
-      props: { 
+      props: {
         text: 'Click me',
-        onClick: handleClick 
+        onClick: handleClick
       }
     });
-    
+
     await fireEvent.click(getByRole('button'));
     expect(handleClick).toHaveBeenCalledOnce();
   });
@@ -368,14 +367,14 @@ open coverage/index.html
 
 ### JSDoc Standards
 
-```typescript
+````typescript
 /**
  * Sincroniza datos entre cliente y servidor
- * 
+ *
  * @param data - Los datos a sincronizar
  * @param options - Opciones de configuración
  * @returns Promise que resuelve con el resultado de la sincronización
- * 
+ *
  * @example
  * ```typescript
  * const result = await syncManager.syncData(
@@ -385,12 +384,12 @@ open coverage/index.html
  * ```
  */
 async syncData(
-  data: SyncData, 
+  data: SyncData,
   options: SyncOptions = {}
 ): Promise<SyncResult> {
   // Implementación
 }
-```
+````
 
 ### README Template
 
@@ -401,18 +400,13 @@ Brief description of what this package/app does.
 
 ## Installation
 
-\`\`\`bash
-pnpm add @sync/package-name
-\`\`\`
+\`\`\`bash pnpm add @sync/package-name \`\`\`
 
 ## Usage
 
-\`\`\`typescript
-import { FeatureName } from '@sync/package-name';
+\`\`\`typescript import { FeatureName } from '@sync/package-name';
 
-const feature = new FeatureName();
-await feature.doSomething();
-\`\`\`
+const feature = new FeatureName(); await feature.doSomething(); \`\`\`
 
 ## API Reference
 
@@ -469,10 +463,12 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
 ```markdown
 # ✅ Buen feedback
-En línea 45: Considera usar `Promise.all()` aquí para mejorar performance 
-cuando las operaciones son independientes.
+
+En línea 45: Considera usar `Promise.all()` aquí para mejorar performance cuando las operaciones son
+independientes.
 
 # ❌ Feedback poco útil
+
 Este código está mal.
 ```
 
@@ -544,4 +540,5 @@ Agradecemos a todos los contribuidores que hacen posible este proyecto:
 
 ---
 
-*Esta guía está en constante evolución. Si tienes sugerencias para mejorarla, ¡no dudes en contribuir!*
+_Esta guía está en constante evolución. Si tienes sugerencias para mejorarla, ¡no dudes en
+contribuir!_

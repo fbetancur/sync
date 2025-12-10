@@ -13,14 +13,14 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true,
-  },
+    detectSessionInUrl: true
+  }
 });
 
 // Helper function to check if user is authenticated
 export async function isAuthenticated(): Promise<boolean> {
   const {
-    data: { session },
+    data: { session }
   } = await supabase.auth.getSession();
   return !!session;
 }
@@ -28,7 +28,7 @@ export async function isAuthenticated(): Promise<boolean> {
 // Helper function to get current user
 export async function getCurrentUser() {
   const {
-    data: { user },
+    data: { user }
   } = await supabase.auth.getUser();
   return user;
 }

@@ -1,6 +1,6 @@
 /**
  * Tests for Audit Logger System
- * 
+ *
  * Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7
  */
 
@@ -14,11 +14,11 @@ describe('AuditLogger', () => {
   beforeEach(async () => {
     // Clear database
     await db.audit_log.clear();
-    
+
     // Reset the singleton instance for testing
     // @ts-ignore - accessing private static for testing
     AuditLogger.instance = undefined;
-    
+
     // Get fresh instance
     logger = AuditLogger.getInstance();
   });
@@ -32,7 +32,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: { monto: 1000, cliente_id: 'cliente-1' },
+        data: { monto: 1000, cliente_id: 'cliente-1' }
       };
 
       const event = await logger.logEvent(eventData);
@@ -64,8 +64,8 @@ describe('AuditLogger', () => {
         data: {},
         metadata: {
           latitude: 4.6097,
-          longitude: -74.0817,
-        },
+          longitude: -74.0817
+        }
       };
 
       const event = await logger.logEvent(eventData);
@@ -85,7 +85,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: {},
+        data: {}
       });
 
       const event2 = await logger.logEvent({
@@ -95,7 +95,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-2',
-        data: {},
+        data: {}
       });
 
       expect(event2.sequence).toBe(event1.sequence + 1);
@@ -111,7 +111,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: {},
+        data: {}
       });
 
       const event2 = await logger.logEvent({
@@ -121,7 +121,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-2',
-        data: {},
+        data: {}
       });
 
       // Event 2's previous_hash should equal event 1's hash
@@ -138,7 +138,7 @@ describe('AuditLogger', () => {
           event_type: 'CREATE',
           aggregate_type: 'pago',
           aggregate_id: `pago-${i}`,
-          data: { index: i },
+          data: { index: i }
         });
       }
 
@@ -157,7 +157,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: { monto: 1000 },
+        data: { monto: 1000 }
       });
 
       const event2 = await logger.logEvent({
@@ -167,13 +167,13 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-2',
-        data: { monto: 2000 },
+        data: { monto: 2000 }
       });
 
       // Tamper with event (this would require direct DB access in real scenario)
       // For testing, we'll modify the data
       await db.audit_log.update(event2.id!, {
-        data: { monto: 9999 }, // Changed amount
+        data: { monto: 9999 } // Changed amount
       });
 
       const result = await logger.verifyHashChain();
@@ -190,7 +190,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: {},
+        data: {}
       });
 
       // Manually insert event with wrong previous_hash
@@ -211,16 +211,18 @@ describe('AuditLogger', () => {
           latitude: null,
           longitude: null,
           connection_type: 'test',
-          battery_level: null,
+          battery_level: null
         },
         previous_hash: 'wrong-hash',
-        hash: 'some-hash',
+        hash: 'some-hash'
       });
 
       const result = await logger.verifyHashChain();
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.includes('previous_hash mismatch'))).toBe(true);
+      expect(
+        result.errors.some(e => e.includes('previous_hash mismatch'))
+      ).toBe(true);
     });
   });
 
@@ -236,8 +238,8 @@ describe('AuditLogger', () => {
         data: {
           nombre: 'Juan Pérez',
           documento: '12345678',
-          telefono: '3001234567',
-        },
+          telefono: '3001234567'
+        }
       });
 
       const state = await logger.reconstructState('cliente', 'cliente-1');
@@ -245,7 +247,7 @@ describe('AuditLogger', () => {
       expect(state).toEqual({
         nombre: 'Juan Pérez',
         documento: '12345678',
-        telefono: '3001234567',
+        telefono: '3001234567'
       });
     });
 
@@ -259,8 +261,8 @@ describe('AuditLogger', () => {
         aggregate_id: 'cliente-1',
         data: {
           nombre: 'Juan Pérez',
-          telefono: '3001234567',
-        },
+          telefono: '3001234567'
+        }
       });
 
       await logger.logEvent({
@@ -271,8 +273,8 @@ describe('AuditLogger', () => {
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
         data: {
-          telefono: '3009876543', // Updated phone
-        },
+          telefono: '3009876543' // Updated phone
+        }
       });
 
       const state = await logger.reconstructState('cliente', 'cliente-1');
@@ -289,7 +291,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: { nombre: 'Juan Pérez' },
+        data: { nombre: 'Juan Pérez' }
       });
 
       await logger.logEvent({
@@ -299,7 +301,7 @@ describe('AuditLogger', () => {
         event_type: 'DELETE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: {},
+        data: {}
       });
 
       const state = await logger.reconstructState('cliente', 'cliente-1');
@@ -315,7 +317,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: { nombre: 'Juan Pérez', version: 1 },
+        data: { nombre: 'Juan Pérez', version: 1 }
       });
 
       // Wait to ensure different timestamp
@@ -328,12 +330,16 @@ describe('AuditLogger', () => {
         event_type: 'UPDATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: { version: 2 },
+        data: { version: 2 }
       });
 
       // Reconstruct at timestamp between event1 and event2
       const timestampBetween = event1.timestamp + 1;
-      const state = await logger.reconstructState('cliente', 'cliente-1', timestampBetween);
+      const state = await logger.reconstructState(
+        'cliente',
+        'cliente-1',
+        timestampBetween
+      );
 
       expect(state.version).toBe(1); // Should have first version only
     });
@@ -353,7 +359,7 @@ describe('AuditLogger', () => {
           event_type: 'CREATE',
           aggregate_type: 'pago',
           aggregate_id: `pago-${i}`,
-          data: { monto: 1000 },
+          data: { monto: 1000 }
         });
       }
 
@@ -378,8 +384,8 @@ describe('AuditLogger', () => {
         data: { monto: 1000 },
         metadata: {
           latitude: 4.6097,
-          longitude: -74.0817,
-        },
+          longitude: -74.0817
+        }
       });
 
       // Payment in Medellín 5 minutes later (impossible - 240km away)
@@ -394,13 +400,15 @@ describe('AuditLogger', () => {
         data: { monto: 1000 },
         metadata: {
           latitude: 6.2442,
-          longitude: -75.5812,
-        },
+          longitude: -75.5812
+        }
       });
 
       const patterns = await logger.detectFraudPatterns(userId);
 
-      const impossibleLocation = patterns.find(p => p.type === 'impossible_location');
+      const impossibleLocation = patterns.find(
+        p => p.type === 'impossible_location'
+      );
       expect(impossibleLocation).toBeDefined();
       expect(impossibleLocation?.severity).toBe('high');
     });
@@ -418,7 +426,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: { monto, cliente_id: clienteId },
+        data: { monto, cliente_id: clienteId }
       });
 
       await logger.logEvent({
@@ -428,7 +436,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-2',
-        data: { monto, cliente_id: clienteId },
+        data: { monto, cliente_id: clienteId }
       });
 
       const patterns = await logger.detectFraudPatterns(userId);
@@ -449,7 +457,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: { monto: 5000000 }, // 5M
+        data: { monto: 5000000 } // 5M
       });
 
       const patterns = await logger.detectFraudPatterns(userId);
@@ -469,7 +477,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: {},
+        data: {}
       });
 
       await logger.logEvent({
@@ -479,7 +487,7 @@ describe('AuditLogger', () => {
         event_type: 'UPDATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: {},
+        data: {}
       });
 
       await logger.logEvent({
@@ -489,7 +497,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-2',
-        data: {},
+        data: {}
       });
 
       const events = await logger.getEventsForAggregate('cliente', 'cliente-1');
@@ -506,7 +514,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: {},
+        data: {}
       });
 
       await logger.logEvent({
@@ -516,7 +524,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-2',
-        data: {},
+        data: {}
       });
 
       const events = await logger.getEventsForUser('user-1');
@@ -534,7 +542,7 @@ describe('AuditLogger', () => {
           event_type: 'CREATE',
           aggregate_type: 'pago',
           aggregate_id: `pago-${i}`,
-          data: {},
+          data: {}
         });
       }
 
@@ -553,7 +561,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: {},
+        data: {}
       });
 
       await logger.logEvent({
@@ -563,7 +571,7 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-2',
-        data: {},
+        data: {}
       });
 
       await logger.logEvent({
@@ -573,7 +581,7 @@ describe('AuditLogger', () => {
         event_type: 'UPDATE',
         aggregate_type: 'cliente',
         aggregate_id: 'cliente-1',
-        data: {},
+        data: {}
       });
 
       const counts = await logger.countEventsByType();
@@ -592,12 +600,12 @@ describe('AuditLogger', () => {
         event_type: 'CREATE',
         aggregate_type: 'pago',
         aggregate_id: 'pago-1',
-        data: { monto: 1000 },
+        data: { monto: 1000 }
       });
 
       // Try to modify (this would be caught by hash verification)
       await db.audit_log.update(event.id!, {
-        data: { monto: 9999 },
+        data: { monto: 9999 }
       });
 
       const result = await logger.verifyHashChain();

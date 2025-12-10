@@ -1,6 +1,6 @@
 /**
  * Tests for Credit Calculator
- * 
+ *
  * Requirements: 12.2, 12.3, 12.4, 13.2, 13.5
  */
 
@@ -68,7 +68,10 @@ describe('CreditCalculator', () => {
       const totalAmount = 1100000;
       const numeroCuotas = 30;
 
-      const valorCuota = calculator.calculateInstallmentValue(totalAmount, numeroCuotas);
+      const valorCuota = calculator.calculateInstallmentValue(
+        totalAmount,
+        numeroCuotas
+      );
 
       expect(valorCuota).toBe(36667); // Rounded
     });
@@ -77,7 +80,10 @@ describe('CreditCalculator', () => {
       const totalAmount = 1200000;
       const numeroCuotas = 30;
 
-      const valorCuota = calculator.calculateInstallmentValue(totalAmount, numeroCuotas);
+      const valorCuota = calculator.calculateInstallmentValue(
+        totalAmount,
+        numeroCuotas
+      );
 
       expect(valorCuota).toBe(40000);
     });
@@ -86,7 +92,10 @@ describe('CreditCalculator', () => {
       const totalAmount = 1000000;
       const numeroCuotas = 3;
 
-      const valorCuota = calculator.calculateInstallmentValue(totalAmount, numeroCuotas);
+      const valorCuota = calculator.calculateInstallmentValue(
+        totalAmount,
+        numeroCuotas
+      );
 
       expect(valorCuota).toBe(333333); // 333333.33 rounded
     });
@@ -100,7 +109,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 30,
         frecuencia: 'diario',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const result = calculator.calculateCredit(input);
@@ -123,7 +132,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 5,
         frecuencia: 'diario',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -143,7 +152,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 4,
         frecuencia: 'semanal',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -160,7 +169,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 3,
         frecuencia: 'quincenal',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -176,7 +185,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 3,
         frecuencia: 'mensual',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -195,7 +204,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 10,
         frecuencia: 'diario',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: true,
+        excluir_domingos: true
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -214,13 +223,15 @@ describe('CreditCalculator', () => {
         numero_cuotas: 10,
         frecuencia: 'diario',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
 
       // Check that at least one cuota falls on Sunday (Dec 15)
-      const hasSunday = cuotas.some(cuota => cuota.fecha_programada.getDay() === 0);
+      const hasSunday = cuotas.some(
+        cuota => cuota.fecha_programada.getDay() === 0
+      );
       expect(hasSunday).toBe(true);
     });
   });
@@ -303,7 +314,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 3,
         frecuencia: 'mensual',
         fecha_desembolso: new Date(2024, 0, 31), // Jan 31, 2024 (Leap year)
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -324,7 +335,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 5,
         frecuencia: 'diario',
         fecha_desembolso: new Date(2024, 11, 28), // Dec 28, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const cuotas = calculator.generatePaymentSchedule(input);
@@ -341,7 +352,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 3,
         frecuencia: 'diario',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const result = calculator.calculateCredit(input);
@@ -359,7 +370,7 @@ describe('CreditCalculator', () => {
         numero_cuotas: 12,
         frecuencia: 'mensual',
         fecha_desembolso: new Date(2024, 11, 10), // Dec 10, 2024
-        excluir_domingos: false,
+        excluir_domingos: false
       };
 
       const result = calculator.calculateCredit(input);

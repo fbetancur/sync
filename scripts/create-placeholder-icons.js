@@ -14,8 +14,8 @@ const __dirname = path.dirname(__filename);
 function createSVGIcon(size) {
   return `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
   <rect width="${size}" height="${size}" fill="#1e40af"/>
-  <circle cx="${size/2}" cy="${size/2}" r="${size * 0.35}" fill="#ffffff"/>
-  <text x="${size/2}" y="${size/2}" font-family="Arial" font-size="${size * 0.4}" font-weight="bold" fill="#1e40af" text-anchor="middle" dominant-baseline="central">$</text>
+  <circle cx="${size / 2}" cy="${size / 2}" r="${size * 0.35}" fill="#ffffff"/>
+  <text x="${size / 2}" y="${size / 2}" font-family="Arial" font-size="${size * 0.4}" font-weight="bold" fill="#1e40af" text-anchor="middle" dominant-baseline="central">$</text>
 </svg>`;
 }
 

@@ -1,16 +1,16 @@
 /**
  * Módulo de Resolución de Conflictos CRDT
- * 
+ *
  * Este módulo implementa la resolución de Conflict-free Replicated Data Type (CRDT)
  * usando vectores de versión y algoritmos de merge a nivel de campo.
- * 
+ *
  * Características clave:
  * - Comparación de vectores de versión para ordenamiento causal
  * - Merge a nivel de campo para ediciones concurrentes
  * - Desempate determinístico
  * - Manejo de append-only para pagos
  * - Manejo de registros editables para clientes y créditos
- * 
+ *
  * Requirements: 6.1, 6.2, 6.3, 6.4, 6.7
  */
 
@@ -35,10 +35,10 @@ export interface CRDTRecord {
   [key: string]: any;
 }
 
-export type ConflictStrategy = 
-  | 'local_wins' 
-  | 'remote_wins' 
-  | 'merged' 
+export type ConflictStrategy =
+  | 'local_wins'
+  | 'remote_wins'
+  | 'merged'
   | 'last_write_wins'
   | 'append_only';
 
@@ -73,7 +73,7 @@ export class ConflictResolver {
         resolved: local,
         strategy: 'append_only',
         conflicts_detected: [],
-        metadata: {},
+        metadata: {}
       };
     }
 
@@ -104,8 +104,8 @@ export class ConflictResolver {
         conflicts_detected: [],
         metadata: {
           local_version: localVector,
-          remote_version: remoteVector,
-        },
+          remote_version: remoteVector
+        }
       };
     }
 
@@ -117,8 +117,8 @@ export class ConflictResolver {
         conflicts_detected: [],
         metadata: {
           local_version: localVector,
-          remote_version: remoteVector,
-        },
+          remote_version: remoteVector
+        }
       };
     }
 
@@ -144,7 +144,7 @@ export class ConflictResolver {
     // Obtener todos los campos que tienen versiones
     const allFields = new Set([
       ...Object.keys(localFieldVersions),
-      ...Object.keys(remoteFieldVersions),
+      ...Object.keys(remoteFieldVersions)
     ]);
 
     // Hacer merge de cada campo
@@ -203,8 +203,8 @@ export class ConflictResolver {
       metadata: {
         local_version: local.version_vector,
         remote_version: remote.version_vector,
-        merged_fields: mergedFields,
-      },
+        merged_fields: mergedFields
+      }
     };
   }
 
@@ -285,7 +285,7 @@ export class ConflictResolver {
   ): VersionVector {
     return {
       ...versionVector,
-      [deviceId]: (versionVector[deviceId] || 0) + 1,
+      [deviceId]: (versionVector[deviceId] || 0) + 1
     };
   }
 
@@ -300,7 +300,7 @@ export class ConflictResolver {
     return {
       value,
       timestamp,
-      device_id: deviceId,
+      device_id: deviceId
     };
   }
 

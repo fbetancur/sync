@@ -1,6 +1,6 @@
 /**
  * Tests for Validator
- * 
+ *
  * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6, 7.7
  */
 
@@ -32,7 +32,7 @@ describe('Validator', () => {
         dias_atraso_max: 0,
         estado: 'activo',
         created_at: Date.now(),
-        updated_at: Date.now(),
+        updated_at: Date.now()
       };
 
       const result = validator.validateUI(clienteSchema, validCliente);
@@ -47,7 +47,7 @@ describe('Validator', () => {
       const invalidCliente = {
         id: 'invalid-uuid',
         nombre: '', // Empty name
-        telefono: '123', // Invalid phone
+        telefono: '123' // Invalid phone
       };
 
       const result = validator.validateUI(clienteSchema, invalidCliente);
@@ -82,7 +82,7 @@ describe('Validator', () => {
         excluir_domingos: false,
         created_at: Date.now(),
         created_by: '123e4567-e89b-12d3-a456-426614174004',
-        updated_at: Date.now(),
+        updated_at: Date.now()
       };
 
       const result = validator.validateUI(creditoSchema, validCredito);
@@ -114,7 +114,7 @@ describe('Validator', () => {
         excluir_domingos: false,
         created_at: Date.now(),
         created_by: '123e4567-e89b-12d3-a456-426614174004',
-        updated_at: Date.now(),
+        updated_at: Date.now()
       };
 
       const result = validator.validateUI(creditoSchema, invalidCredito);
@@ -130,7 +130,7 @@ describe('Validator', () => {
         nombre: 'Juan Pérez',
         latitud: 4.6097,
         longitud: -74.0817,
-        estado: 'activo',
+        estado: 'activo'
       };
 
       const result = await validator.validateBusinessLogic('cliente', cliente);
@@ -143,7 +143,7 @@ describe('Validator', () => {
       const cliente = {
         id: '123e4567-e89b-12d3-a456-426614174000',
         nombre: 'Juan Pérez',
-        latitud: 4.6097,
+        latitud: 4.6097
         // Missing longitud
       };
 
@@ -160,7 +160,7 @@ describe('Validator', () => {
         total_a_pagar: 1100000,
         numero_cuotas: 30,
         valor_cuota: 36667,
-        saldo_pendiente: 1100000,
+        saldo_pendiente: 1100000
       };
 
       const result = await validator.validateBusinessLogic('credito', credito);
@@ -175,13 +175,15 @@ describe('Validator', () => {
         total_a_pagar: 1200000, // Wrong! Should be 1100000
         numero_cuotas: 30,
         valor_cuota: 40000,
-        saldo_pendiente: 1200000,
+        saldo_pendiente: 1200000
       };
 
       const result = await validator.validateBusinessLogic('credito', credito);
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.code === 'CALCULATION_MISMATCH')).toBe(true);
+      expect(result.errors.some(e => e.code === 'CALCULATION_MISMATCH')).toBe(
+        true
+      );
     });
 
     it('should validate pago business logic', async () => {
@@ -190,7 +192,7 @@ describe('Validator', () => {
         fecha: Date.now(),
         latitud: 4.6097,
         longitud: -74.0817,
-        checksum: 'abc123',
+        checksum: 'abc123'
       };
 
       const result = await validator.validateBusinessLogic('pago', pago);
@@ -204,7 +206,7 @@ describe('Validator', () => {
         fecha: Date.now() + 86400000, // Tomorrow
         latitud: 4.6097,
         longitud: -74.0817,
-        checksum: 'abc123',
+        checksum: 'abc123'
       };
 
       const result = await validator.validateBusinessLogic('pago', pago);
@@ -218,7 +220,7 @@ describe('Validator', () => {
         monto: 50000,
         fecha: Date.now(),
         latitud: 4.6097,
-        longitud: -74.0817,
+        longitud: -74.0817
         // Missing checksum
       };
 
@@ -233,14 +235,18 @@ describe('Validator', () => {
     it('should validate referential integrity', async () => {
       const data = {
         id: '123e4567-e89b-12d3-a456-426614174000',
-        tenant_id: '123e4567-e89b-12d3-a456-426614174001',
+        tenant_id: '123e4567-e89b-12d3-a456-426614174001'
       };
 
       const relatedData = {
-        tenant: { id: '123e4567-e89b-12d3-a456-426614174001' },
+        tenant: { id: '123e4567-e89b-12d3-a456-426614174001' }
       };
 
-      const result = await validator.validatePostSave('cliente', data, relatedData);
+      const result = await validator.validatePostSave(
+        'cliente',
+        data,
+        relatedData
+      );
 
       expect(result.valid).toBe(true);
     });
@@ -248,20 +254,26 @@ describe('Validator', () => {
     it('should detect missing tenant reference', async () => {
       const data = {
         id: '123e4567-e89b-12d3-a456-426614174000',
-        tenant_id: '123e4567-e89b-12d3-a456-426614174001',
+        tenant_id: '123e4567-e89b-12d3-a456-426614174001'
       };
 
       const relatedData = {}; // No tenant
 
-      const result = await validator.validatePostSave('cliente', data, relatedData);
+      const result = await validator.validatePostSave(
+        'cliente',
+        data,
+        relatedData
+      );
 
       expect(result.valid).toBe(false);
-      expect(result.errors.some(e => e.code === 'REFERENTIAL_INTEGRITY')).toBe(true);
+      expect(result.errors.some(e => e.code === 'REFERENTIAL_INTEGRITY')).toBe(
+        true
+      );
     });
 
     it('should warn about missing checksum', async () => {
       const data = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
+        id: '123e4567-e89b-12d3-a456-426614174000'
         // Missing checksum
       };
 
@@ -288,7 +300,7 @@ describe('Validator', () => {
         device_id: 'device-123',
         app_version: '1.0.0',
         connection_type: 'wifi',
-        checksum: 'abc123def456',
+        checksum: 'abc123def456'
       };
 
       const result = await validator.validatePreSync('pago', pago);
@@ -299,7 +311,7 @@ describe('Validator', () => {
     it('should reject pago without checksum for sync', async () => {
       const pago = {
         id: '123e4567-e89b-12d3-a456-426614174000',
-        monto: 50000,
+        monto: 50000
         // Missing checksum
       };
 
@@ -314,7 +326,7 @@ describe('Validator', () => {
     it('should validate array of records', async () => {
       const records = [
         { id: '1', checksum: 'abc', _cliente_exists: true },
-        { id: '2', checksum: 'def', _cliente_exists: true },
+        { id: '2', checksum: 'def', _cliente_exists: true }
       ];
 
       const result = await validator.validateBackground(records);
@@ -324,7 +336,7 @@ describe('Validator', () => {
 
     it('should warn about orphaned records', async () => {
       const records = [
-        { id: '1', cliente_id: 'client-1', _cliente_exists: false },
+        { id: '1', cliente_id: 'client-1', _cliente_exists: false }
       ];
 
       const result = await validator.validateBackground(records);

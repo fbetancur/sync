@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 console.log('📱 Creando iconos PWA placeholder...');
 
 // Crear un SVG simple como placeholder
-const createSVGIcon = (size) => {
+const createSVGIcon = size => {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <rect width="${size}" height="${size}" fill="#1e40af"/>
@@ -40,7 +40,9 @@ console.log('✅ Iconos SVG creados:');
 console.log('   - public/pwa-192x192.svg');
 console.log('   - public/pwa-512x512.svg');
 console.log('');
-console.log('⚠️  NOTA: Para producción, debes reemplazar estos iconos SVG con imágenes PNG reales.');
+console.log(
+  '⚠️  NOTA: Para producción, debes reemplazar estos iconos SVG con imágenes PNG reales.'
+);
 console.log('   Puedes usar herramientas como:');
 console.log('   - https://realfavicongenerator.net/');
 console.log('   - https://www.pwabuilder.com/imageGenerator');

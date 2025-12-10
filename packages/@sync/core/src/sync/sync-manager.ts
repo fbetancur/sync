@@ -1,13 +1,13 @@
 /**
  * Gestor de Sincronización - Orquestador principal de sincronización
- * 
+ *
  * Responsabilidades:
  * - Detectar estado de conexión
  * - Coordinar sincronización bidireccional (upload → download)
  * - Integrar SyncQueue, ChangeTracker y ConflictResolver
  * - Reportar progreso en tiempo real
  * - Manejar errores con reintentos
- * 
+ *
  * Requirements: 5.1, 5.4, 5.5, 5.9
  */
 
@@ -81,7 +81,10 @@ export class SyncManager {
       };
     }
 
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
 
     return {
       online: navigator.onLine,
@@ -220,10 +223,11 @@ export class SyncManager {
 
       this.lastSyncTimestamp = Date.now();
       await this.updateLastSyncTimestamp();
-
     } catch (error) {
       result.success = false;
-      result.errors.push(error instanceof Error ? error.message : 'Error desconocido');
+      result.errors.push(
+        error instanceof Error ? error.message : 'Error desconocido'
+      );
     } finally {
       this.isSyncing = false;
       this.syncAbortController = null;
@@ -248,10 +252,12 @@ export class SyncManager {
       }
 
       // Comprimir cambios (múltiples cambios al mismo campo → un solo delta)
-      const compressedChanges = await this.changeTracker.compressChanges(pendingChanges);
+      const compressedChanges =
+        await this.changeTracker.compressChanges(pendingChanges);
 
       // Crear batches priorizados
-      const batches = await this.changeTracker.createUploadBatches(compressedChanges);
+      const batches =
+        await this.changeTracker.createUploadBatches(compressedChanges);
 
       // Subir cada batch
       for (const batch of batches) {
@@ -272,7 +278,6 @@ export class SyncManager {
           }
 
           uploadedCount += batch.changes.length;
-
         } catch (error) {
           // Agregar a la cola de reintentos (no lanzar error)
           try {
@@ -290,7 +295,6 @@ export class SyncManager {
           }
         }
       }
-
     } catch (error) {
       // No lanzar error, solo retornar 0
       console.error('Error de sincronización de subida:', error);
@@ -304,7 +308,9 @@ export class SyncManager {
    * Sincronización de descarga (server → device)
    * Requirements: 5.5
    */
-  async syncDownload(options: SyncOptions = {}): Promise<{ downloaded: number; conflicts: number }> {
+  async syncDownload(
+    options: SyncOptions = {}
+  ): Promise<{ downloaded: number; conflicts: number }> {
     let downloadedCount = 0;
     let conflictsCount = 0;
 
@@ -328,7 +334,10 @@ export class SyncManager {
 
         try {
           // Verificar si hay conflicto
-          const localRecord = await this.getLocalRecord(delta.table, delta.record_id);
+          const localRecord = await this.getLocalRecord(
+            delta.table,
+            delta.record_id
+          );
 
           if (localRecord && !localRecord.synced) {
             // Hay conflicto: resolver con CRDT
@@ -339,22 +348,26 @@ export class SyncManager {
             );
 
             // Aplicar resolución
-            await this.applyResolution(delta.table, delta.record_id, resolution.resolved);
+            await this.applyResolution(
+              delta.table,
+              delta.record_id,
+              resolution.resolved
+            );
             conflictsCount++;
-
           } else {
             // No hay conflicto: aplicar directamente
             await this.changeTracker.applyDeltas([delta]);
           }
 
           downloadedCount++;
-
         } catch (error) {
           // Log error pero continuar con otros registros
-          console.error(`Falló aplicar delta para ${delta.table}:${delta.record_id}`, error);
+          console.error(
+            `Falló aplicar delta para ${delta.table}:${delta.record_id}`,
+            error
+          );
         }
       }
-
     } catch (error) {
       // No lanzar error, solo retornar 0
       console.error('Error de sincronización de descarga:', error);
@@ -403,7 +416,7 @@ export class SyncManager {
    */
   private async uploadBatch(batch: any): Promise<void> {
     // Simulación de upload
-    return new Promise((resolve) => setTimeout(resolve, 100));
+    return new Promise(resolve => setTimeout(resolve, 100));
   }
 
   /**
@@ -418,7 +431,10 @@ export class SyncManager {
   /**
    * Obtiene un registro local de la base de datos
    */
-  private async getLocalRecord(table: string, recordId: string): Promise<any | null> {
+  private async getLocalRecord(
+    table: string,
+    recordId: string
+  ): Promise<any | null> {
     if (!this.db) return null;
 
     try {
@@ -435,7 +451,11 @@ export class SyncManager {
   /**
    * Aplica la resolución de un conflicto
    */
-  private async applyResolution(table: string, recordId: string, resolved: any): Promise<void> {
+  private async applyResolution(
+    table: string,
+    recordId: string,
+    resolved: any
+  ): Promise<void> {
     if (!this.db) return;
 
     const tableRef = (this.db as any)[table];

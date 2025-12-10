@@ -1,6 +1,6 @@
 /**
  * Tests for Authentication Service
- * 
+ *
  * Tests authentication functionality with Supabase
  */
 
@@ -61,7 +61,7 @@ describe('AuthService', () => {
       };
 
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { session: mockSession, user: mockUser },
         error: null
@@ -89,7 +89,7 @@ describe('AuthService', () => {
 
     it('should throw error with invalid credentials', async () => {
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue({
         data: { session: null, user: null },
         error: new Error('Invalid credentials')
@@ -107,7 +107,7 @@ describe('AuthService', () => {
   describe('signOut', () => {
     it('should sign out successfully', async () => {
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.signOut).mockResolvedValue({
         error: null
       } as any);
@@ -132,7 +132,7 @@ describe('AuthService', () => {
     it('should return current session', async () => {
       const mockSession = { access_token: 'token', user: { id: 'user-1' } };
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.getSession).mockResolvedValue({
         data: { session: mockSession },
         error: null
@@ -145,7 +145,7 @@ describe('AuthService', () => {
 
     it('should return null when no session', async () => {
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.getSession).mockResolvedValue({
         data: { session: null },
         error: null
@@ -161,7 +161,7 @@ describe('AuthService', () => {
     it('should return true when session exists', async () => {
       const mockSession = { access_token: 'token' };
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.getSession).mockResolvedValue({
         data: { session: mockSession },
         error: null
@@ -174,7 +174,7 @@ describe('AuthService', () => {
 
     it('should return false when no session', async () => {
       const { supabase } = await import('../supabase');
-      
+
       vi.mocked(supabase.auth.getSession).mockResolvedValue({
         data: { session: null },
         error: null

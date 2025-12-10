@@ -1,6 +1,6 @@
 /**
  * Hook de Svelte para integración de Background Sync
- * 
+ *
  * Proporciona integración fácil de Background Sync en componentes Svelte
  */
 
@@ -11,7 +11,9 @@ import { onMount, onDestroy } from 'svelte';
  */
 export function createBackgroundSyncHook(backgroundSyncManager, syncManager) {
   if (!backgroundSyncManager || !syncManager) {
-    throw new Error('backgroundSyncManager y syncManager son requeridos para createBackgroundSyncHook');
+    throw new Error(
+      'backgroundSyncManager y syncManager son requeridos para createBackgroundSyncHook'
+    );
   }
 
   return function useBackgroundSync(options = {}) {
@@ -19,7 +21,7 @@ export function createBackgroundSyncHook(backgroundSyncManager, syncManager) {
 
     onMount(() => {
       // Configurar listener de mensajes para mensajes del Service Worker
-      messageHandler = async (event) => {
+      messageHandler = async event => {
         if (event.data && event.data.type === 'BACKGROUND_SYNC') {
           console.log('📨 Recibida solicitud de background sync del SW');
 
@@ -83,7 +85,7 @@ export function createBackgroundSyncHook(backgroundSyncManager, syncManager) {
             console.log('✅ Background sync completado');
             options.onSyncComplete?.({ success: true });
           },
-          onFailure: (error) => {
+          onFailure: error => {
             console.error('❌ Background sync falló:', error);
             options.onSyncError?.(error);
           }
@@ -93,7 +95,11 @@ export function createBackgroundSyncHook(backgroundSyncManager, syncManager) {
 
     onDestroy(() => {
       // Limpiar listener de mensajes
-      if (messageHandler && typeof navigator !== 'undefined' && navigator.serviceWorker) {
+      if (
+        messageHandler &&
+        typeof navigator !== 'undefined' &&
+        navigator.serviceWorker
+      ) {
         navigator.serviceWorker.removeEventListener('message', messageHandler);
       }
 
@@ -110,7 +116,7 @@ export function createBackgroundSyncHook(backgroundSyncManager, syncManager) {
       registerSync: async () => {
         return await backgroundSyncManager.registerSync({
           onSuccess: () => options.onSyncComplete?.({ success: true }),
-          onFailure: (error) => options.onSyncError?.(error)
+          onFailure: error => options.onSyncError?.(error)
         });
       },
 
@@ -156,9 +162,15 @@ export function createBackgroundSyncHook(backgroundSyncManager, syncManager) {
  * Hook de background sync básico (requiere inyección de servicios)
  * Para usar este hook, primero debe crear una instancia con createBackgroundSyncHook()
  */
-export function useBackgroundSync(backgroundSyncManager, syncManager, options = {}) {
+export function useBackgroundSync(
+  backgroundSyncManager,
+  syncManager,
+  options = {}
+) {
   if (!backgroundSyncManager || !syncManager) {
-    console.warn('useBackgroundSync: backgroundSyncManager y syncManager no proporcionados. Use createBackgroundSyncHook() en su lugar.');
+    console.warn(
+      'useBackgroundSync: backgroundSyncManager y syncManager no proporcionados. Use createBackgroundSyncHook() en su lugar.'
+    );
     return {
       registerSync: async () => false,
       isSupported: () => false,
@@ -167,7 +179,10 @@ export function useBackgroundSync(backgroundSyncManager, syncManager, options = 
       showNotification: async () => false
     };
   }
-  
-  const hookFactory = createBackgroundSyncHook(backgroundSyncManager, syncManager);
+
+  const hookFactory = createBackgroundSyncHook(
+    backgroundSyncManager,
+    syncManager
+  );
   return hookFactory(options);
 }

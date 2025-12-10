@@ -1,6 +1,6 @@
 /**
  * Encryption Integration Tests
- * 
+ *
  * Tests integration between encryption service and other components.
  * Requirements: 17.4, 17.5
  */
@@ -15,7 +15,7 @@ vi.mock('../supabase', () => ({
     auth: {
       signOut: vi.fn().mockResolvedValue({ error: null }),
       getSession: vi.fn().mockResolvedValue({ data: { session: null } }),
-      getUser: vi.fn().mockResolvedValue({ data: { user: null } }),
+      getUser: vi.fn().mockResolvedValue({ data: { user: null } })
     }
   }
 }));
@@ -45,14 +45,14 @@ describe('Encryption Integration', () => {
 
     it('should maintain encryption during session', async () => {
       const testData = 'sensitive-data';
-      
+
       // Encrypt data
       const encrypted = await encryptionService.encrypt(testData);
-      
+
       // Verify we can still decrypt (session active)
       const decrypted = await encryptionService.decrypt(encrypted);
       expect(decrypted).toBe(testData);
-      
+
       // Verify encryption is still initialized
       expect(encryptionService.isInitialized()).toBe(true);
     });
@@ -73,21 +73,31 @@ describe('Encryption Integration', () => {
       };
 
       // Simulate saving to database (encrypt sensitive fields)
-      const encryptedForStorage = await encryptionService.encryptSensitiveFields(clienteData);
-      
+      const encryptedForStorage =
+        await encryptionService.encryptSensitiveFields(clienteData);
+
       // Verify sensitive fields are encrypted
-      expect(encryptionService.constructor.isEncrypted(encryptedForStorage.numero_documento)).toBe(true);
-      expect(encryptionService.constructor.isEncrypted(encryptedForStorage.telefono)).toBe(true);
-      expect(encryptionService.constructor.isEncrypted(encryptedForStorage.direccion)).toBe(true);
-      
+      expect(
+        encryptionService.constructor.isEncrypted(
+          encryptedForStorage.numero_documento
+        )
+      ).toBe(true);
+      expect(
+        encryptionService.constructor.isEncrypted(encryptedForStorage.telefono)
+      ).toBe(true);
+      expect(
+        encryptionService.constructor.isEncrypted(encryptedForStorage.direccion)
+      ).toBe(true);
+
       // Verify non-sensitive fields are not encrypted
       expect(encryptedForStorage.nombre).toBe(clienteData.nombre);
       expect(encryptedForStorage.email).toBe(clienteData.email);
       expect(encryptedForStorage.id).toBe(clienteData.id);
 
       // Simulate reading from database (decrypt sensitive fields)
-      const decryptedFromStorage = await encryptionService.decryptSensitiveFields(encryptedForStorage);
-      
+      const decryptedFromStorage =
+        await encryptionService.decryptSensitiveFields(encryptedForStorage);
+
       // Verify data is restored correctly
       expect(decryptedFromStorage).toEqual(clienteData);
     });
@@ -101,15 +111,20 @@ describe('Encryption Integration', () => {
       };
 
       // Should not throw error, but handle gracefully
-      const result = await encryptionService.encryptSensitiveFields(clienteData);
-      
+      const result =
+        await encryptionService.encryptSensitiveFields(clienteData);
+
       // Valid fields should be encrypted
-      expect(encryptionService.constructor.isEncrypted(result.numero_documento)).toBe(true);
-      expect(encryptionService.constructor.isEncrypted(result.direccion)).toBe(true);
-      
+      expect(
+        encryptionService.constructor.isEncrypted(result.numero_documento)
+      ).toBe(true);
+      expect(encryptionService.constructor.isEncrypted(result.direccion)).toBe(
+        true
+      );
+
       // Invalid field should remain unchanged
       expect(result.telefono).toBe(123);
-      
+
       // Non-sensitive field should remain unchanged
       expect(result.id).toBe('cliente-123');
     });
@@ -118,18 +133,18 @@ describe('Encryption Integration', () => {
   describe('Memory Management', () => {
     it('should not leak sensitive data in memory after clearing', async () => {
       const sensitiveData = 'very-sensitive-information';
-      
+
       // Encrypt data
       const encrypted = await encryptionService.encrypt(sensitiveData);
-      
+
       // Clear encryption key
       encryptionService.clearEncryptionKey();
-      
+
       // Should not be able to decrypt anymore
       await expect(encryptionService.decrypt(encrypted)).rejects.toThrow(
         'Encryption service not initialized'
       );
-      
+
       // Should not be able to encrypt anymore
       await expect(encryptionService.encrypt(sensitiveData)).rejects.toThrow(
         'Encryption service not initialized'
@@ -139,16 +154,16 @@ describe('Encryption Integration', () => {
     it('should require re-initialization after clearing', async () => {
       // Clear encryption
       encryptionService.clearEncryptionKey();
-      
+
       // Should not be initialized
       expect(encryptionService.isInitialized()).toBe(false);
-      
+
       // Re-initialize
       await encryptionService.initializeWithPin('new-pin');
-      
+
       // Should be initialized again
       expect(encryptionService.isInitialized()).toBe(true);
-      
+
       // Should be able to encrypt/decrypt again
       const data = 'test-data';
       const encrypted = await encryptionService.encrypt(data);
@@ -160,30 +175,30 @@ describe('Encryption Integration', () => {
   describe('Cross-Session Security', () => {
     it('should not decrypt data encrypted with different PIN', async () => {
       const data = 'secret-data';
-      
+
       // Encrypt with first PIN
       const encrypted = await encryptionService.encrypt(data);
-      
+
       // Clear and reinitialize with different PIN
       encryptionService.clearEncryptionKey();
       await encryptionService.initializeWithPin('different-pin');
-      
+
       // Should not be able to decrypt
       await expect(encryptionService.decrypt(encrypted)).rejects.toThrow();
     });
 
     it('should maintain data integrity across sessions with same PIN', async () => {
       const data = 'persistent-data';
-      
+
       // Encrypt with PIN
       const encrypted = await encryptionService.encrypt(data);
-      
+
       // Simulate session end
       encryptionService.clearEncryptionKey();
-      
+
       // Simulate new session with same PIN
       await encryptionService.initializeWithPin(testPin);
-      
+
       // Should be able to decrypt
       const decrypted = await encryptionService.decrypt(encrypted);
       expect(decrypted).toBe(data);
@@ -194,18 +209,18 @@ describe('Encryption Integration', () => {
     it('should handle multiple encryptions efficiently', async () => {
       const startTime = Date.now();
       const promises = [];
-      
+
       // Encrypt 10 pieces of data concurrently
       for (let i = 0; i < 10; i++) {
         promises.push(encryptionService.encrypt(`data-${i}`));
       }
-      
+
       const results = await Promise.all(promises);
       const endTime = Date.now();
-      
+
       // Should complete in reasonable time (less than 5 seconds)
       expect(endTime - startTime).toBeLessThan(5000);
-      
+
       // All should be encrypted
       expect(results).toHaveLength(10);
       results.forEach(result => {
@@ -225,13 +240,15 @@ describe('Encryption Integration', () => {
       };
 
       const startTime = Date.now();
-      const encrypted = await encryptionService.encryptSensitiveFields(largeObject);
-      const decrypted = await encryptionService.decryptSensitiveFields(encrypted);
+      const encrypted =
+        await encryptionService.encryptSensitiveFields(largeObject);
+      const decrypted =
+        await encryptionService.decryptSensitiveFields(encrypted);
       const endTime = Date.now();
 
       // Should complete in reasonable time
       expect(endTime - startTime).toBeLessThan(2000);
-      
+
       // Data should be preserved
       expect(decrypted).toEqual(largeObject);
     });

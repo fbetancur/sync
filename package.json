@@ -52,7 +52,19 @@
     "performance-monitor:all": "node tools/scripts/performance-monitor.js --all",
     "metrics-dashboard": "node tools/scripts/metrics-dashboard.js",
     "metrics-dashboard:serve": "node tools/scripts/metrics-dashboard.js --serve",
-    "metrics-dashboard:export": "node tools/scripts/metrics-dashboard.js --export"
+    "metrics-dashboard:export": "node tools/scripts/metrics-dashboard.js --export",
+    "validation-complete": "node tools/scripts/validation-complete.js",
+    "validation-complete:staging": "node tools/scripts/validation-complete.js --staging",
+    "validation-complete:production": "node tools/scripts/validation-complete.js --production",
+    "optimize-performance": "node tools/scripts/optimize-performance.js",
+    "optimize-performance:build": "node tools/scripts/optimize-performance.js --build",
+    "optimize-performance:bundle": "node tools/scripts/optimize-performance.js --bundle",
+    "optimize-performance:deps": "node tools/scripts/optimize-performance.js --deps",
+    "optimize-performance:all": "node tools/scripts/optimize-performance.js --all",
+    "rollback": "node tools/scripts/rollback.js",
+    "rollback:to-backup": "node tools/scripts/rollback.js --to-backup=backup-pre-migration",
+    "rollback:list-backups": "node tools/scripts/rollback.js --list-backups",
+    "rollback:dry-run": "node tools/scripts/rollback.js --dry-run"
   },
   "engines": {
     "node": ">=18.0.0",

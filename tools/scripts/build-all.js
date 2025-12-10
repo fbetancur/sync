@@ -30,11 +30,11 @@ function log(color, message) {
 
 function execCommand(command, description) {
   log('cyan', `🔨 ${description}`);
-  
+
   try {
     const startTime = Date.now();
-    execSync(command, { 
-      stdio: 'inherit', 
+    execSync(command, {
+      stdio: 'inherit',
       cwd: rootDir,
       env: { ...process.env, FORCE_COLOR: '1' }
     });
@@ -53,12 +53,15 @@ function getPackages() {
   if (!fs.existsSync(packagesDir)) {
     return [];
   }
-  
-  return fs.readdirSync(packagesDir)
+
+  return fs
+    .readdirSync(packagesDir)
     .filter(name => {
       const packagePath = path.join(packagesDir, name);
-      return fs.statSync(packagePath).isDirectory() && 
-             fs.existsSync(path.join(packagePath, 'package.json'));
+      return (
+        fs.statSync(packagePath).isDirectory() &&
+        fs.existsSync(path.join(packagePath, 'package.json'))
+      );
     })
     .map(name => `@sync/${name}`);
 }
@@ -68,21 +71,22 @@ function getApps() {
   if (!fs.existsSync(appsDir)) {
     return [];
   }
-  
-  return fs.readdirSync(appsDir)
-    .filter(name => {
-      const appPath = path.join(appsDir, name);
-      return fs.statSync(appPath).isDirectory() && 
-             fs.existsSync(path.join(appPath, 'package.json'));
-    });
+
+  return fs.readdirSync(appsDir).filter(name => {
+    const appPath = path.join(appsDir, name);
+    return (
+      fs.statSync(appPath).isDirectory() &&
+      fs.existsSync(path.join(appPath, 'package.json'))
+    );
+  });
 }
 
 function buildPackages() {
   log('blue', '📦 Construyendo packages...');
-  
+
   const packages = getPackages();
   const buildOrder = ['@sync/types', '@sync/core', '@sync/ui'];
-  
+
   // Construir en orden de dependencias
   for (const packageName of buildOrder) {
     if (packages.includes(packageName)) {
@@ -90,13 +94,13 @@ function buildPackages() {
         `pnpm --filter ${packageName} build`,
         `Construyendo ${packageName}`
       );
-      
+
       if (!success) {
         return false;
       }
     }
   }
-  
+
   // Construir packages restantes
   for (const packageName of packages) {
     if (!buildOrder.includes(packageName)) {
@@ -104,51 +108,48 @@ function buildPackages() {
         `pnpm --filter ${packageName} build`,
         `Construyendo ${packageName}`
       );
-      
+
       if (!success) {
         return false;
       }
     }
   }
-  
+
   log('green', '✅ Todos los packages construidos exitosamente');
   return true;
 }
 
 function buildApps() {
   log('blue', '📱 Construyendo aplicaciones...');
-  
+
   const apps = getApps();
-  
+
   for (const appName of apps) {
     const success = execCommand(
       `pnpm --filter ${appName} build`,
       `Construyendo ${appName}`
     );
-    
+
     if (!success) {
       return false;
     }
   }
-  
+
   log('green', '✅ Todas las aplicaciones construidas exitosamente');
   return true;
 }
 
 function cleanAll() {
   log('blue', '🧹 Limpiando builds anteriores...');
-  
-  const success = execCommand(
-    'pnpm clean',
-    'Limpiando todos los builds'
-  );
-  
+
+  const success = execCommand('pnpm clean', 'Limpiando todos los builds');
+
   return success;
 }
 
 function validateEnvironment() {
   log('blue', '🔍 Validando entorno...');
-  
+
   // Verificar pnpm
   try {
     execSync('pnpm --version', { stdio: 'pipe' });
@@ -156,13 +157,13 @@ function validateEnvironment() {
     log('red', '❌ pnpm no está instalado');
     return false;
   }
-  
+
   // Verificar que estamos en la raíz del monorepo
   if (!fs.existsSync(path.join(rootDir, 'pnpm-workspace.yaml'))) {
     log('red', '❌ No se encontró pnpm-workspace.yaml');
     return false;
   }
-  
+
   log('green', '✅ Entorno validado');
   return true;
 }
@@ -172,7 +173,7 @@ function printSummary(packagesBuilt, appsBuilt, totalTime) {
   log('cyan', `📦 Packages construidos: ${packagesBuilt ? '✅' : '❌'}`);
   log('cyan', `📱 Apps construidas: ${appsBuilt ? '✅' : '❌'}`);
   log('cyan', `⏱️  Tiempo total: ${totalTime}s`);
-  
+
   if (packagesBuilt && appsBuilt) {
     log('green', '\\n🎉 Build completo exitoso!');
     log('yellow', '\\n📋 Próximos pasos:');
@@ -194,25 +195,25 @@ function main() {
   const appsOnly = args.includes('--apps-only');
   const clean = args.includes('--clean');
   const skipValidation = args.includes('--skip-validation');
-  
+
   log('blue', '🏗️  Build System - Sync Platform');
-  
+
   const startTime = Date.now();
   let packagesBuilt = false;
   let appsBuilt = false;
-  
+
   // Validar entorno
   if (!skipValidation && !validateEnvironment()) {
     process.exit(1);
   }
-  
+
   // Limpiar si se solicita
   if (clean) {
     if (!cleanAll()) {
       process.exit(1);
     }
   }
-  
+
   // Construir packages
   if (!appsOnly) {
     packagesBuilt = buildPackages();
@@ -222,7 +223,7 @@ function main() {
   } else {
     packagesBuilt = true; // Asumimos que ya están construidos
   }
-  
+
   // Construir apps
   if (!packagesOnly) {
     appsBuilt = buildApps();
@@ -232,10 +233,10 @@ function main() {
   } else {
     appsBuilt = true; // No se construyen apps
   }
-  
+
   const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
   printSummary(packagesBuilt, appsBuilt, totalTime);
-  
+
   process.exit(0);
 }
 

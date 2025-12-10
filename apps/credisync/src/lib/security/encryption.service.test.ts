@@ -1,6 +1,6 @@
 /**
  * EncryptionService Tests
- * 
+ *
  * Tests for field-level encryption functionality.
  * Requirements: 17.1, 17.2, 17.3, 17.4, 17.5
  */
@@ -53,7 +53,7 @@ describe('EncryptionService', () => {
   describe('Encryption and Decryption', () => {
     it('should encrypt and decrypt data successfully', async () => {
       const encrypted = await encryptionService.encrypt(testData);
-      
+
       expect(encrypted).toHaveProperty('data');
       expect(encrypted).toHaveProperty('iv');
       expect(encrypted).toHaveProperty('salt');
@@ -68,7 +68,7 @@ describe('EncryptionService', () => {
     it('should produce different encrypted data for same input', async () => {
       const encrypted1 = await encryptionService.encrypt(testData);
       const encrypted2 = await encryptionService.encrypt(testData);
-      
+
       // Should be different due to random IV and salt
       expect(encrypted1.data).not.toBe(encrypted2.data);
       expect(encrypted1.iv).not.toBe(encrypted2.iv);
@@ -99,7 +99,7 @@ describe('EncryptionService', () => {
     it('should fail encryption when not initialized', async () => {
       const uninitializedService = EncryptionService.getInstance();
       uninitializedService.clearEncryptionKey();
-      
+
       await expect(uninitializedService.encrypt(testData)).rejects.toThrow(
         'Encryption service not initialized'
       );
@@ -108,7 +108,7 @@ describe('EncryptionService', () => {
     it('should fail decryption when not initialized', async () => {
       const encrypted = await encryptionService.encrypt(testData);
       encryptionService.clearEncryptionKey();
-      
+
       await expect(encryptionService.decrypt(encrypted)).rejects.toThrow(
         'Encryption service not initialized'
       );
@@ -116,13 +116,13 @@ describe('EncryptionService', () => {
 
     it('should fail decryption with invalid encrypted data', async () => {
       await encryptionService.initializeWithPin(testPin);
-      
+
       const invalidData: EncryptedData = {
         data: 'invalid',
         iv: 'invalid',
         salt: 'invalid'
       };
-      
+
       await expect(encryptionService.decrypt(invalidData)).rejects.toThrow(
         'Decryption failed'
       );
@@ -154,20 +154,23 @@ describe('EncryptionService', () => {
         email: 'juan@example.com'
       };
 
-      const encrypted = await encryptionService.encryptSensitiveFields(testObject);
-      
+      const encrypted =
+        await encryptionService.encryptSensitiveFields(testObject);
+
       // Non-sensitive fields should remain unchanged
       expect(encrypted.id).toBe(testObject.id);
       expect(encrypted.nombre).toBe(testObject.nombre);
       expect(encrypted.email).toBe(testObject.email);
-      
+
       // Sensitive fields should be encrypted
       expect(encrypted.numero_documento).not.toBe(testObject.numero_documento);
       expect(encrypted.telefono).not.toBe(testObject.telefono);
       expect(encrypted.direccion).not.toBe(testObject.direccion);
-      
+
       // Encrypted fields should have the correct structure
-      expect(EncryptionService.isEncrypted(encrypted.numero_documento)).toBe(true);
+      expect(EncryptionService.isEncrypted(encrypted.numero_documento)).toBe(
+        true
+      );
       expect(EncryptionService.isEncrypted(encrypted.telefono)).toBe(true);
       expect(EncryptionService.isEncrypted(encrypted.direccion)).toBe(true);
     });
@@ -181,9 +184,11 @@ describe('EncryptionService', () => {
         direccion: 'Calle 123 #45-67'
       };
 
-      const encrypted = await encryptionService.encryptSensitiveFields(testObject);
-      const decrypted = await encryptionService.decryptSensitiveFields(encrypted);
-      
+      const encrypted =
+        await encryptionService.encryptSensitiveFields(testObject);
+      const decrypted =
+        await encryptionService.decryptSensitiveFields(encrypted);
+
       expect(decrypted).toEqual(testObject);
     });
 
@@ -194,18 +199,24 @@ describe('EncryptionService', () => {
         email: 'juan@example.com'
       };
 
-      const encrypted = await encryptionService.encryptSensitiveFields(testObject);
+      const encrypted =
+        await encryptionService.encryptSensitiveFields(testObject);
       expect(encrypted).toEqual(testObject);
-      
-      const decrypted = await encryptionService.decryptSensitiveFields(encrypted);
+
+      const decrypted =
+        await encryptionService.decryptSensitiveFields(encrypted);
       expect(decrypted).toEqual(testObject);
     });
 
     it('should handle null and undefined objects', async () => {
       expect(await encryptionService.encryptSensitiveFields(null)).toBe(null);
-      expect(await encryptionService.encryptSensitiveFields(undefined)).toBe(undefined);
+      expect(await encryptionService.encryptSensitiveFields(undefined)).toBe(
+        undefined
+      );
       expect(await encryptionService.decryptSensitiveFields(null)).toBe(null);
-      expect(await encryptionService.decryptSensitiveFields(undefined)).toBe(undefined);
+      expect(await encryptionService.decryptSensitiveFields(undefined)).toBe(
+        undefined
+      );
     });
 
     it('should handle objects with null sensitive field values', async () => {
@@ -216,7 +227,8 @@ describe('EncryptionService', () => {
         direccion: ''
       };
 
-      const encrypted = await encryptionService.encryptSensitiveFields(testObject);
+      const encrypted =
+        await encryptionService.encryptSensitiveFields(testObject);
       expect(encrypted.numero_documento).toBe(null);
       expect(encrypted.telefono).toBe(undefined);
       expect(encrypted.direccion).toBe(''); // Empty string is not encrypted
@@ -238,10 +250,12 @@ describe('EncryptionService', () => {
         iv: 'base64iv',
         salt: 'base64salt'
       };
-      
+
       expect(EncryptionService.isEncrypted(encryptedData)).toBe(true);
       expect(EncryptionService.isEncrypted('plain string')).toBe(false);
-      expect(EncryptionService.isEncrypted({ data: 'missing iv and salt' })).toBe(false);
+      expect(
+        EncryptionService.isEncrypted({ data: 'missing iv and salt' })
+      ).toBe(false);
       expect(EncryptionService.isEncrypted(null)).toBe(false);
     });
 
@@ -263,15 +277,15 @@ describe('EncryptionService', () => {
 
     it('should use different keys for different PINs', async () => {
       const data = 'test data';
-      
+
       // Encrypt with first PIN
       await encryptionService.initializeWithPin('pin1');
       const encrypted1 = await encryptionService.encrypt(data);
-      
+
       // Try to decrypt with different PIN
       encryptionService.clearEncryptionKey();
       await encryptionService.initializeWithPin('pin2');
-      
+
       await expect(encryptionService.decrypt(encrypted1)).rejects.toThrow();
     });
 
@@ -280,22 +294,22 @@ describe('EncryptionService', () => {
       // The actual iteration count is verified in the implementation
       const service = EncryptionService.getInstance();
       service.clearEncryptionKey();
-      
+
       await service.initializeWithPin('testpin');
       const encrypted = await service.encrypt('test data');
       const decrypted = await service.decrypt(encrypted);
-      
+
       expect(decrypted).toBe('test data');
     });
 
     it('should allow custom iteration count', async () => {
       const service = EncryptionService.getInstance();
       service.clearEncryptionKey();
-      
+
       await service.initializeWithPin('testpin', { iterations: 50000 });
       const encrypted = await service.encrypt('test data');
       const decrypted = await service.decrypt(encrypted);
-      
+
       expect(decrypted).toBe('test data');
     });
   });
@@ -308,7 +322,8 @@ describe('EncryptionService', () => {
       };
 
       // Should not throw, but log error
-      const encrypted = await encryptionService.encryptSensitiveFields(testObject);
+      const encrypted =
+        await encryptionService.encryptSensitiveFields(testObject);
       expect(encrypted.numero_documento).not.toBe('valid'); // Should be encrypted
       expect(encrypted.telefono).toBe(123); // Should remain unchanged due to error
     });
@@ -317,13 +332,14 @@ describe('EncryptionService', () => {
       const testObject = {
         numero_documento: {
           data: 'invalid',
-          iv: 'invalid', 
+          iv: 'invalid',
           salt: 'invalid'
         }
       };
 
       // Should not throw, but return encrypted data as-is
-      const decrypted = await encryptionService.decryptSensitiveFields(testObject);
+      const decrypted =
+        await encryptionService.decryptSensitiveFields(testObject);
       expect(decrypted.numero_documento).toEqual(testObject.numero_documento);
     });
   });

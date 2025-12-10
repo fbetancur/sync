@@ -7,12 +7,7 @@ module.exports = {
     browser: true,
     node: false
   },
-  ignorePatterns: [
-    'node_modules/',
-    'dist/',
-    'coverage/',
-    '.svelte-kit/'
-  ],
+  ignorePatterns: ['node_modules/', 'dist/', 'coverage/', '.svelte-kit/'],
   // Reglas para componentes UI
   rules: {
     ...require('../../../.eslintrc.shared.cjs').rules,

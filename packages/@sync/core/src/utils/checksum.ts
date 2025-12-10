@@ -1,10 +1,10 @@
 /**
  * Módulo de Verificación de Checksums e Integridad
- * 
+ *
  * Este módulo implementa el cálculo y verificación de checksums usando Web Crypto API (SHA-256).
  * Proporciona verificación de integridad para registros críticos (pagos, créditos) y verificaciones
  * periódicas de integridad con procedimientos automáticos de recuperación.
- * 
+ *
  * Requirements: 2.6, 7.6
  */
 
@@ -47,18 +47,20 @@ export class ChecksumService {
     try {
       // Convertir datos a string JSON canónico
       const jsonString = JSON.stringify(this.canonicalize(data));
-      
+
       // Convertir string a Uint8Array
       const encoder = new TextEncoder();
       const dataBuffer = encoder.encode(jsonString);
-      
+
       // Calcular hash SHA-256
       const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
-      
+
       // Convertir hash a string hexadecimal
       const hashArray = Array.from(new Uint8Array(hashBuffer));
-      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-      
+      const hashHex = hashArray
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+
       return hashHex;
     } catch (error) {
       console.error('Error calculando checksum:', error);
@@ -81,7 +83,7 @@ export class ChecksumService {
 
     const sorted: any = {};
     const keys = Object.keys(obj).sort();
-    
+
     for (const key of keys) {
       // Omitir el campo checksum
       if (key === 'checksum') {
@@ -89,7 +91,7 @@ export class ChecksumService {
       }
       sorted[key] = this.canonicalize(obj[key]);
     }
-    
+
     return sorted;
   }
 
@@ -111,7 +113,7 @@ export class ChecksumService {
       observaciones: pago.observaciones,
       created_at: pago.created_at,
       created_by: pago.created_by,
-      device_id: pago.device_id,
+      device_id: pago.device_id
     };
 
     return this.calculateChecksum(checksumData);
@@ -133,7 +135,7 @@ export class ChecksumService {
       numero_cuotas: credito.numero_cuotas,
       fecha_desembolso: credito.fecha_desembolso,
       created_at: credito.created_at,
-      created_by: credito.created_by,
+      created_by: credito.created_by
     };
 
     return this.calculateChecksum(checksumData);
@@ -150,7 +152,7 @@ export class ChecksumService {
       numero_documento: cliente.numero_documento,
       nombre: cliente.nombre,
       created_at: cliente.created_at,
-      created_by: cliente.created_by,
+      created_by: cliente.created_by
     };
 
     return this.calculateChecksum(checksumData);
@@ -167,7 +169,7 @@ export class ChecksumService {
       valid: expected === actual,
       expected,
       actual,
-      corrupted: expected !== actual,
+      corrupted: expected !== actual
     };
   }
 
@@ -182,7 +184,7 @@ export class ChecksumService {
       valid: expected === actual,
       expected,
       actual,
-      corrupted: expected !== actual,
+      corrupted: expected !== actual
     };
   }
 
@@ -197,14 +199,19 @@ export class ChecksumService {
       valid: expected === actual,
       expected,
       actual,
-      corrupted: expected !== actual,
+      corrupted: expected !== actual
     };
   }
 
   /**
    * Almacenar checksum en tabla de checksums
    */
-  async storeChecksum(recordType: string, recordId: string, checksum: string, db?: any): Promise<void> {
+  async storeChecksum(
+    recordType: string,
+    recordId: string,
+    checksum: string,
+    db?: any
+  ): Promise<void> {
     if (!db) {
       throw new Error('Base de datos requerida para almacenar checksum');
     }
@@ -212,7 +219,7 @@ export class ChecksumService {
     const entry = {
       record_key: `${recordType}:${recordId}`,
       checksum,
-      timestamp: Date.now(),
+      timestamp: Date.now()
     };
 
     await db.checksums.put(entry);
@@ -221,7 +228,11 @@ export class ChecksumService {
   /**
    * Recuperar checksum almacenado
    */
-  async getStoredChecksum(recordType: string, recordId: string, db?: any): Promise<string | null> {
+  async getStoredChecksum(
+    recordType: string,
+    recordId: string,
+    db?: any
+  ): Promise<string | null> {
     if (!db) {
       throw new Error('Base de datos requerida para recuperar checksum');
     }
@@ -235,7 +246,9 @@ export class ChecksumService {
    */
   async performIntegrityCheck(db?: any): Promise<IntegrityCheckResult> {
     if (!db) {
-      throw new Error('Base de datos requerida para verificación de integridad');
+      throw new Error(
+        'Base de datos requerida para verificación de integridad'
+      );
     }
 
     const result: IntegrityCheckResult = {
@@ -244,7 +257,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     try {
@@ -282,7 +295,7 @@ export class ChecksumService {
         recordType: 'system',
         recordId: 'integrity_check',
         error: `Verificación de integridad falló: ${error}`,
-        timestamp: Date.now(),
+        timestamp: Date.now()
       });
     }
 
@@ -299,7 +312,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     const pagos = await db.pagos.toArray();
@@ -317,7 +330,7 @@ export class ChecksumService {
         }
 
         const verification = await this.verifyPagoChecksum(pago);
-        
+
         if (verification.valid) {
           result.valid++;
         } else {
@@ -326,7 +339,7 @@ export class ChecksumService {
             recordType: 'pago',
             recordId: pago.id,
             error: `Checksum no coincide: esperado ${verification.expected}, obtenido ${verification.actual}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
       } catch (error) {
@@ -334,7 +347,7 @@ export class ChecksumService {
           recordType: 'pago',
           recordId: pago.id,
           error: `Verificación falló: ${error}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }
@@ -352,7 +365,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     const creditos = await db.creditos.toArray();
@@ -370,7 +383,7 @@ export class ChecksumService {
         }
 
         const verification = await this.verifyCreditoChecksum(credito);
-        
+
         if (verification.valid) {
           result.valid++;
         } else {
@@ -379,7 +392,7 @@ export class ChecksumService {
             recordType: 'credito',
             recordId: credito.id,
             error: `Checksum no coincide: esperado ${verification.expected}, obtenido ${verification.actual}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
       } catch (error) {
@@ -387,7 +400,7 @@ export class ChecksumService {
           recordType: 'credito',
           recordId: credito.id,
           error: `Verificación falló: ${error}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }
@@ -405,7 +418,7 @@ export class ChecksumService {
       corrupted: 0,
       missing: 0,
       repaired: 0,
-      errors: [],
+      errors: []
     };
 
     const clientes = await db.clientes.toArray();
@@ -423,7 +436,7 @@ export class ChecksumService {
         }
 
         const verification = await this.verifyClienteChecksum(cliente);
-        
+
         if (verification.valid) {
           result.valid++;
         } else {
@@ -432,7 +445,7 @@ export class ChecksumService {
             recordType: 'cliente',
             recordId: cliente.id,
             error: `Checksum no coincide: esperado ${verification.expected}, obtenido ${verification.actual}`,
-            timestamp: Date.now(),
+            timestamp: Date.now()
           });
         }
       } catch (error) {
@@ -440,7 +453,7 @@ export class ChecksumService {
           recordType: 'cliente',
           recordId: cliente.id,
           error: `Verificación falló: ${error}`,
-          timestamp: Date.now(),
+          timestamp: Date.now()
         });
       }
     }
@@ -451,17 +464,24 @@ export class ChecksumService {
   /**
    * Iniciar verificaciones periódicas de integridad (cada 5 minutos)
    */
-  startPeriodicChecks(db: any, intervalMs: number = 5 * 60 * 1000): NodeJS.Timeout {
-    console.log(`🔍 Iniciando verificaciones periódicas de integridad cada ${intervalMs / 1000} segundos`);
-    
+  startPeriodicChecks(
+    db: any,
+    intervalMs: number = 5 * 60 * 1000
+  ): NodeJS.Timeout {
+    console.log(
+      `🔍 Iniciando verificaciones periódicas de integridad cada ${intervalMs / 1000} segundos`
+    );
+
     return setInterval(async () => {
       console.log('🔍 Ejecutando verificación periódica de integridad...');
       const result = await this.performIntegrityCheck(db);
-      
+
       if (result.corrupted > 0) {
-        console.warn(`⚠️ Se encontraron ${result.corrupted} registros corruptos`);
+        console.warn(
+          `⚠️ Se encontraron ${result.corrupted} registros corruptos`
+        );
       }
-      
+
       if (result.repaired > 0) {
         console.log(`✅ Se repararon ${result.repaired} registros`);
       }

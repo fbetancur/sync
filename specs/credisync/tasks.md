@@ -1,10 +1,10 @@
 # Implementation Plan
+
 # PWA Offline-First para Gestión de Microcréditos
 
 ## Phase 1: Project Setup and Infrastructure
 
 - [x] 1. Initialize project structure
-
   - Create Svelte + Vite + TypeScript project
   - Configure Tailwind CSS + DaisyUI
   - Setup ESLint + Prettier
@@ -13,8 +13,6 @@
   - _Requirements: All_
 
 - [x] 2. Configure Supabase backend
-
-
   - Create Supabase project
   - Setup database schema (tenants, users, clientes, creditos, cuotas, pagos, etc.)
   - Configure Row Level Security policies
@@ -24,7 +22,6 @@
   - _Requirements: 1.1, 17.7_
 
 - [x] 3. Setup Vercel deployment
-
   - Connect Git repository to Vercel
   - Configure environment variables
   - Setup preview deployments
@@ -32,7 +29,6 @@
   - _Requirements: All_
 
 - [x] 4. Configure PWA with Vite Plugin
-
   - Install and configure vite-plugin-pwa
   - Create manifest.json with app metadata
   - Configure Workbox for caching strategies
@@ -43,7 +39,6 @@
 ## Phase 2: Core Data Layer
 
 - [x] 5. Implement IndexedDB with Dexie.js
-
   - Install Dexie.js and types
   - Define database schema matching requirements
   - Create all tables (tenants, clientes, creditos, cuotas, pagos, sync_queue, audit_log, etc.)
@@ -52,7 +47,6 @@
   - _Requirements: 2.1, 2.7_
 
 - [x] 6. Implement multi-layer storage system
-
   - Create StorageManager class
   - Implement write to IndexedDB (Layer 1)
   - Implement write to LocalStorage (Layer 2)
@@ -62,7 +56,6 @@
   - _Requirements: 2.2, 2.3, 2.4, 2.5_
 
 - [x] 7. Implement checksum and integrity verification
-
   - Create checksum utility using Web Crypto API (SHA-256)
   - Implement checksum calculation for critical records
   - Implement checksum verification on read
@@ -70,8 +63,7 @@
   - Create recovery procedures for corrupted data
   - _Requirements: 2.6, 7.6_
 
-- [x]* 7.1 Write property test for checksum integrity
-
+- [x]\* 7.1 Write property test for checksum integrity
   - **Property 4: Checksum Integrity**
   - **Validates: Requirements 2.6, 7.6**
   - Generate random pagos and creditos
@@ -82,7 +74,6 @@
 ## Phase 3: Business Logic Layer
 
 - [x] 8. Implement credit calculations
-
   - Create CreditCalculator class
   - Implement interest calculation
   - Implement total amount calculation
@@ -92,8 +83,7 @@
   - Handle "exclude Sundays" logic
   - _Requirements: 12.2, 12.3, 12.4, 13.2, 13.5_
 
-- [x]* 8.1 Write unit tests for credit calculations
-
+- [x]\* 8.1 Write unit tests for credit calculations
   - Test interest calculation with various rates
   - Test installment generation
   - Test Sunday exclusion logic
@@ -101,7 +91,6 @@
   - _Requirements: 12.2, 12.3, 12.4_
 
 - [x] 9. Implement balance and arrears calculations
-
   - Create BalanceCalculator class
   - Implement saldo_pendiente calculation from pagos
   - Implement dias_atraso calculation
@@ -109,8 +98,7 @@
   - Implement automatic recalculation on pago registration
   - _Requirements: 3.3, 3.4, 12.5, 12.6, 13.1, 13.4_
 
-- [x]* 9.1 Write property test for balance consistency
-
+- [x]\* 9.1 Write property test for balance consistency
   - **Property 7: Saldo Calculation Consistency**
   - **Validates: Requirements 13.1**
   - Generate random creditos with random pagos
@@ -118,7 +106,6 @@
   - Verify saldo equals (total_a_pagar - sum of pagos)
 
 - [x] 10. Implement validation layer
-
   - Create Zod schemas for all entities
   - Implement UI-level validation (real-time)
   - Implement business logic validation (pre-save)
@@ -130,7 +117,6 @@
 ## Phase 4: Sync and Conflict Resolution
 
 - [x] 11. Implement CRDT conflict resolver
-
   - Create ConflictResolver class
   - Implement version vector comparison
   - Implement field-level merge algorithm
@@ -139,8 +125,7 @@
   - Handle editable records (clientes, creditos)
   - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.7_
 
-- [x]* 11.1 Write property test for conflict resolution determinism
-
+- [x]\* 11.1 Write property test for conflict resolution determinism
   - **Property 3: Conflict Resolution Determinism**
   - **Validates: Requirements 6.1, 6.2**
   - Generate pairs of conflicting records
@@ -148,7 +133,6 @@
   - Verify same result regardless of order
 
 - [x] 12. Implement sync queue manager
-
   - Create SyncQueue class
   - Implement add to queue with priority
   - Implement get pending operations ordered by priority and timestamp
@@ -157,8 +141,7 @@
   - Implement queue size monitoring
   - _Requirements: 5.2, 5.8_
 
-- [x]* 12.1 Write property test for sync queue ordering
-
+- [x]\* 12.1 Write property test for sync queue ordering
   - **Property 2: Sync Queue Ordering**
   - **Validates: Requirements 5.2**
   - Add random operations with random priorities
@@ -166,7 +149,6 @@
   - Verify correct ordering (priority DESC, timestamp ASC)
 
 - [x] 13. Implement differential sync (delta sync)
-
   - Create ChangeTracker to log all changes
   - Implement change log table operations
   - Implement delta compression (collapse multiple changes to same field)
@@ -175,7 +157,6 @@
   - _Requirements: 5.3, 5.6, 5.7_
 
 - [x] 14. Implement sync manager
-
   - Create SyncManager class
   - Implement connection detection
   - Implement upload sync (device → Supabase)
@@ -187,7 +168,6 @@
   - _Requirements: 5.1, 5.4, 5.5, 5.9_
 
 - [x] 15. Implement Background Sync API integration
-
   - Register sync events with Service Worker
   - Implement sync handler in Service Worker
   - Handle sync success and failure
@@ -198,7 +178,6 @@
 ## Phase 5: Audit and Logging
 
 - [x] 16. Implement audit log system
-
   - Create AuditLogger class
   - Implement event creation with all required fields
   - Implement hash chain calculation (blockchain-like)
@@ -207,8 +186,7 @@
   - Implement fraud detection patterns
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7_
 
-- [x]* 16.1 Write property test for audit log immutability
-
+- [x]\* 16.1 Write property test for audit log immutability
   - **Property 5: Audit Log Immutability**
   - **Validates: Requirements 8.3, 8.4**
   - Generate sequence of events
@@ -217,7 +195,6 @@
   - Attempt to modify event and verify detection
 
 - [x] 17. Implement error logging and monitoring
-
   - Integrate Sentry SDK
   - Configure error capture
   - Configure performance monitoring
@@ -229,7 +206,6 @@
 ## Phase 6: Authentication and Security
 
 - [x] 18. Implement authentication flow
-
   - Create login page
   - Integrate Supabase Auth
   - Implement JWT token management
@@ -239,9 +215,6 @@
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
 - [x] 19. Implement field-level encryption
-
-
-
   - Create EncryptionService using Web Crypto API
   - Implement key derivation from user PIN (PBKDF2)
   - Implement AES-256-GCM encryption for sensitive fields
@@ -312,7 +285,7 @@
   - Add to sync queue with priority 1
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.9_
 
-- [ ]* 25.1 Write property test for pago atomicity
+- [ ]\* 25.1 Write property test for pago atomicity
   - **Property 1: Pago Registration Atomicity**
   - **Validates: Requirements 3.5**
   - Simulate pago registration
@@ -392,7 +365,7 @@
   - Implement storage management
   - _Requirements: 10.2, 10.3, 10.4, 10.5_
 
-- [ ]* 33.1 Write integration test for offline functionality
+- [ ]\* 33.1 Write integration test for offline functionality
   - **Property 6: Offline Functionality Completeness**
   - **Validates: Requirements 9.4, 9.7**
   - Simulate offline mode
@@ -451,7 +424,7 @@
 
 ## Phase 14: Testing
 
-- [ ]* 39. Write unit tests for business logic
+- [ ]\* 39. Write unit tests for business logic
   - Test credit calculations
   - Test balance calculations
   - Test validation logic
@@ -460,7 +433,7 @@
   - Achieve > 80% code coverage
   - _Requirements: All_
 
-- [ ]* 40. Write integration tests
+- [ ]\* 40. Write integration tests
   - Test IndexedDB operations
   - Test multi-layer storage
   - Test sync workflows
@@ -468,7 +441,7 @@
   - Test authentication flow
   - _Requirements: All_
 
-- [ ]* 41. Write E2E tests with Playwright
+- [ ]\* 41. Write E2E tests with Playwright
   - Test complete user workflows
   - Test offline scenarios
   - Test sync scenarios
@@ -538,4 +511,3 @@
   - Monitor user adoption
   - Collect user feedback
   - Plan iterations based on feedback
-

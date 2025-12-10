@@ -1,13 +1,13 @@
 /**
  * Gestor de Almacenamiento Multi-Capa
- * 
+ *
  * Implementa almacenamiento redundante a través de 3 capas:
  * - Capa 1: IndexedDB (primaria)
  * - Capa 2: LocalStorage (respaldo)
  * - Capa 3: Cache API (respaldo terciario)
- * 
+ *
  * Asegura escrituras atómicas y recuperación automática en caso de falla.
- * 
+ *
  * Requirements: 2.2, 2.3, 2.4, 2.5
  */
 
@@ -70,7 +70,7 @@ export class StorageManager {
     const result: StorageWriteResult = {
       success: false,
       layersWritten: [],
-      errors: [],
+      errors: []
     };
 
     const { tableName, recordId, skipBackup = false } = options;
@@ -102,16 +102,19 @@ export class StorageManager {
       }
 
       result.success = true;
-      console.log(`✅ Datos escritos a ${result.layersWritten.length} capa(s):`, result.layersWritten);
-      
+      console.log(
+        `✅ Datos escritos a ${result.layersWritten.length} capa(s):`,
+        result.layersWritten
+      );
+
       return result;
     } catch (error) {
       result.errors.push(`IndexedDB: ${error}`);
       console.error('❌ Escritura atómica falló:', error);
-      
+
       // Intentar rollback
       await this.rollback(tableName, recordId, result.layersWritten);
-      
+
       throw new Error(`Escritura atómica falló: ${error}`);
     }
   }
@@ -131,11 +134,14 @@ export class StorageManager {
         return {
           success: true,
           data,
-          source: 'indexeddb',
+          source: 'indexeddb'
         };
       }
     } catch (error) {
-      console.warn('⚠️ Lectura de IndexedDB falló, intentando LocalStorage:', error);
+      console.warn(
+        '⚠️ Lectura de IndexedDB falló, intentando LocalStorage:',
+        error
+      );
     }
 
     // Intentar Capa 2: LocalStorage
@@ -150,11 +156,14 @@ export class StorageManager {
         return {
           success: true,
           data,
-          source: 'localstorage',
+          source: 'localstorage'
         };
       }
     } catch (error) {
-      console.warn('⚠️ Lectura de LocalStorage falló, intentando Cache API:', error);
+      console.warn(
+        '⚠️ Lectura de LocalStorage falló, intentando Cache API:',
+        error
+      );
     }
 
     // Intentar Capa 3: Cache API
@@ -170,7 +179,7 @@ export class StorageManager {
         return {
           success: true,
           data,
-          source: 'cache',
+          source: 'cache'
         };
       }
     } catch (error) {
@@ -181,7 +190,7 @@ export class StorageManager {
       success: false,
       data: null,
       source: null,
-      error: 'Datos no encontrados en ninguna capa de almacenamiento',
+      error: 'Datos no encontrados en ninguna capa de almacenamiento'
     };
   }
 
@@ -236,7 +245,7 @@ export class StorageManager {
     const serialized = JSON.stringify({
       data,
       timestamp: Date.now(),
-      version: 1,
+      version: 1
     });
 
     // Verificar cuota de almacenamiento
@@ -250,8 +259,13 @@ export class StorageManager {
       localStorage.setItem(key, serialized);
     } catch (error) {
       // Manejar cuota excedida
-      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
-        console.warn('⚠️ Cuota de LocalStorage excedida, limpiando entradas antiguas');
+      if (
+        error instanceof DOMException &&
+        error.name === 'QuotaExceededError'
+      ) {
+        console.warn(
+          '⚠️ Cuota de LocalStorage excedida, limpiando entradas antiguas'
+        );
         await this.cleanOldLocalStorageEntries();
         // Reintentar
         localStorage.setItem(key, serialized);
@@ -287,13 +301,13 @@ export class StorageManager {
 
   private async cleanOldLocalStorageEntries(): Promise<void> {
     const keys = Object.keys(localStorage);
-    const backupKeys = keys.filter((key) =>
+    const backupKeys = keys.filter(key =>
       key.startsWith(this.LOCALSTORAGE_PREFIX)
     );
 
     // Parsear y ordenar por timestamp
     const entries = backupKeys
-      .map((key) => {
+      .map(key => {
         try {
           const data = JSON.parse(localStorage.getItem(key) || '{}');
           return { key, timestamp: data.timestamp || 0 };
@@ -332,13 +346,13 @@ export class StorageManager {
       JSON.stringify({
         data,
         timestamp: Date.now(),
-        version: 1,
+        version: 1
       }),
       {
         headers: {
           'Content-Type': 'application/json',
-          'X-Backup-Layer': 'cache-api',
-        },
+          'X-Backup-Layer': 'cache-api'
+        }
       }
     );
 
@@ -424,10 +438,10 @@ export class StorageManager {
   async clearBackups(): Promise<void> {
     // Limpiar respaldos de LocalStorage
     const keys = Object.keys(localStorage);
-    const backupKeys = keys.filter((key) =>
+    const backupKeys = keys.filter(key =>
       key.startsWith(this.LOCALSTORAGE_PREFIX)
     );
-    backupKeys.forEach((key) => localStorage.removeItem(key));
+    backupKeys.forEach(key => localStorage.removeItem(key));
 
     // Limpiar respaldos de Cache API
     if ('caches' in window) {
@@ -450,14 +464,17 @@ export class StorageManager {
       indexedDB: 0,
       localStorage: 0,
       cacheAPI: 0,
-      total: 0,
+      total: 0
     };
 
     // Tamaño de IndexedDB (aproximado)
     try {
       if (this.db && this.db.getStats) {
         const dbStats = await this.db.getStats();
-        const totalRecords = Object.values(dbStats).reduce((a: number, b: unknown) => a + (typeof b === 'number' ? b : 0), 0);
+        const totalRecords = Object.values(dbStats).reduce(
+          (a: number, b: unknown) => a + (typeof b === 'number' ? b : 0),
+          0
+        );
         stats.indexedDB = totalRecords * 1024; // Estimación aproximada
       }
     } catch (error) {
@@ -467,7 +484,7 @@ export class StorageManager {
     // Tamaño de LocalStorage
     try {
       const keys = Object.keys(localStorage);
-      const backupKeys = keys.filter((key) =>
+      const backupKeys = keys.filter(key =>
         key.startsWith(this.LOCALSTORAGE_PREFIX)
       );
       stats.localStorage = backupKeys.reduce((total, key) => {

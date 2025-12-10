@@ -1,6 +1,6 @@
 /**
  * @sync/types - Shared TypeScript types
- * 
+ *
  * This package provides all TypeScript type definitions used across
  * the Sync Platform monorepo.
  */

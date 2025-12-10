@@ -1,15 +1,15 @@
 /**
  * EncryptionService
- * 
+ *
  * Provides field-level encryption for sensitive data using Web Crypto API.
  * Uses AES-256-GCM encryption with PBKDF2 key derivation.
- * 
+ *
  * Requirements: 17.1, 17.2, 17.3, 17.4, 17.5
  */
 
 export interface EncryptedData {
   data: string; // Base64 encoded encrypted data
-  iv: string;   // Base64 encoded initialization vector
+  iv: string; // Base64 encoded initialization vector
   salt: string; // Base64 encoded salt (for key derivation)
 }
 
@@ -50,20 +50,23 @@ export class EncryptionService {
    * Initialize encryption with user PIN
    * Requirements: 17.3, 17.4
    */
-  async initializeWithPin(pin: string, options: EncryptionOptions = {}): Promise<void> {
+  async initializeWithPin(
+    pin: string,
+    options: EncryptionOptions = {}
+  ): Promise<void> {
     if (!pin || pin.length < 4) {
       throw new Error('PIN must be at least 4 characters long');
     }
 
     this.userPin = pin;
-    
+
     // Generate a random salt for key derivation
     const salt = crypto.getRandomValues(new Uint8Array(16));
-    
+
     // Derive encryption key from PIN using PBKDF2
     const iterations = options.iterations || 100000; // Requirement 17.3
     this.encryptionKey = await this.deriveKeyFromPin(pin, salt, iterations);
-    
+
     console.log('🔐 Encryption service initialized');
   }
 
@@ -72,8 +75,8 @@ export class EncryptionService {
    * Requirements: 17.3
    */
   private async deriveKeyFromPin(
-    pin: string, 
-    salt: Uint8Array, 
+    pin: string,
+    salt: Uint8Array,
     iterations: number
   ): Promise<CryptoKey> {
     // Import PIN as key material
@@ -109,7 +112,9 @@ export class EncryptionService {
    */
   async encrypt(data: string): Promise<EncryptedData> {
     if (!this.encryptionKey) {
-      throw new Error('Encryption service not initialized. Call initializeWithPin() first.');
+      throw new Error(
+        'Encryption service not initialized. Call initializeWithPin() first.'
+      );
     }
 
     if (!data || typeof data !== 'string') {
@@ -118,12 +123,16 @@ export class EncryptionService {
 
     // Generate random IV for each encryption
     const iv = crypto.getRandomValues(new Uint8Array(12)); // 96-bit IV for GCM
-    
+
     // Generate salt for this encryption
     const salt = crypto.getRandomValues(new Uint8Array(16));
-    
+
     // Re-derive key with new salt for this encryption
-    const encryptionKey = await this.deriveKeyFromPin(this.userPin!, salt, 100000);
+    const encryptionKey = await this.deriveKeyFromPin(
+      this.userPin!,
+      salt,
+      100000
+    );
 
     // Encrypt the data
     const encodedData = new TextEncoder().encode(data);
@@ -149,10 +158,17 @@ export class EncryptionService {
    */
   async decrypt(encryptedData: EncryptedData): Promise<string> {
     if (!this.userPin) {
-      throw new Error('Encryption service not initialized. Call initializeWithPin() first.');
+      throw new Error(
+        'Encryption service not initialized. Call initializeWithPin() first.'
+      );
     }
 
-    if (!encryptedData || !encryptedData.data || !encryptedData.iv || !encryptedData.salt) {
+    if (
+      !encryptedData ||
+      !encryptedData.data ||
+      !encryptedData.iv ||
+      !encryptedData.salt
+    ) {
       throw new Error('Invalid encrypted data format');
     }
 
@@ -164,8 +180,8 @@ export class EncryptionService {
 
       // Re-derive key with the original salt
       const decryptionKey = await this.deriveKeyFromPin(
-        this.userPin, 
-        new Uint8Array(salt), 
+        this.userPin,
+        new Uint8Array(salt),
         100000
       );
 
@@ -181,7 +197,9 @@ export class EncryptionService {
 
       return new TextDecoder().decode(decryptedBuffer);
     } catch (error) {
-      throw new Error(`Decryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(
+        `Decryption failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
 
@@ -189,7 +207,9 @@ export class EncryptionService {
    * Encrypt sensitive fields in an object
    * Requirements: 17.2
    */
-  async encryptSensitiveFields(obj: Record<string, any>): Promise<Record<string, any>> {
+  async encryptSensitiveFields(
+    obj: Record<string, any>
+  ): Promise<Record<string, any>> {
     if (!obj || typeof obj !== 'object') {
       return obj;
     }
@@ -214,7 +234,9 @@ export class EncryptionService {
    * Decrypt sensitive fields in an object
    * Requirements: 17.2
    */
-  async decryptSensitiveFields(obj: Record<string, any>): Promise<Record<string, any>> {
+  async decryptSensitiveFields(
+    obj: Record<string, any>
+  ): Promise<Record<string, any>> {
     if (!obj || typeof obj !== 'object') {
       return obj;
     }
@@ -222,7 +244,11 @@ export class EncryptionService {
     const result = { ...obj };
 
     for (const field of EncryptionService.SENSITIVE_FIELDS) {
-      if (result[field] && typeof result[field] === 'object' && result[field].data) {
+      if (
+        result[field] &&
+        typeof result[field] === 'object' &&
+        result[field].data
+      ) {
         try {
           result[field] = await this.decrypt(result[field] as EncryptedData);
         } catch (error) {

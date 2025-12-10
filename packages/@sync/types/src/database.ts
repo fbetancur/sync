@@ -1,6 +1,6 @@
 /**
  * Database-related types and interfaces
- * 
+ *
  * Extracted from apps/credisync/src/types/database.ts
  */
 

@@ -1,9 +1,9 @@
 /**
  * Property-Based Tests for Audit Logger Immutability
- * 
+ *
  * Feature: pwa-microcreditos-offline, Property 5: Audit Log Immutability
  * Validates: Requirements 8.3, 8.4
- * 
+ *
  * These tests verify that the audit log maintains immutability through
  * the hash chain mechanism, regardless of the sequence of events.
  */
@@ -20,11 +20,11 @@ describe('AuditLogger - Property-Based Tests', () => {
   beforeEach(async () => {
     // Clear database
     await db.audit_log.clear();
-    
+
     // Reset the singleton instance for testing
     // @ts-ignore - accessing private static for testing
     AuditLogger.instance = undefined;
-    
+
     // Get fresh instance
     logger = AuditLogger.getInstance();
   });
@@ -65,14 +65,14 @@ describe('AuditLogger - Property-Based Tests', () => {
       event_type: eventTypeArb,
       aggregate_type: aggregateTypeArb,
       aggregate_id: fc.uuid(),
-      data: fc.object(),
+      data: fc.object()
     }) as fc.Arbitrary<AuditEventData>;
 
     it('should maintain valid hash chain for any sequence of events', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(auditEventArb, { minLength: 1, maxLength: 20 }),
-          async (events) => {
+          async events => {
             // Clear database for each property test iteration
             await db.audit_log.clear();
             // @ts-ignore
@@ -118,10 +118,10 @@ describe('AuditLogger - Property-Based Tests', () => {
             // Tamper with an event (if position is valid)
             const actualPosition = tamperPosition % loggedEvents.length;
             const eventToTamper = loggedEvents[actualPosition];
-            
+
             if (eventToTamper.id) {
               await db.audit_log.update(eventToTamper.id, {
-                data: { tampered: true },
+                data: { tampered: true }
               });
 
               // Verify hash chain
@@ -141,7 +141,7 @@ describe('AuditLogger - Property-Based Tests', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(auditEventArb, { minLength: 2, maxLength: 15 }),
-          async (events) => {
+          async events => {
             // Clear database for each property test iteration
             await db.audit_log.clear();
             // @ts-ignore
@@ -167,7 +167,9 @@ describe('AuditLogger - Property-Based Tests', () => {
 
             // Property: Each event's previous_hash must match previous event's hash
             for (let i = 1; i < storedEvents.length; i++) {
-              expect(storedEvents[i].previous_hash).toBe(storedEvents[i - 1].hash);
+              expect(storedEvents[i].previous_hash).toBe(
+                storedEvents[i - 1].hash
+              );
             }
           }
         ),
@@ -179,7 +181,7 @@ describe('AuditLogger - Property-Based Tests', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(auditEventArb, { minLength: 2, maxLength: 20 }),
-          async (events) => {
+          async events => {
             // Clear database for each property test iteration
             await db.audit_log.clear();
             // @ts-ignore
@@ -220,10 +222,8 @@ describe('AuditLogger - Property-Based Tests', () => {
 
             // Get events up to reconstruction point
             const actualPosition = reconstructPosition % events.length;
-            const allEvents = await db.audit_log
-              .orderBy('sequence')
-              .toArray();
-            
+            const allEvents = await db.audit_log.orderBy('sequence').toArray();
+
             const eventsUpToPoint = allEvents.slice(0, actualPosition + 1);
 
             // Verify partial chain
@@ -243,7 +243,7 @@ describe('AuditLogger - Property-Based Tests', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(auditEventArb, { minLength: 5, maxLength: 15 }),
-          async (events) => {
+          async events => {
             // Clear database for each property test iteration
             await db.audit_log.clear();
             // @ts-ignore
@@ -254,7 +254,7 @@ describe('AuditLogger - Property-Based Tests', () => {
             const batchSize = 3;
             for (let i = 0; i < events.length; i += batchSize) {
               const batch = events.slice(i, i + batchSize);
-              
+
               // Log batch sequentially (actual concurrent logging would need proper locking)
               for (const eventData of batch) {
                 await testLogger.logEvent(eventData);
@@ -291,11 +291,11 @@ describe('AuditLogger - Property-Based Tests', () => {
                 fc.integer(),
                 fc.boolean(),
                 fc.constant(null)
-              ),
+              )
             }) as fc.Arbitrary<AuditEventData>,
             { minLength: 2, maxLength: 10 }
           ),
-          async (events) => {
+          async events => {
             // Clear database for each property test iteration
             await db.audit_log.clear();
             // @ts-ignore
@@ -338,13 +338,14 @@ describe('AuditLogger - Property-Based Tests', () => {
             }
 
             // Break the chain at a specific position
-            const actualPosition = (breakPosition % (loggedEvents.length - 1)) + 1;
+            const actualPosition =
+              (breakPosition % (loggedEvents.length - 1)) + 1;
             const eventToBreak = loggedEvents[actualPosition];
-            
+
             if (eventToBreak.id) {
               // Change previous_hash to break the chain
               await db.audit_log.update(eventToBreak.id, {
-                previous_hash: 'broken_hash_' + Math.random(),
+                previous_hash: 'broken_hash_' + Math.random()
               });
 
               // Verify hash chain
@@ -352,7 +353,9 @@ describe('AuditLogger - Property-Based Tests', () => {
 
               // Property: Broken chain must always be detected
               expect(result.valid).toBe(false);
-              expect(result.errors.some(e => e.includes('previous_hash mismatch'))).toBe(true);
+              expect(
+                result.errors.some(e => e.includes('previous_hash mismatch'))
+              ).toBe(true);
             }
           }
         ),
@@ -381,7 +384,7 @@ describe('AuditLogger - Property-Based Tests', () => {
       event_type: eventTypeArb,
       aggregate_type: aggregateTypeArb,
       aggregate_id: fc.uuid(),
-      data: fc.object(),
+      data: fc.object()
     }) as fc.Arbitrary<AuditEventData>;
 
     it('should detect any modification to event data', async () => {
@@ -407,15 +410,15 @@ describe('AuditLogger - Property-Based Tests', () => {
             // Modify an event's data with a guaranteed different value
             const actualPosition = modifyPosition % loggedEvents.length;
             const eventToModify = loggedEvents[actualPosition];
-            
+
             if (eventToModify.id) {
               const modification = {
                 ...eventToModify.data,
-                __tampered: modificationValue, // Add a field that wasn't there
+                __tampered: modificationValue // Add a field that wasn't there
               };
-              
+
               await db.audit_log.update(eventToModify.id, {
-                data: modification,
+                data: modification
               });
 
               // Verify hash chain
@@ -434,7 +437,7 @@ describe('AuditLogger - Property-Based Tests', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.array(auditEventArb, { minLength: 3, maxLength: 10 }),
-          async (events) => {
+          async events => {
             // Clear database for each property test iteration
             await db.audit_log.clear();
             // @ts-ignore
@@ -459,7 +462,7 @@ describe('AuditLogger - Property-Based Tests', () => {
             // If deletion happened, verify chain should fail
             if (countAfter < countBefore) {
               const result = await testLogger.verifyHashChain();
-              
+
               // Property: Deletion breaks the chain
               // (In production, deletions should be prevented at DB level)
               expect(result.valid).toBe(false);

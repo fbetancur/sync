@@ -1,11 +1,17 @@
 /**
  * Tests para la API Factory de @sync/core
- * 
+ *
  * Validates: Requirements 4.4, 4.5, 4.6
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createSyncApp, createDefaultConfig, createDevConfig, createProdConfig, type SyncApp } from './app';
+import {
+  createSyncApp,
+  createDefaultConfig,
+  createDevConfig,
+  createProdConfig,
+  type SyncApp
+} from './app';
 
 describe('SyncApp Factory', () => {
   let app: SyncApp;
@@ -70,11 +76,11 @@ describe('SyncApp Factory', () => {
 
     it('debería iniciar la aplicación correctamente', async () => {
       expect(app.isStarted).toBe(false);
-      
+
       // Nota: En el entorno de testing, la inicialización de IndexedDB fallará
       // pero podemos verificar que el método existe y maneja errores
       await expect(app.start()).rejects.toThrow();
-      
+
       // El estado no debería cambiar si la inicialización falla
       expect(app.isStarted).toBe(false);
     });
@@ -82,7 +88,7 @@ describe('SyncApp Factory', () => {
     it('debería manejar múltiples llamadas a start', async () => {
       // Simular que ya está iniciado
       app.isStarted = true;
-      
+
       // No debería lanzar error
       await expect(app.start()).resolves.not.toThrow();
     });
@@ -90,14 +96,14 @@ describe('SyncApp Factory', () => {
     it('debería detener la aplicación correctamente', async () => {
       // Simular que está iniciado
       app.isStarted = true;
-      
+
       await expect(app.stop()).resolves.not.toThrow();
       expect(app.isStarted).toBe(false);
     });
 
     it('debería manejar múltiples llamadas a stop', async () => {
       expect(app.isStarted).toBe(false);
-      
+
       // No debería lanzar error
       await expect(app.stop()).resolves.not.toThrow();
     });
@@ -127,7 +133,7 @@ describe('SyncApp Factory', () => {
 
     it('debería limpiar datos cuando la aplicación no está iniciada', async () => {
       expect(app.isStarted).toBe(false);
-      
+
       // En el entorno de testing, esto puede fallar por IndexedDB
       // pero verificamos que el método existe
       await expect(app.clearData()).rejects.toThrow();
@@ -135,8 +141,10 @@ describe('SyncApp Factory', () => {
 
     it('debería rechazar limpiar datos cuando la aplicación está iniciada', async () => {
       app.isStarted = true;
-      
-      await expect(app.clearData()).rejects.toThrow('No se puede limpiar datos mientras la aplicación está iniciada');
+
+      await expect(app.clearData()).rejects.toThrow(
+        'No se puede limpiar datos mientras la aplicación está iniciada'
+      );
     });
   });
 });
@@ -167,7 +175,11 @@ describe('utilidades de configuración', () => {
 
   describe('createProdConfig', () => {
     it('debería crear configuración para producción', () => {
-      const config = createProdConfig('test-app', 'https://supabase.url', 'key123');
+      const config = createProdConfig(
+        'test-app',
+        'https://supabase.url',
+        'key123'
+      );
 
       expect(config.appName).toBe('test-app');
       expect(config.supabaseUrl).toBe('https://supabase.url');

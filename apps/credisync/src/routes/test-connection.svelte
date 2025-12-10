@@ -28,8 +28,12 @@
       }
 
       // Test 2: Check auth status
-      const { data: { session } } = await supabase.auth.getSession();
-      authStatus = session ? `✅ Autenticado como: ${session.user.email}` : '⚠️ No autenticado (anónimo)';
+      const {
+        data: { session }
+      } = await supabase.auth.getSession();
+      authStatus = session
+        ? `✅ Autenticado como: ${session.user.email}`
+        : '⚠️ No autenticado (anónimo)';
 
       // Test 3: Try to query tenants table (without RLS - public access)
       const { data, error } = await supabase
@@ -45,21 +49,28 @@
         errorHint = error.hint || 'N/A';
 
         // Check if it's an RLS error
-        if (error.code === 'PGRST301' || error.message.includes('row-level security')) {
-          details = 'Las políticas RLS están bloqueando el acceso. Esto es normal si no estás autenticado.';
-          errorHint = 'Solución: Las tablas están creadas correctamente. Para acceder necesitas autenticarte o ajustar las políticas RLS.';
+        if (
+          error.code === 'PGRST301' ||
+          error.message.includes('row-level security')
+        ) {
+          details =
+            'Las políticas RLS están bloqueando el acceso. Esto es normal si no estás autenticado.';
+          errorHint =
+            'Solución: Las tablas están creadas correctamente. Para acceder necesitas autenticarte o ajustar las políticas RLS.';
         }
       } else {
         connectionStatus = '✅ Conexión exitosa a Supabase';
         connectionClass = 'alert-success';
-        details = data && data.length > 0 
-          ? `Tenant encontrado: ${data[0].nombre}` 
-          : '✅ Tabla existe pero está vacía';
+        details =
+          data && data.length > 0
+            ? `Tenant encontrado: ${data[0].nombre}`
+            : '✅ Tabla existe pero está vacía';
       }
 
       // Test 4: Check which tables exist (using information_schema)
       try {
-        const { data: tables, error: tablesError } = await supabase.rpc('get_tables');
+        const { data: tables, error: tablesError } =
+          await supabase.rpc('get_tables');
         if (!tablesError && tables) {
           tablesFound = tables.map((t: any) => t.table_name);
         }
@@ -67,15 +78,18 @@
         // RPC function might not exist, that's ok
         console.log('RPC get_tables not available');
       }
-
     } catch (err: any) {
       connectionStatus = '❌ Error crítico';
       connectionClass = 'alert-error';
       details = err.message;
-      
+
       // Check for common API key issues
-      if (err.message.includes('API key') || err.message.includes('Invalid API')) {
-        errorHint = 'Verifica que la API key en .env.local sea correcta. Debe ser la "anon" o "service_role" key de tu proyecto Supabase.';
+      if (
+        err.message.includes('API key') ||
+        err.message.includes('Invalid API')
+      ) {
+        errorHint =
+          'Verifica que la API key en .env.local sea correcta. Debe ser la "anon" o "service_role" key de tu proyecto Supabase.';
       }
     }
   });
@@ -117,7 +131,9 @@
       <div class="space-y-2">
         <p>
           <strong>Supabase URL:</strong>
-          <code class="ml-2 text-sm">{import.meta.env.VITE_SUPABASE_URL || '❌ No configurado'}</code>
+          <code class="ml-2 text-sm"
+            >{import.meta.env.VITE_SUPABASE_URL || '❌ No configurado'}</code
+          >
         </p>
         <p>
           <strong>Anon Key:</strong>
@@ -156,20 +172,37 @@
       <div class="space-y-2">
         <div class="form-control">
           <label class="label cursor-pointer justify-start gap-2">
-            <input type="checkbox" checked={!!import.meta.env.VITE_SUPABASE_URL} class="checkbox checkbox-sm" disabled />
+            <input
+              type="checkbox"
+              checked={!!import.meta.env.VITE_SUPABASE_URL}
+              class="checkbox checkbox-sm"
+              disabled
+            />
             <span class="label-text">Variables de entorno configuradas</span>
           </label>
         </div>
         <div class="form-control">
           <label class="label cursor-pointer justify-start gap-2">
-            <input type="checkbox" checked={connectionClass !== 'alert-error'} class="checkbox checkbox-sm" disabled />
+            <input
+              type="checkbox"
+              checked={connectionClass !== 'alert-error'}
+              class="checkbox checkbox-sm"
+              disabled
+            />
             <span class="label-text">Conexión a Supabase establecida</span>
           </label>
         </div>
         <div class="form-control">
           <label class="label cursor-pointer justify-start gap-2">
-            <input type="checkbox" checked={connectionClass === 'alert-success'} class="checkbox checkbox-sm" disabled />
-            <span class="label-text">Acceso a tabla tenants (sin RLS o autenticado)</span>
+            <input
+              type="checkbox"
+              checked={connectionClass === 'alert-success'}
+              class="checkbox checkbox-sm"
+              disabled
+            />
+            <span class="label-text"
+              >Acceso a tabla tenants (sin RLS o autenticado)</span
+            >
           </label>
         </div>
       </div>
@@ -183,7 +216,9 @@
       <div class="text-sm space-y-2">
         {#if connectionClass === 'alert-error'}
           <p>1. Verifica que ejecutaste el schema SQL en Supabase SQL Editor</p>
-          <p>2. Verifica que las variables de entorno en .env.local son correctas</p>
+          <p>
+            2. Verifica que las variables de entorno en .env.local son correctas
+          </p>
           <p>3. Recarga la página después de hacer cambios</p>
         {:else if connectionClass === 'alert-warning'}
           <p>✅ Las tablas están creadas correctamente</p>
@@ -191,7 +226,10 @@
           <p>💡 Para acceder a los datos, necesitas:</p>
           <ul class="list-disc list-inside ml-4">
             <li>Autenticarte con un usuario válido, O</li>
-            <li>Ajustar las políticas RLS para permitir acceso anónimo (no recomendado)</li>
+            <li>
+              Ajustar las políticas RLS para permitir acceso anónimo (no
+              recomendado)
+            </li>
           </ul>
         {:else}
           <p>✅ ¡Todo configurado correctamente!</p>

@@ -1,0 +1,204 @@
+{
+  "timestamp": "2025-12-10T13:04:05.966Z",
+  "summary": {
+    "total": 23,
+    "passed": 22,
+    "failed": 1,
+    "warnings": 0
+  },
+  "sections": {
+    "environment": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "warnings": 0,
+      "details": [
+        {
+          "check": "Node.js version",
+          "status": "pass",
+          "value": "v20.19.6"
+        },
+        {
+          "check": "pnpm version",
+          "status": "pass",
+          "value": "10.25.0"
+        },
+        {
+          "check": "Git version",
+          "status": "pass",
+          "value": "git version 2.45.2.windows.1"
+        }
+      ]
+    },
+    "structure": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "warnings": 0,
+      "details": [
+        {
+          "check": "Directory: apps",
+          "status": "pass"
+        },
+        {
+          "check": "Directory: packages/@sync",
+          "status": "pass"
+        },
+        {
+          "check": "Directory: docs",
+          "status": "pass"
+        },
+        {
+          "check": "Directory: tools/scripts",
+          "status": "pass"
+        },
+        {
+          "check": "Directory: specs",
+          "status": "pass"
+        },
+        {
+          "check": "File: package.json",
+          "status": "pass"
+        },
+        {
+          "check": "File: pnpm-workspace.yaml",
+          "status": "pass"
+        },
+        {
+          "check": "File: tsconfig.json",
+          "status": "pass"
+        },
+        {
+          "check": "File: .eslintrc.shared.cjs",
+          "status": "pass"
+        },
+        {
+          "check": "File: .prettierrc.shared",
+          "status": "pass"
+        }
+      ]
+    },
+    "dependencies": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "warnings": 0,
+      "details": [
+        {
+          "success": true,
+          "duration": 1757,
+          "command": "pnpm install --frozen-lockfile",
+          "description": "Validando instalación de dependencias",
+          "output": "Scope: all 7 workspace projects\nLockfile is up to date, resolution step is skipped\nAlready up to date\n\nDone in 1.6s using pnpm v10.25.0\n"
+        },
+        {
+          "success": false,
+          "duration": 92,
+          "command": "node tools/scripts/validate-env.js",
+          "description": "Validando variables de entorno",
+          "error": "Command failed: node tools/scripts/validate-env.js",
+          "stdout": "\u001b[34m🔧 Validador de Variables de Entorno - Sync Platform\u001b[0m\n\u001b[34m\n🔍 Validando credisync...\u001b[0m\n\u001b[32m✅ VITE_SUPABASE_URL\u001b[0m\n\u001b[32m✅ VITE_SUPABASE_ANON_KEY\u001b[0m\n\u001b[32m✅ VITE_APP_VERSION\u001b[0m\n\u001b[32m✅ VITE_APP_NAME\u001b[0m\n\u001b[33m⚠️  Variable en .env.example pero no en .env.local: VITE_SENTRY_DSN\u001b[0m\n\u001b[32m✅ credisync configurado correctamente\u001b[0m\n\u001b[34m\n🔍 Validando healthsync...\u001b[0m\n\u001b[33m⚠️  No existe .env.local en healthsync\u001b[0m\n\u001b[33m   Copia .env.example a .env.local y configura los valores\u001b[0m\n\u001b[34m\n🔍 Validando surveysync...\u001b[0m\n\u001b[33m⚠️  No existe .env.local en surveysync\u001b[0m\n\u001b[33m   Copia .env.example a .env.local y configura los valores\u001b[0m\n\u001b[34m\n🔍 Validando conexión a Supabase...\u001b[0m\n\u001b[32m✅ Variables de Supabase válidas\u001b[0m\n\u001b[34m\n📋 Resumen:\u001b[0m\n\u001b[31m❌ Algunas apps necesitan configuración\u001b[0m\n\u001b[33m\nPara configurar una app:\u001b[0m\n\u001b[33m1. cd apps/[app-name]\u001b[0m\n\u001b[33m2. cp .env.example .env.local\u001b[0m\n\u001b[33m3. Editar .env.local con valores reales\u001b[0m\n",
+          "stderr": ""
+        }
+      ]
+    },
+    "builds": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 0,
+      "details": [
+        {
+          "success": true,
+          "duration": 9030,
+          "command": "pnpm build:packages",
+          "description": "Building packages",
+          "output": "\n> sync-platform@1.0.0 build:packages C:\\Users\\code\\Desktop\\sync\n> pnpm --filter @sync/types build && pnpm --filter @sync/core build && pnpm --filter @sync/ui build\n\n\n> @sync/types@1.0.0 build C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\types\n> tsc\n\n\n> @sync/core@1.0.0 build C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\core\n> tsc\n\n\n> @sync/ui@1.0.0 build C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\ui\n> svelte-package\n\n\u001b[1m\u001b[32msrc\\lib -> dist\u001b[22m\u001b[39m\n"
+        },
+        {
+          "success": true,
+          "duration": 9252,
+          "command": "pnpm build:apps",
+          "description": "Building apps",
+          "output": "\n> sync-platform@1.0.0 build:apps C:\\Users\\code\\Desktop\\sync\n> pnpm --filter credisync build\n\n\n> credisync@1.0.0 build C:\\Users\\code\\Desktop\\sync\\apps\\credisync\n> vite build\n\n\u001b[36mvite v7.2.7 \u001b[32mbuilding client environment for production...\u001b[36m\u001b[39m\ntransforming...\n\u001b[32m✓\u001b[39m 495 modules transformed.\nrendering chunks...\ncomputing gzip size...\n\u001b[2mdist/\u001b[22m\u001b[32mregisterSW.js              \u001b[39m\u001b[1m\u001b[2m  0.13 kB\u001b[22m\u001b[1m\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[32mmanifest.webmanifest       \u001b[39m\u001b[1m\u001b[2m  0.53 kB\u001b[22m\u001b[1m\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m  1.42 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   0.62 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[35massets/index-uQfnJLpQ.css  \u001b[39m\u001b[1m\u001b[2m  2.94 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m │ gzip:   0.90 kB\u001b[22m\n\u001b[2mdist/\u001b[22m\u001b[36massets/index-B5CDtjwO.js   \u001b[39m\u001b[1m\u001b[33m627.62 kB\u001b[39m\u001b[22m\u001b[2m │ gzip: 193.67 kB\u001b[22m\n\u001b[32m✓ built in 3.81s\u001b[39m\n\n\u001b[36mPWA v1.2.0\u001b[39m\nmode      \u001b[35mgenerateSW\u001b[39m\nprecache  \u001b[32m11 entries\u001b[39m \u001b[2m(1072.63 KiB)\u001b[22m\nfiles generated\n  \u001b[2mdist/sw.js\u001b[22m\n  \u001b[2mdist/workbox-fbd075aa.js\u001b[22m\n"
+        }
+      ]
+    },
+    "tests": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 0,
+      "details": [
+        {
+          "success": true,
+          "duration": 987,
+          "command": "pnpm test:packages --run",
+          "description": "Testing packages",
+          "output": "\n> sync-platform@1.0.0 test:packages C:\\Users\\code\\Desktop\\sync\n> pnpm --filter './packages/@sync/*' test \"--run\"\n\nNo projects matched the filters in \"C:\\Users\\code\\Desktop\\sync\"\n"
+        },
+        {
+          "success": true,
+          "duration": 964,
+          "command": "pnpm test:apps --run",
+          "description": "Testing apps",
+          "output": "\n> sync-platform@1.0.0 test:apps C:\\Users\\code\\Desktop\\sync\n> pnpm --filter './apps/*' test \"--run\"\n\nNo projects matched the filters in \"C:\\Users\\code\\Desktop\\sync\"\n"
+        }
+      ]
+    },
+    "linting": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 0,
+      "details": [
+        {
+          "success": true,
+          "duration": 6836,
+          "command": "node tools/scripts/lint-fix.js --check",
+          "description": "Checking linting",
+          "output": "\u001b[34m🧹 Lint & Format - Sync Platform\u001b[0m\n\u001b[34m\\n🔍 Verificando formatting...\u001b[0m\n\u001b[34m🔍 Checking formatting...\u001b[0m\n\u001b[36m🔧 Checking formatting\u001b[0m\nChecking formatting...\n\u001b[31m❌ Checking formatting falló (6.8s)\u001b[0m\n\u001b[33m   ⚠️  Continuando a pesar del error...\u001b[0m\n\u001b[36m\\n⏱️  Tiempo total: 6.8s\u001b[0m\n\u001b[34m\\n📊 Resumen de Lint & Format:\u001b[0m\n\u001b[36m🔍 Linting: ✅\u001b[0m\n\u001b[36m💅 Formatting: ✅\u001b[0m\n\u001b[36m🔍 Format Check: ✅\u001b[0m\n\u001b[32m\\n🎉 Código limpio y bien formateado!\u001b[0m\n\u001b[33m\\n📋 Próximos pasos:\u001b[0m\n\u001b[33m• Commit cambios: git add . && git commit\u001b[0m\n\u001b[33m• Ejecutar tests: pnpm test\u001b[0m\n"
+        },
+        {
+          "success": true,
+          "duration": 19416,
+          "command": "node tools/scripts/lint-fix.js --format",
+          "description": "Checking formatting",
+          "output": "\u001b[34m🧹 Lint & Format - Sync Platform\u001b[0m\n\u001b[34m\\n💅 Ejecutando formatting...\u001b[0m\n\u001b[34m💅 Formatting root...\u001b[0m\n\u001b[36m🔧 Formatting root files\u001b[0m\n.github/workflows/conditional-deploy.yml 30ms\n.github/workflows/credisync-deploy.yml 27ms\n.github/workflows/healthsync-deploy.yml 33ms\n.github/workflows/packages-test.yml 16ms\n.github/workflows/preview-deployments.yml 18ms\n.github/workflows/surveysync-deploy.yml 26ms\n.kiro/specs/ANALISIS_COMPLETO_ARQUITECTURA_Y_REUTILIZACION.md 208ms\n.kiro/specs/ANALISIS_COMPLETO_FUNCIONALIDAD_OFFLINE.md 380ms\n\u001b[90m.kiro/specs/code-examples.md\u001b[39m 1ms (unchanged)\n\u001b[90m.kiro/specs/monorepo-migration/design.md\u001b[39m 1ms (unchanged)\n\u001b[90m.kiro/specs/monorepo-migration/requirements.md\u001b[39m 1ms (unchanged)\n.kiro/specs/QUICKSTART.md 18ms\n.kiro/specs/README.md 42ms\n.kiro/specs/SPECS_PWA_MICROCREDITOS_OFFLINE_FIRST.md 185ms\n.svelte-kit/__package__/__package_types_tmp__/components/ErrorBoundary.svelte.d.ts 9ms\n.svelte-kit/__package__/__package_types_tmp__/components/PinEntry.svelte.d.ts 4ms\n\u001b[90m.svelte-kit/__package__/__package_types_tmp__/index.d.ts\u001b[39m 3ms (unchanged)\n.vscode/extensions.json 1ms\nANALISIS_COMPLETO_ARQUITECTURA_Y_REUTILIZACION.md 94ms\napps/credisync/dev-dist/registerSW.js 1ms\napps/credisync/dev-dist/sw.js 14ms\napps/credisync/dev-dist/workbox-193af733.js 253ms\napps/credisync/package.json 2ms\napps/credisync/postcss.config.js 2ms\napps/credisync/public/ICONOS-README.md 11ms\napps/credisync/public/sw-sync.js 6ms\napps/credisync/src/lib/app-config.ts 15ms\napps/credisync/src/lib/audit/audit-logger.property.test.ts 64ms\napps/credisync/src/lib/audit/audit-logger.test.ts 48ms\napps/credisync/src/lib/audit/audit-logger.ts 34ms\napps/credisync/src/lib/business/balance-calculator.property.test.ts 32ms\napps/credisync/src/lib/business/balance-calculator.test.ts 36ms\napps/credisync/src/lib/business/balance-calculator.ts 13ms\napps/credisync/src/lib/business/credit-calculator.test.ts 28ms\napps/credisync/src/lib/business/credit-calculator.ts 10ms\napps/credisync/src/lib/db/index.test.ts 25ms\napps/credisync/src/lib/db/index.ts 18ms\napps/credisync/src/lib/db/types.ts 10ms\n\u001b[90mapps/credisync/src/lib/db/utils.ts\u001b[39m 1ms (unchanged)\napps/credisync/src/lib/hooks/useBackgroundSync.ts 9ms\napps/credisync/src/lib/hooks/useEncryption.ts 8ms\napps/credisync/src/lib/integrity/checksum.test.ts 38ms\napps/credisync/src/lib/integrity/checksum.ts 22ms\napps/credisync/src/lib/monitoring/error-logger.test.ts 20ms\napps/credisync/src/lib/monitoring/error-logger.ts 26ms\napps/credisync/src/lib/monitoring/README.md 34ms\napps/credisync/src/lib/security/encryption.integration.test.ts 18ms\napps/credisync/src/lib/security/encryption.service.test.ts 29ms\napps/credisync/src/lib/security/encryption.service.ts 27ms\napps/credisync/src/lib/security/README.md 32ms\napps/credisync/src/lib/services/auth.service.test.ts 19ms\napps/credisync/src/lib/services/auth.service.ts 11ms\napps/credisync/src/lib/storage/storage-manager.test.ts 16ms\napps/credisync/src/lib/storage/storage-manager.ts 25ms\napps/credisync/src/lib/supabase.ts 3ms\napps/credisync/src/lib/sync/background-sync.test.ts 21ms\napps/credisync/src/lib/sync/background-sync.ts 7ms\napps/credisync/src/lib/sync/change-tracker.test.ts 28ms\napps/credisync/src/lib/sync/change-tracker.ts 15ms\napps/credisync/src/lib/sync/conflict-resolver.property.test.ts 23ms\napps/credisync/src/lib/sync/conflict-resolver.test.ts 21ms\napps/credisync/src/lib/sync/conflict-resolver.ts 12ms\napps/credisync/src/lib/sync/sync-manager.test.ts 20ms\napps/credisync/src/lib/sync/sync-manager.ts 20ms\napps/credisync/src/lib/sync/sync-queue.property.test.ts 23ms\napps/credisync/src/lib/sync/sync-queue.test.ts 30ms\napps/credisync/src/lib/sync/sync-queue.ts 13ms\napps/credisync/src/lib/validation/schemas.ts 23ms\napps/credisync/src/lib/validation/validator.test.ts 13ms\napps/credisync/src/lib/validation/validator.ts 17ms\napps/credisync/src/main.ts 4ms\napps/credisync/src/setupTests.ts 3ms\napps/credisync/src/types/database.ts 2ms\napps/credisync/svelte.config.js 3ms\napps/credisync/tailwind.config.js 2ms\napps/credisync/tsconfig.app.json 1ms\napps/credisync/tsconfig.node.json 2ms\napps/credisync/vercel.json 2ms\napps/credisync/vite.config.ts 6ms\napps/credisync/vitest.config.ts 2ms\napps/healthsync/package.json 1ms\napps/healthsync/README.md 5ms\napps/healthsync/vercel.json 2ms\napps/surveysync/package.json 1ms\napps/surveysync/README.md 3ms\napps/surveysync/vercel.json 2ms\nCOMO-VER-CONEXION-EXITOSA.md 9ms\nCONTRIBUTING.md 90ms\nDEPLOYMENT-INFO.md 19ms\ndev-dist/registerSW.js 1ms\ndev-dist/sw.js 11ms\ndev-dist/workbox-237f2c1f.js 145ms\ndocs/deployment/deployment-process.md 17ms\ndocs/deployment/vercel-monorepo-setup.md 18ms\ndocs/development/adding-new-apps.md 50ms\ndocs/development/ci-cd-setup.md 23ms\ndocs/development/environment-variables.md 14ms\ndocs/development/getting-started.md 13ms\ndocs/development/monitoring-metrics.md 30ms\ndocs/development/monorepo-workflow.md 16ms\ndocs/migration/migration-log.md 22ms\nESTADO-ACTUAL.md 40ms\nFASE-1-COMPLETADA-FINAL.md 22ms\nNEXT-STEPS.md 13ms\npackage-lock.json 69ms\n\u001b[90mpackage.json\u001b[39m 1ms (unchanged)\npackages/@sync/core/package.json 1ms\npackages/@sync/core/README.md 5ms\npackages/@sync/core/src/app.test.ts 11ms\npackages/@sync/core/src/app.ts 11ms\npackages/@sync/core/src/audit/audit-logger.ts 35ms\npackages/@sync/core/src/audit/index.ts 1ms\npackages/@sync/core/src/business/index.ts 1ms\npackages/@sync/core/src/db/database.test.ts 9ms\npackages/@sync/core/src/db/database.ts 16ms\npackages/@sync/core/src/db/index.ts 1ms\npackages/@sync/core/src/db/types.ts 4ms\npackages/@sync/core/src/index.ts 2ms\npackages/@sync/core/src/security/encryption-service.ts 12ms\npackages/@sync/core/src/security/index.ts 1ms\npackages/@sync/core/src/setupTests.ts 1ms\npackages/@sync/core/src/storage/index.ts 1ms\npackages/@sync/core/src/storage/storage-manager.ts 20ms\npackages/@sync/core/src/sync/change-tracker.ts 5ms\npackages/@sync/core/src/sync/conflict-resolver.test.ts 16ms\npackages/@sync/core/src/sync/conflict-resolver.ts 21ms\npackages/@sync/core/src/sync/index.ts 1ms\npackages/@sync/core/src/sync/sync-manager.ts 27ms\npackages/@sync/core/src/sync/sync-queue.ts 17ms\npackages/@sync/core/src/types.ts 2ms\npackages/@sync/core/src/utils/checksum.test.ts 19ms\npackages/@sync/core/src/utils/checksum.ts 20ms\npackages/@sync/core/src/utils/index.ts 1ms\npackages/@sync/core/src/validation/index.ts 1ms\npackages/@sync/core/tsconfig.json 1ms\npackages/@sync/core/vitest.config.ts 2ms\npackages/@sync/types/package.json 1ms\npackages/@sync/types/README.md 7ms\npackages/@sync/types/src/api.ts 2ms\npackages/@sync/types/src/business.ts 4ms\npackages/@sync/types/src/database.ts 7ms\npackages/@sync/types/src/index.ts 3ms\npackages/@sync/types/src/ui.ts 4ms\npackages/@sync/types/tsconfig.json 2ms\npackages/@sync/ui/.svelte-kit/__package__/hooks/useBackgroundSync.js 8ms\npackages/@sync/ui/.svelte-kit/__package__/hooks/useEncryption.js 4ms\n\u001b[90mpackages/@sync/ui/.svelte-kit/__package__/index.js\u001b[39m 2ms (unchanged)\npackages/@sync/ui/.svelte-kit/__package__/stores/auth.js 5ms\npackages/@sync/ui/.svelte-kit/__package__/stores/sync.js 4ms\npackages/@sync/ui/package.json 1ms\npackages/@sync/ui/README.md 22ms\npackages/@sync/ui/src/index.js 1ms\npackages/@sync/ui/src/index.test.js 4ms\npackages/@sync/ui/src/lib/hooks/useBackgroundSync.js 7ms\npackages/@sync/ui/src/lib/hooks/useEncryption.js 4ms\npackages/@sync/ui/src/lib/index.ts 1ms\npackages/@sync/ui/src/lib/stores/auth.js 5ms\npackages/@sync/ui/src/lib/stores/sync.js 4ms\npackages/@sync/ui/src/setupTests.js 1ms\npackages/@sync/ui/vitest.config.js 1ms\npnpm-lock.yaml 696ms\npnpm-workspace.yaml 2ms\npostcss.config.js 1ms\nPWA-SETUP.md 36ms\nPWA-VERIFICATION-CHECKLIST.md 16ms\nREADME.md 12ms\nREPORTE-VERIFICACION-COMPLETO.md 54ms\nRESPUESTA-VERIFICACION-PWA.md 17ms\nRESUMEN-FASE-1-COMPLETADA.md 18ms\nRESUMEN-PROGRESO-ESPAÑOL.md 30ms\nscripts/create-placeholder-icons.js 5ms\nscripts/create-pwa-icons.js 3ms\nSESION-ACTUAL-RESUMEN.md 32ms\nSESION-SYNC-MANAGER.md 19ms\nSOLUCION-API-KEY.md 10ms\nSOLUCION-RLS-RECURSION.md 11ms\nspecs/credisync/design.md 49ms\nspecs/credisync/requirements.md 51ms\nspecs/credisync/tasks.md 61ms\nspecs/monorepo-migration/ANTES.md 30ms\nspecs/monorepo-migration/design.md 38ms\nspecs/monorepo-migration/requirements.md 32ms\nspecs/monorepo-migration/tasks.md 46ms\nsupabase/README.md 14ms\nsvelte.config.js 1ms\ntailwind.config.js 2ms\nTESTING-CHECKLIST.md 39ms\ntools/reports/performance/performance-build-2025-12-10T13-00-53-263Z.json 1ms\ntools/reports/performance/performance-build-latest.json 3ms\ntools/reports/performance/performance-report.json 3ms\ntools/reports/performance/performance-report.md 2ms\ntools/scripts/build-all.js 18ms\ntools/scripts/bundle-analyzer.js 24ms\ntools/scripts/create-app.js 19ms\ntools/scripts/lint-fix.js 14ms\ntools/scripts/metrics-dashboard.js 41ms\ntools/scripts/migrate-package.js 23ms\ntools/scripts/performance-monitor.js 31ms\ntools/scripts/pre-commit.js 17ms\ntools/scripts/test-all.js 27ms\ntools/scripts/validate-env.js 26ms\ntools/scripts/validation-complete.js 33ms\ntools/templates/app-basic/package.json 1ms\ntools/templates/package-basic/package.json 1ms\ntsconfig.app.json 2ms\ntsconfig.json 1ms\ntsconfig.node.json 2ms\nURGENTE-API-KEY.md 5ms\nVERCEL-SETUP.md 9ms\nvercel.json 3ms\nvite.config.ts 6ms\nvitest.config.ts 3ms\n\u001b[32m✅ Formatting root files completado (7.1s)\u001b[0m\n\u001b[34m💅 Formatting workspaces...\u001b[0m\n\u001b[36m🔧 Formatting @sync/core\u001b[0m\n\n> @sync/core@1.0.0 format C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\core\n> prettier --write .\n\n.eslintrc.cjs 43ms\ndist/app.d.ts 63ms\ndist/app.js 40ms\ndist/audit/audit-logger.d.ts 21ms\ndist/audit/audit-logger.js 51ms\ndist/audit/index.d.ts 2ms\ndist/audit/index.js 1ms\ndist/business/index.d.ts 2ms\ndist/business/index.js 1ms\ndist/db/database.d.ts 21ms\ndist/db/database.js 9ms\ndist/db/index.d.ts 2ms\ndist/db/index.js 1ms\ndist/db/types.d.ts 9ms\ndist/db/types.js 1ms\ndist/index.d.ts 4ms\ndist/index.js 2ms\ndist/security/encryption-service.d.ts 6ms\ndist/security/encryption-service.js 17ms\ndist/security/index.d.ts 2ms\ndist/security/index.js 1ms\ndist/setupTests.d.ts 2ms\ndist/setupTests.js 3ms\ndist/storage/index.d.ts 2ms\ndist/storage/index.js 2ms\ndist/storage/storage-manager.d.ts 5ms\ndist/storage/storage-manager.js 35ms\ndist/sync/change-tracker.d.ts 6ms\ndist/sync/change-tracker.js 4ms\ndist/sync/conflict-resolver.d.ts 5ms\ndist/sync/conflict-resolver.js 16ms\ndist/sync/index.d.ts 1ms\ndist/sync/index.js 1ms\ndist/sync/sync-manager.d.ts 8ms\ndist/sync/sync-manager.js 13ms\ndist/sync/sync-queue.d.ts 5ms\ndist/sync/sync-queue.js 11ms\ndist/types.d.ts 2ms\ndist/types.js 1ms\ndist/utils/checksum.d.ts 7ms\ndist/utils/checksum.js 25ms\ndist/utils/index.d.ts 1ms\ndist/utils/index.js 1ms\ndist/validation/index.d.ts 1ms\ndist/validation/index.js 2ms\n\u001b[90mpackage.json\u001b[39m 3ms (unchanged)\n\u001b[90mREADME.md\u001b[39m 38ms (unchanged)\n\u001b[90msrc/app.test.ts\u001b[39m 21ms (unchanged)\n\u001b[90msrc/app.ts\u001b[39m 24ms (unchanged)\n\u001b[90msrc/audit/audit-logger.ts\u001b[39m 42ms (unchanged)\n\u001b[90msrc/audit/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/business/index.ts\u001b[39m 3ms (unchanged)\n\u001b[90msrc/db/database.test.ts\u001b[39m 16ms (unchanged)\n\u001b[90msrc/db/database.ts\u001b[39m 19ms (unchanged)\n\u001b[90msrc/db/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/db/types.ts\u001b[39m 4ms (unchanged)\n\u001b[90msrc/index.ts\u001b[39m 2ms (unchanged)\n\u001b[90msrc/security/encryption-service.ts\u001b[39m 15ms (unchanged)\n\u001b[90msrc/security/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/setupTests.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/storage/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/storage/storage-manager.ts\u001b[39m 36ms (unchanged)\n\u001b[90msrc/sync/change-tracker.ts\u001b[39m 5ms (unchanged)\n\u001b[90msrc/sync/conflict-resolver.test.ts\u001b[39m 10ms (unchanged)\n\u001b[90msrc/sync/conflict-resolver.ts\u001b[39m 13ms (unchanged)\n\u001b[90msrc/sync/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/sync/sync-manager.ts\u001b[39m 17ms (unchanged)\n\u001b[90msrc/sync/sync-queue.ts\u001b[39m 15ms (unchanged)\n\u001b[90msrc/types.ts\u001b[39m 2ms (unchanged)\n\u001b[90msrc/utils/checksum.test.ts\u001b[39m 19ms (unchanged)\n\u001b[90msrc/utils/checksum.ts\u001b[39m 26ms (unchanged)\n\u001b[90msrc/utils/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/validation/index.ts\u001b[39m 1ms (unchanged)\n\u001b[90mtsconfig.json\u001b[39m 1ms (unchanged)\n\u001b[90mvitest.config.ts\u001b[39m 4ms (unchanged)\n\u001b[32m✅ Formatting @sync/core completado (2.8s)\u001b[0m\n\u001b[36m🔧 Formatting @sync/types\u001b[0m\n\n> @sync/types@1.0.0 format C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\types\n> prettier --write .\n\n.eslintrc.cjs 40ms\ndist/api.d.ts 58ms\ndist/api.js 4ms\ndist/business.d.ts 11ms\ndist/business.js 2ms\ndist/database.d.ts 21ms\ndist/database.js 2ms\ndist/index.d.ts 3ms\ndist/index.js 11ms\ndist/ui.d.ts 15ms\ndist/ui.js 2ms\n\u001b[90mpackage.json\u001b[39m 2ms (unchanged)\n\u001b[90mREADME.md\u001b[39m 42ms (unchanged)\n\u001b[90msrc/api.ts\u001b[39m 5ms (unchanged)\n\u001b[90msrc/business.ts\u001b[39m 7ms (unchanged)\n\u001b[90msrc/database.ts\u001b[39m 14ms (unchanged)\n\u001b[90msrc/index.ts\u001b[39m 5ms (unchanged)\n\u001b[90msrc/ui.ts\u001b[39m 9ms (unchanged)\n\u001b[90mtsconfig.json\u001b[39m 2ms (unchanged)\n\u001b[32m✅ Formatting @sync/types completado (1.5s)\u001b[0m\n\u001b[36m🔧 Formatting @sync/ui\u001b[0m\n\n> @sync/ui@1.0.0 format C:\\Users\\code\\Desktop\\sync\\packages\\@sync\\ui\n> prettier --write .\n\n.eslintrc.cjs 39ms\n.svelte-kit/__package__/components/ErrorBoundary.svelte 105ms\n.svelte-kit/__package__/components/PinEntry.svelte 83ms\n\u001b[90m.svelte-kit/__package__/hooks/useBackgroundSync.js\u001b[39m 27ms (unchanged)\n\u001b[90m.svelte-kit/__package__/hooks/useEncryption.js\u001b[39m 9ms (unchanged)\n\u001b[90m.svelte-kit/__package__/index.js\u001b[39m 3ms (unchanged)\n\u001b[90m.svelte-kit/__package__/stores/auth.js\u001b[39m 14ms (unchanged)\n\u001b[90m.svelte-kit/__package__/stores/sync.js\u001b[39m 8ms (unchanged)\ndist/components/ErrorBoundary.svelte 34ms\ndist/components/PinEntry.svelte 46ms\ndist/hooks/useBackgroundSync.js 13ms\ndist/hooks/useEncryption.js 5ms\n\u001b[90mdist/index.js\u001b[39m 2ms (unchanged)\ndist/stores/auth.js 8ms\ndist/stores/sync.js 5ms\n\u001b[90mpackage.json\u001b[39m 2ms (unchanged)\n\u001b[90mREADME.md\u001b[39m 49ms (unchanged)\n\u001b[90msrc/index.js\u001b[39m 1ms (unchanged)\n\u001b[90msrc/index.test.js\u001b[39m 6ms (unchanged)\nsrc/lib/components/ErrorBoundary.svelte 18ms\nsrc/lib/components/PinEntry.svelte 45ms\n\u001b[90msrc/lib/hooks/useBackgroundSync.js\u001b[39m 12ms (unchanged)\n\u001b[90msrc/lib/hooks/useEncryption.js\u001b[39m 11ms (unchanged)\n\u001b[90msrc/lib/index.ts\u001b[39m 43ms (unchanged)\n\u001b[90msrc/lib/stores/auth.js\u001b[39m 6ms (unchanged)\n\u001b[90msrc/lib/stores/sync.js\u001b[39m 5ms (unchanged)\n\u001b[90msrc/setupTests.js\u001b[39m 2ms (unchanged)\n\u001b[90mvitest.config.js\u001b[39m 1ms (unchanged)\n\u001b[32m✅ Formatting @sync/ui completado (1.8s)\u001b[0m\n\u001b[36m🔧 Formatting credisync\u001b[0m\n\n> credisync@1.0.0 format C:\\Users\\code\\Desktop\\sync\\apps\\credisync\n> prettier --write .\n\n.eslintrc.cjs 39ms\n\u001b[90mdev-dist/registerSW.js\u001b[39m 3ms (unchanged)\n\u001b[90mdev-dist/sw.js\u001b[39m 27ms (unchanged)\n\u001b[90mdev-dist/workbox-193af733.js\u001b[39m 240ms (unchanged)\ndist/assets/index-B5CDtjwO.js 1867ms\ndist/assets/index-uQfnJLpQ.css 47ms\ndist/ICONOS-README.md 43ms\ndist/index.html 124ms\ndist/manifest.webmanifest 4ms\ndist/registerSW.js 2ms\ndist/sw-sync.js 9ms\ndist/sw.js 8ms\ndist/workbox-fbd075aa.js 87ms\nindex.html 5ms\n\u001b[90mpackage.json\u001b[39m 3ms (unchanged)\n\u001b[90mpostcss.config.js\u001b[39m 3ms (unchanged)\n\u001b[90mpublic/ICONOS-README.md\u001b[39m 18ms (unchanged)\npublic/manifest.webmanifest 2ms\n\u001b[90mpublic/sw-sync.js\u001b[39m 9ms (unchanged)\nsrc/app.css 1ms\nsrc/App.svelte 60ms\n\u001b[90msrc/lib/app-config.ts\u001b[39m 55ms (unchanged)\n\u001b[90msrc/lib/audit/audit-logger.property.test.ts\u001b[39m 61ms (unchanged)\n\u001b[90msrc/lib/audit/audit-logger.test.ts\u001b[39m 50ms (unchanged)\n\u001b[90msrc/lib/audit/audit-logger.ts\u001b[39m 43ms (unchanged)\n\u001b[90msrc/lib/business/balance-calculator.property.test.ts\u001b[39m 29ms (unchanged)\n\u001b[90msrc/lib/business/balance-calculator.test.ts\u001b[39m 27ms (unchanged)\n\u001b[90msrc/lib/business/balance-calculator.ts\u001b[39m 12ms (unchanged)\n\u001b[90msrc/lib/business/credit-calculator.test.ts\u001b[39m 22ms (unchanged)\n\u001b[90msrc/lib/business/credit-calculator.ts\u001b[39m 13ms (unchanged)\nsrc/lib/components/ErrorBoundary.svelte 28ms\nsrc/lib/components/PinEntry.svelte 52ms\nsrc/lib/Counter.svelte 4ms\n\u001b[90msrc/lib/db/index.test.ts\u001b[39m 28ms (unchanged)\n\u001b[90msrc/lib/db/index.ts\u001b[39m 26ms (unchanged)\n\u001b[90msrc/lib/db/types.ts\u001b[39m 6ms (unchanged)\n\u001b[90msrc/lib/db/utils.ts\u001b[39m 1ms (unchanged)\n\u001b[90msrc/lib/hooks/useBackgroundSync.ts\u001b[39m 8ms (unchanged)\n\u001b[90msrc/lib/hooks/useEncryption.ts\u001b[39m 11ms (unchanged)\n\u001b[90msrc/lib/integrity/checksum.test.ts\u001b[39m 36ms (unchanged)\n\u001b[90msrc/lib/integrity/checksum.ts\u001b[39m 30ms (unchanged)\n\u001b[90msrc/lib/monitoring/error-logger.test.ts\u001b[39m 15ms (unchanged)\n\u001b[90msrc/lib/monitoring/error-logger.ts\u001b[39m 26ms (unchanged)\n\u001b[90msrc/lib/monitoring/README.md\u001b[39m 29ms (unchanged)\n\u001b[90msrc/lib/security/encryption.integration.test.ts\u001b[39m 17ms (unchanged)\n\u001b[90msrc/lib/security/encryption.service.test.ts\u001b[39m 32ms (unchanged)\n\u001b[90msrc/lib/security/encryption.service.ts\u001b[39m 16ms (unchanged)\n\u001b[90msrc/lib/security/README.md\u001b[39m 41ms (unchanged)\n\u001b[90msrc/lib/services/auth.service.test.ts\u001b[39m 10ms (unchanged)\n\u001b[90msrc/lib/services/auth.service.ts\u001b[39m 6ms (unchanged)\n\u001b[90msrc/lib/storage/storage-manager.test.ts\u001b[39m 14ms (unchanged)\n\u001b[90msrc/lib/storage/storage-manager.ts\u001b[39m 20ms (unchanged)\n\u001b[90msrc/lib/supabase.ts\u001b[39m 2ms (unchanged)\n\u001b[90msrc/lib/sync/background-sync.test.ts\u001b[39m 14ms (unchanged)\n\u001b[90msrc/lib/sync/background-sync.ts\u001b[39m 9ms (unchanged)\n\u001b[90msrc/lib/sync/change-tracker.test.ts\u001b[39m 23ms (unchanged)\n\u001b[90msrc/lib/sync/change-tracker.ts\u001b[39m 15ms (unchanged)\n\u001b[90msrc/lib/sync/conflict-resolver.property.test.ts\u001b[39m 17ms (unchanged)\n\u001b[90msrc/lib/sync/conflict-resolver.test.ts\u001b[39m 19ms (unchanged)\n\u001b[90msrc/lib/sync/conflict-resolver.ts\u001b[39m 11ms (unchanged)\n\u001b[90msrc/lib/sync/sync-manager.test.ts\u001b[39m 22ms (unchanged)\n\u001b[90msrc/lib/sync/sync-manager.ts\u001b[39m 20ms (unchanged)\n\u001b[90msrc/lib/sync/sync-queue.property.test.ts\u001b[39m 22ms (unchanged)\n\u001b[90msrc/lib/sync/sync-queue.test.ts\u001b[39m 25ms (unchanged)\n\u001b[90msrc/lib/sync/sync-queue.ts\u001b[39m 12ms (unchanged)\n\u001b[90msrc/lib/validation/schemas.ts\u001b[39m 33ms (unchanged)\n\u001b[90msrc/lib/validation/validator.test.ts\u001b[39m 15ms (unchanged)\n\u001b[90msrc/lib/validation/validator.ts\u001b[39m 17ms (unchanged)\n\u001b[90msrc/main.ts\u001b[39m 4ms (unchanged)\nsrc/routes/login.svelte 17ms\nsrc/routes/test-connection.svelte 35ms\n\u001b[90msrc/setupTests.ts\u001b[39m 3ms (unchanged)\n\u001b[90msrc/types/database.ts\u001b[39m 2ms (unchanged)\n\u001b[90msvelte.config.js\u001b[39m 1ms (unchanged)\n\u001b[90mtailwind.config.js\u001b[39m 2ms (unchanged)\n\u001b[90mtsconfig.app.json\u001b[39m 2ms (unchanged)\n\u001b[90mtsconfig.node.json\u001b[39m 1ms (unchanged)\n\u001b[90mvercel.json\u001b[39m 2ms (unchanged)\n\u001b[90mvite.config.ts\u001b[39m 7ms (unchanged)\n\u001b[90mvitest.config.ts\u001b[39m 3ms (unchanged)\n\u001b[32m✅ Formatting credisync completado (5.0s)\u001b[0m\n\u001b[36m🔧 Formatting healthsync\u001b[0m\nNone of the selected packages has a \"format\" script\n\u001b[32m✅ Formatting healthsync completado (0.5s)\u001b[0m\n\u001b[36m🔧 Formatting surveysync\u001b[0m\nNone of the selected packages has a \"format\" script\n\u001b[32m✅ Formatting surveysync completado (0.5s)\u001b[0m\n\u001b[36m\\n⏱️  Tiempo total: 19.3s\u001b[0m\n\u001b[34m\\n📊 Resumen de Lint & Format:\u001b[0m\n\u001b[36m🔍 Linting: ✅\u001b[0m\n\u001b[36m💅 Formatting: ✅\u001b[0m\n\u001b[32m\\n🎉 Código limpio y bien formateado!\u001b[0m\n\u001b[33m\\n📋 Próximos pasos:\u001b[0m\n\u001b[33m• Commit cambios: git add . && git commit\u001b[0m\n\u001b[33m• Ejecutar tests: pnpm test\u001b[0m\n"
+        }
+      ]
+    },
+    "deployment": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "warnings": 0,
+      "details": []
+    },
+    "performance": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "warnings": 0,
+      "details": [
+        {
+          "success": true,
+          "duration": 18150,
+          "command": "node tools/scripts/performance-monitor.js --build",
+          "description": "Measuring build performance",
+          "output": "\u001b[34m⏱️  Performance Monitor - Sync Platform\u001b[0m\n\u001b[34m🏗️  Midiendo performance de builds...\u001b[0m\n\u001b[36m📦 Building packages...\u001b[0m\n\u001b[36m⏱️  Building @sync/core...\u001b[0m\n\u001b[32m✅ Building @sync/core completado en 2.3s\u001b[0m\n\u001b[36m⏱️  Building @sync/types...\u001b[0m\n\u001b[32m✅ Building @sync/types completado en 1.6s\u001b[0m\n\u001b[36m⏱️  Building @sync/ui...\u001b[0m\n\u001b[32m✅ Building @sync/ui completado en 5.1s\u001b[0m\n\u001b[36m🚀 Building apps...\u001b[0m\n\u001b[36m⏱️  Building credisync...\u001b[0m\n\u001b[32m✅ Building credisync completado en 7.8s\u001b[0m\n\u001b[36m⏱️  Building healthsync...\u001b[0m\n\u001b[32m✅ Building healthsync completado en 574ms\u001b[0m\n\u001b[36m⏱️  Building surveysync...\u001b[0m\n\u001b[32m✅ Building surveysync completado en 546ms\u001b[0m\n\u001b[34m\\n📊 Resultados de Performance - BUILD\u001b[0m\n\u001b[36m⏰ 10/12/2025, 8:03:47 a. m.\u001b[0m\n\u001b[34m\\n📦 Packages:\u001b[0m\n\u001b[32m   ✅ @sync/core: 2.3s\u001b[0m\n\u001b[32m   ✅ @sync/types: 1.6s\u001b[0m\n\u001b[32m   ✅ @sync/ui: 5.1s\u001b[0m\n\u001b[34m\\n🚀 Apps:\u001b[0m\n\u001b[32m   ✅ credisync: 7.8s\u001b[0m\n\u001b[32m   ✅ healthsync: 574ms\u001b[0m\n\u001b[32m   ✅ surveysync: 546ms\u001b[0m\n\u001b[35m\\n✅ Total: 18.0s\u001b[0m\n\u001b[34m\\n📈 Análisis:\u001b[0m\n\u001b[32m   ✅ Build time optimizado\u001b[0m\n\u001b[32m💾 Resultados guardados: C:\\Users\\code\\Desktop\\sync\\tools\\reports\\performance\\performance-build-2025-12-10T13-04-05-851Z.json\u001b[0m\n\u001b[34m\\n📈 Comparación con medición previa:\u001b[0m\n\u001b[36m   Total: 0ms (0.0%)\u001b[0m\n\u001b[32m   ✅ Cambio mínimo en performance\u001b[0m\n\u001b[34m📋 Generando reporte de performance...\u001b[0m\n\u001b[32m📋 Reporte generado: C:\\Users\\code\\Desktop\\sync\\tools\\reports\\performance\\performance-report.json\u001b[0m\n\u001b[32m📋 Reporte MD: C:\\Users\\code\\Desktop\\sync\\tools\\reports\\performance\\performance-report.md\u001b[0m\n\u001b[34m\\n🎯 Próximos pasos:\u001b[0m\n\u001b[33m• Revisar métricas de performance regularmente\u001b[0m\n\u001b[33m• Optimizar procesos que tomen más tiempo\u001b[0m\n\u001b[33m• Configurar alertas para degradación de performance\u001b[0m\n\u001b[33m• Integrar métricas en CI/CD pipeline\u001b[0m\n"
+        },
+        {
+          "success": true,
+          "duration": 90,
+          "command": "node tools/scripts/bundle-analyzer.js --all",
+          "description": "Analyzing bundle sizes",
+          "output": "\u001b[34m📊 Bundle Analyzer - Sync Platform\u001b[0m\n\u001b[34m🔍 Analizando todas las apps...\u001b[0m\n\u001b[36m📊 Analizando bundle de credisync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\credisync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:credisync\u001b[0m\n\u001b[36m📊 Analizando bundle de healthsync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\healthsync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:healthsync\u001b[0m\n\u001b[36m📊 Analizando bundle de surveysync...\u001b[0m\n\u001b[31m❌ Build directory no encontrado: C:\\Users\\code\\Desktop\\sync\\apps\\surveysync\\.svelte-kit\\output\u001b[0m\n\u001b[33m💡 Ejecuta: pnpm build:surveysync\u001b[0m\n\u001b[34m\\n🎯 Próximos pasos:\u001b[0m\n\u001b[33m• Revisar archivos grandes y considerar code splitting\u001b[0m\n\u001b[33m• Optimizar imports y dependencias no utilizadas\u001b[0m\n\u001b[33m• Configurar compresión en servidor\u001b[0m\n\u001b[33m• Monitorear cambios en tamaño con cada deploy\u001b[0m\n"
+        }
+      ]
+    }
+  },
+  "recommendations": [
+    "Corregir validaciones fallidas antes de deployment"
+  ]
+}

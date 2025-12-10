@@ -1,10 +1,10 @@
 /**
  * Audit Logger System
- * 
+ *
  * Implements an immutable audit log with blockchain-like hash chain.
  * Every critical operation is logged as an event with complete context.
  * Events are linked via SHA-256 hash chain to ensure immutability.
- * 
+ *
  * Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7
  */
 
@@ -38,7 +38,11 @@ export interface AuditEventMetadata {
 }
 
 export interface FraudPattern {
-  type: 'rapid_payments' | 'impossible_location' | 'duplicate_payment' | 'suspicious_amount';
+  type:
+    | 'rapid_payments'
+    | 'impossible_location'
+    | 'duplicate_payment'
+    | 'suspicious_amount';
   severity: 'low' | 'medium' | 'high';
   description: string;
   events: AuditLogEntry[];
@@ -110,7 +114,7 @@ export class AuditLogger {
       data: eventData.data,
       metadata,
       previous_hash: this.lastHash,
-      hash: '', // Will be calculated
+      hash: '' // Will be calculated
     };
 
     // Calculate hash
@@ -144,7 +148,7 @@ export class AuditLogger {
       aggregate_id: event.aggregate_id,
       data: event.data,
       metadata: event.metadata,
-      previous_hash: event.previous_hash,
+      previous_hash: event.previous_hash
     });
 
     // Calculate SHA-256 hash
@@ -152,7 +156,9 @@ export class AuditLogger {
     const data = encoder.encode(eventString);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashHex = hashArray
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
 
     return hashHex;
   }
@@ -165,7 +171,10 @@ export class AuditLogger {
     partial?: Partial<AuditEventMetadata>
   ): Promise<AuditEventMetadata> {
     // Get connection type
-    const connection = (navigator as any).connection || (navigator as any).mozConnection || (navigator as any).webkitConnection;
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
     const connectionType = connection?.effectiveType || 'unknown';
 
     // Get battery level
@@ -186,7 +195,7 @@ export class AuditLogger {
       latitude: partial?.latitude || null,
       longitude: partial?.longitude || null,
       connection_type: connectionType,
-      battery_level: batteryLevel,
+      battery_level: batteryLevel
     };
   }
 
@@ -206,7 +215,7 @@ export class AuditLogger {
       if (event.previous_hash !== previousHash) {
         errors.push(
           `Event ${event.sequence}: previous_hash mismatch. ` +
-          `Expected ${previousHash}, got ${event.previous_hash}`
+            `Expected ${previousHash}, got ${event.previous_hash}`
         );
       }
 
@@ -215,7 +224,7 @@ export class AuditLogger {
       if (calculatedHash !== event.hash) {
         errors.push(
           `Event ${event.sequence}: hash mismatch. ` +
-          `Expected ${event.hash}, calculated ${calculatedHash}`
+            `Expected ${event.hash}, calculated ${calculatedHash}`
         );
       }
 
@@ -224,7 +233,7 @@ export class AuditLogger {
 
     return {
       valid: errors.length === 0,
-      errors,
+      errors
     };
   }
 
@@ -246,9 +255,8 @@ export class AuditLogger {
     // Filter by aggregate_id and timestamp
     const targetTimestamp = timestamp || Date.now();
     const events = allEvents
-      .filter(e => 
-        e.aggregate_id === aggregateId && 
-        e.timestamp <= targetTimestamp
+      .filter(
+        e => e.aggregate_id === aggregateId && e.timestamp <= targetTimestamp
       )
       .sort((a, b) => a.timestamp - b.timestamp);
 
@@ -296,9 +304,10 @@ export class AuditLogger {
 
     // Pattern 1: Rapid payments (more than 10 payments in 5 minutes)
     const recentPayments = events.filter(
-      e => e.event_type === 'CREATE' && 
-           e.aggregate_type === 'pago' && 
-           e.timestamp > now - 300000
+      e =>
+        e.event_type === 'CREATE' &&
+        e.aggregate_type === 'pago' &&
+        e.timestamp > now - 300000
     );
 
     if (recentPayments.length > 10) {
@@ -306,24 +315,25 @@ export class AuditLogger {
         type: 'rapid_payments',
         severity: 'high',
         description: `${recentPayments.length} payments in 5 minutes`,
-        events: recentPayments,
+        events: recentPayments
       });
     }
 
     // Pattern 2: Impossible location (movement > 100km in < 10 minutes)
     const paymentsWithLocation = events
-      .filter(e => 
-        e.event_type === 'CREATE' && 
-        e.aggregate_type === 'pago' &&
-        e.metadata.latitude && 
-        e.metadata.longitude
+      .filter(
+        e =>
+          e.event_type === 'CREATE' &&
+          e.aggregate_type === 'pago' &&
+          e.metadata.latitude &&
+          e.metadata.longitude
       )
       .sort((a, b) => a.timestamp - b.timestamp);
 
     for (let i = 1; i < paymentsWithLocation.length; i++) {
       const prev = paymentsWithLocation[i - 1];
       const curr = paymentsWithLocation[i];
-      
+
       const timeDiff = curr.timestamp - prev.timestamp;
       const distance = this.calculateDistance(
         prev.metadata.latitude!,
@@ -338,7 +348,7 @@ export class AuditLogger {
           type: 'impossible_location',
           severity: 'high',
           description: `Moved ${distance.toFixed(1)}km in ${(timeDiff / 60000).toFixed(1)} minutes`,
-          events: [prev, curr],
+          events: [prev, curr]
         });
       }
     }
@@ -354,7 +364,8 @@ export class AuditLogger {
         const p2 = paymentEvents[j];
 
         if (
-          p1.data && p2.data &&
+          p1.data &&
+          p2.data &&
           p1.data.cliente_id === p2.data.cliente_id &&
           p1.data.monto === p2.data.monto &&
           Math.abs(p1.timestamp - p2.timestamp) < 60000
@@ -363,7 +374,7 @@ export class AuditLogger {
             type: 'duplicate_payment',
             severity: 'medium',
             description: `Duplicate payment of ${p1.data.monto} for same client`,
-            events: [p1, p2],
+            events: [p1, p2]
           });
         }
       }
@@ -379,7 +390,7 @@ export class AuditLogger {
         type: 'suspicious_amount',
         severity: 'medium',
         description: `${largePayments.length} payment(s) over 1M`,
-        events: largePayments,
+        events: largePayments
       });
     }
 
@@ -398,14 +409,14 @@ export class AuditLogger {
     const R = 6371; // Earth radius in km
     const dLat = this.toRad(lat2 - lat1);
     const dLon = this.toRad(lon2 - lon1);
-    
+
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(this.toRad(lat1)) *
-      Math.cos(this.toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-    
+        Math.cos(this.toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   }
@@ -449,11 +460,7 @@ export class AuditLogger {
    * Get recent audit events
    */
   async getRecentEvents(limit: number = 100): Promise<AuditLogEntry[]> {
-    return db.audit_log
-      .orderBy('timestamp')
-      .reverse()
-      .limit(limit)
-      .toArray();
+    return db.audit_log.orderBy('timestamp').reverse().limit(limit).toArray();
   }
 
   /**
@@ -461,7 +468,7 @@ export class AuditLogger {
    */
   async countEventsByType(): Promise<Record<EventType, number>> {
     const events = await db.audit_log.toArray();
-    
+
     const counts: Record<string, number> = {};
     for (const event of events) {
       counts[event.event_type] = (counts[event.event_type] || 0) + 1;

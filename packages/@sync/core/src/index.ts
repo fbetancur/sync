@@ -1,6 +1,6 @@
 /**
  * @sync/core - Core offline-first infrastructure
- * 
+ *
  * This package provides the foundational infrastructure for building
  * offline-first applications in the Sync Platform.
  */
@@ -33,5 +33,10 @@ export * from './business';
 export { ChecksumService } from './utils';
 
 // Main factory function
-export { createSyncApp, createDefaultConfig, createDevConfig, createProdConfig } from './app';
+export {
+  createSyncApp,
+  createDefaultConfig,
+  createDevConfig,
+  createProdConfig
+} from './app';
 export type { SyncAppConfig, SyncApp, SyncAppServices, AppStatus } from './app';

@@ -1,15 +1,21 @@
 # Design Document
+
 # PWA Offline-First para Gestión de Microcréditos
 
 ## Overview
 
-Esta PWA offline-first está diseñada para permitir a cobradores de microcréditos trabajar completamente sin conexión, con sincronización inteligente cuando hay conectividad. La arquitectura se basa en tres pilares fundamentales:
+Esta PWA offline-first está diseñada para permitir a cobradores de microcréditos trabajar
+completamente sin conexión, con sincronización inteligente cuando hay conectividad. La arquitectura
+se basa en tres pilares fundamentales:
 
-1. **Offline-First Real**: La PWA es la fuente de verdad, con toda la lógica de negocio en el cliente
-2. **Confiabilidad Máxima**: Almacenamiento redundante en 3 capas y resolución automática de conflictos
+1. **Offline-First Real**: La PWA es la fuente de verdad, con toda la lógica de negocio en el
+   cliente
+2. **Confiabilidad Máxima**: Almacenamiento redundante en 3 capas y resolución automática de
+   conflictos
 3. **Performance Optimizada**: Diseñada para dispositivos modernos (2022+) con tecnologías probadas
 
 **Stack Tecnológico**:
+
 - **Frontend**: Svelte 4 + TypeScript + Vite 5
 - **Base de Datos Local**: Dexie.js (IndexedDB wrapper)
 - **Backend**: Supabase (PostgreSQL + Auth + Storage)
@@ -87,19 +93,21 @@ Esta PWA offline-first está diseñada para permitir a cobradores de microcrédi
 ### Data Flow
 
 **Escritura (Registro de Pago)**:
+
 ```
-Usuario → Validación UI → Cálculos Locales → 
+Usuario → Validación UI → Cálculos Locales →
 → IndexedDB (Capa 1) → LocalStorage (Capa 2) → Cache API (Capa 3) →
 → Audit Log → Sync Queue → Confirmación Usuario →
 → [Background] Sincronización con Supabase
 ```
 
 **Lectura (Consulta de Cliente)**:
+
 ```
-Usuario → Consulta IndexedDB → 
-→ (Si falla) LocalStorage → 
-→ (Si falla) Cache API → 
-→ Mostrar Datos → 
+Usuario → Consulta IndexedDB →
+→ (Si falla) LocalStorage →
+→ (Si falla) Cache API →
+→ Mostrar Datos →
 → [Background] Verificar actualizaciones en Supabase
 ```
 
@@ -112,6 +120,7 @@ Usuario → Consulta IndexedDB →
 **Responsabilidad**: Gestionar toda la interacción con IndexedDB
 
 **Interfaz**:
+
 ```typescript
 // src/lib/db/index.ts
 import Dexie, { type Table } from 'dexie';
@@ -275,19 +284,26 @@ export class MicrocreditosDB extends Dexie {
 
   constructor() {
     super('microcreditos_db');
-    
+
     this.version(1).stores({
       tenants: 'id, nombre, activo',
       users: 'id, tenant_id, email, [tenant_id+activo]',
       rutas: 'id, tenant_id, nombre, activa, [tenant_id+activa]',
-      clientes: 'id, tenant_id, ruta_id, numero_documento, estado, [tenant_id+ruta_id], [tenant_id+estado]',
+      clientes:
+        'id, tenant_id, ruta_id, numero_documento, estado, [tenant_id+ruta_id], [tenant_id+estado]',
       productos_credito: 'id, tenant_id, activo, [tenant_id+activo]',
-      creditos: 'id, tenant_id, cliente_id, cobrador_id, ruta_id, estado, [tenant_id+estado], [cliente_id+estado], [cobrador_id+estado]',
-      cuotas: 'id, credito_id, tenant_id, numero, estado, fecha_programada, [credito_id+numero], [credito_id+estado]',
-      pagos: 'id, tenant_id, credito_id, cliente_id, cobrador_id, fecha, synced, [tenant_id+fecha], [credito_id+fecha], [cobrador_id+fecha], [synced+fecha]',
-      sync_queue: '++id, timestamp, table_name, record_id, operation, synced, priority, [synced+priority+timestamp]',
-      audit_log: '++id, timestamp, event_type, aggregate_type, aggregate_id, user_id, [aggregate_type+aggregate_id+timestamp], [user_id+timestamp]',
-      change_log: '++id, timestamp, table_name, record_id, synced, [synced+timestamp], [table_name+record_id]',
+      creditos:
+        'id, tenant_id, cliente_id, cobrador_id, ruta_id, estado, [tenant_id+estado], [cliente_id+estado], [cobrador_id+estado]',
+      cuotas:
+        'id, credito_id, tenant_id, numero, estado, fecha_programada, [credito_id+numero], [credito_id+estado]',
+      pagos:
+        'id, tenant_id, credito_id, cliente_id, cobrador_id, fecha, synced, [tenant_id+fecha], [credito_id+fecha], [cobrador_id+fecha], [synced+fecha]',
+      sync_queue:
+        '++id, timestamp, table_name, record_id, operation, synced, priority, [synced+priority+timestamp]',
+      audit_log:
+        '++id, timestamp, event_type, aggregate_type, aggregate_id, user_id, [aggregate_type+aggregate_id+timestamp], [user_id+timestamp]',
+      change_log:
+        '++id, timestamp, table_name, record_id, synced, [synced+timestamp], [table_name+record_id]',
       checksums: 'record_key, checksum, timestamp',
       app_state: 'key, value, updated_at'
     });
@@ -302,6 +318,7 @@ export const db = new MicrocreditosDB();
 **Responsabilidad**: Gestionar toda la sincronización bidireccional
 
 **Interfaz**:
+
 ```typescript
 // src/lib/sync/sync-manager.ts
 
@@ -328,11 +345,11 @@ export interface SyncResult {
 }
 
 export class SyncManager {
-  private isSync
+  private isSync;
 
-ing: boolean = false;
+  ing: boolean = false;
   private lastSyncTimestamp: number = 0;
-  
+
   async sync(options?: SyncOptions): Promise<SyncResult>;
   async syncUpload(options?: SyncOptions): Promise<number>;
   async syncDownload(options?: SyncOptions): Promise<number>;
@@ -344,13 +361,12 @@ ing: boolean = false;
 }
 ```
 
-
-
 #### 3. Conflict Resolver Module (CRDT)
 
 **Responsabilidad**: Resolver conflictos automáticamente usando CRDT
 
 **Algoritmo**:
+
 ```typescript
 // src/lib/sync/conflict-resolver.ts
 
@@ -366,41 +382,41 @@ export class ConflictResolver {
     if (type === 'pago') {
       return { resolved: local, strategy: 'local_wins', conflicts_detected: [] };
     }
-    
+
     // Para registros editables: usar CRDT con version vectors
     return this.resolveCRDT(local, remote);
   }
-  
+
   private resolveCRDT(local: any, remote: any): ConflictResolution {
     // Comparar version_vectors
     const localDominates = this.dominatesVector(local.version_vector, remote.version_vector);
     const remoteDominates = this.dominatesVector(remote.version_vector, local.version_vector);
-    
+
     if (localDominates && !remoteDominates) {
       return { resolved: local, strategy: 'local_wins', conflicts_detected: [] };
     }
-    
+
     if (remoteDominates && !localDominates) {
       return { resolved: remote, strategy: 'remote_wins', conflicts_detected: [] };
     }
-    
+
     // Conflicto real: resolver campo por campo
     return this.mergeFields(local, remote);
   }
-  
+
   private mergeFields(local: any, remote: any): ConflictResolution {
     const resolved: any = {};
     const conflicts: string[] = [];
-    
+
     const allFields = new Set([
       ...Object.keys(local.field_versions || {}),
       ...Object.keys(remote.field_versions || {})
     ]);
-    
+
     for (const field of allFields) {
       const localField = local.field_versions?.[field];
       const remoteField = remote.field_versions?.[field];
-      
+
       if (!remoteField) {
         resolved[field] = localField;
       } else if (!localField) {
@@ -414,21 +430,19 @@ export class ConflictResolver {
           conflicts.push(field);
         } else {
           // Timestamps iguales: usar device_id como desempate
-          resolved[field] = localField.device_id > remoteField.device_id 
-            ? localField 
-            : remoteField;
+          resolved[field] = localField.device_id > remoteField.device_id ? localField : remoteField;
           conflicts.push(field);
         }
       }
     }
-    
+
     return {
       resolved: { ...local, field_versions: resolved },
       strategy: 'merged',
       conflicts_detected: conflicts
     };
   }
-  
+
   private dominatesVector(v1: Record<string, number>, v2: Record<string, number>): boolean {
     let dominates = false;
     for (const key in v2) {
@@ -451,6 +465,7 @@ export class ConflictResolver {
 Ver sección "Components and Interfaces" para definiciones completas de tipos TypeScript.
 
 **Relaciones**:
+
 - `clientes.tenant_id` → `tenants.id`
 - `clientes.ruta_id` → `rutas.id`
 - `creditos.cliente_id` → `clientes.id`
@@ -542,47 +557,64 @@ CREATE POLICY "Cobradores see only their data"
 
 ## Correctness Properties
 
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
+_A property is a characteristic or behavior that should hold true across all valid executions of a
+system-essentially, a formal statement about what the system should do. Properties serve as the
+bridge between human-readable specifications and machine-verifiable correctness guarantees._
 
 ### Property 1: Pago Registration Atomicity
-*For any* pago registration, all three storage layers (IndexedDB, LocalStorage, Cache API) must be written successfully before confirming to the user, or none at all.
-**Validates: Requirements 3.5**
+
+_For any_ pago registration, all three storage layers (IndexedDB, LocalStorage, Cache API) must be
+written successfully before confirming to the user, or none at all. **Validates: Requirements 3.5**
 
 ### Property 2: Sync Queue Ordering
-*For any* set of pending operations, operations with higher priority must be synchronized before operations with lower priority, and within the same priority, operations must be synchronized in timestamp order.
-**Validates: Requirements 5.2**
+
+_For any_ set of pending operations, operations with higher priority must be synchronized before
+operations with lower priority, and within the same priority, operations must be synchronized in
+timestamp order. **Validates: Requirements 5.2**
 
 ### Property 3: Conflict Resolution Determinism
-*For any* two conflicting versions of the same record, the conflict resolution algorithm must produce the same result regardless of the order in which the versions are processed.
-**Validates: Requirements 6.1, 6.2**
+
+_For any_ two conflicting versions of the same record, the conflict resolution algorithm must
+produce the same result regardless of the order in which the versions are processed. **Validates:
+Requirements 6.1, 6.2**
 
 ### Property 4: Checksum Integrity
-*For any* critical record (pago, credito), if the stored checksum does not match the recalculated checksum, the system must detect the corruption and attempt recovery.
-**Validates: Requirements 2.6, 7.6**
+
+_For any_ critical record (pago, credito), if the stored checksum does not match the recalculated
+checksum, the system must detect the corruption and attempt recovery. **Validates: Requirements 2.6,
+7.6**
 
 ### Property 5: Audit Log Immutability
-*For any* event in the audit log, the hash chain must be valid (each event's hash must match SHA-256(event_data + previous_hash)), and no event can be modified or deleted.
-**Validates: Requirements 8.3, 8.4**
+
+_For any_ event in the audit log, the hash chain must be valid (each event's hash must match
+SHA-256(event_data + previous_hash)), and no event can be modified or deleted. **Validates:
+Requirements 8.3, 8.4**
 
 ### Property 6: Offline Functionality Completeness
-*For any* core operation (register pago, create cliente, update credito), the operation must complete successfully without network connectivity.
-**Validates: Requirements 9.4, 9.7**
+
+_For any_ core operation (register pago, create cliente, update credito), the operation must
+complete successfully without network connectivity. **Validates: Requirements 9.4, 9.7**
 
 ### Property 7: Saldo Calculation Consistency
-*For any* credito, the saldo_pendiente must equal (total_a_pagar - sum of all pagos for that credito), calculated locally.
-**Validates: Requirements 13.1**
+
+_For any_ credito, the saldo_pendiente must equal (total_a_pagar - sum of all pagos for that
+credito), calculated locally. **Validates: Requirements 13.1**
 
 ### Property 8: GPS Capture Requirement
-*For any* pago registration, if GPS is available, latitude and longitude must be captured; if GPS is not available, the pago must be marked as without location but still allowed to proceed.
+
+_For any_ pago registration, if GPS is available, latitude and longitude must be captured; if GPS is
+not available, the pago must be marked as without location but still allowed to proceed.
 **Validates: Requirements 15.2, 15.4**
 
 ### Property 9: Auto-save Recovery
-*For any* incomplete form, if the application closes unexpectedly, the form state must be recoverable from auto-save when the application reopens.
-**Validates: Requirements 4.2, 4.3**
+
+_For any_ incomplete form, if the application closes unexpectedly, the form state must be
+recoverable from auto-save when the application reopens. **Validates: Requirements 4.2, 4.3**
 
 ### Property 10: Encryption Transparency
-*For any* sensitive field (numero_documento, telefono), the encryption and decryption must be transparent to the user, with no impact on functionality.
-**Validates: Requirements 17.2, 17.4**
+
+_For any_ sensitive field (numero_documento, telefono), the encryption and decryption must be
+transparent to the user, with no impact on functionality. **Validates: Requirements 17.2, 17.4**
 
 ## Error Handling
 
@@ -597,6 +629,7 @@ CREATE POLICY "Cobradores see only their data"
 ### Recovery Strategies
 
 **IndexedDB Corruption**:
+
 ```
 1. Detect corruption on startup
 2. Attempt repair
@@ -607,6 +640,7 @@ CREATE POLICY "Cobradores see only their data"
 ```
 
 **Sync Failures**:
+
 ```
 1. Retry with exponential backoff
 2. Max 10 attempts
@@ -617,24 +651,28 @@ CREATE POLICY "Cobradores see only their data"
 ## Testing Strategy
 
 ### Unit Tests
+
 - Business logic functions (cálculos, validaciones)
 - CRDT conflict resolution
 - Checksum calculation
 - Data transformations
 
 ### Integration Tests
+
 - IndexedDB operations
 - Sync manager workflows
 - Multi-layer storage writes
 - Recovery procedures
 
 ### Property-Based Tests
+
 - CRDT properties (commutativity, associativity)
 - Checksum integrity
 - Audit log chain validity
 - Sync queue ordering
 
 ### E2E Tests
+
 - Complete user workflows
 - Offline scenarios
 - Sync scenarios
@@ -665,18 +703,21 @@ CREATE POLICY "Cobradores see only their data"
 ## Security Considerations
 
 ### Authentication
+
 - JWT tokens from Supabase Auth
 - Tokens stored only in memory
 - Auto-refresh before expiration
 - Logout clears all sensitive data
 
 ### Encryption
+
 - AES-256-GCM for sensitive fields
 - PBKDF2 key derivation (100k iterations)
 - Keys never stored, only in memory
 - Web Crypto API (native, secure)
 
 ### Data Protection
+
 - Row Level Security in Supabase
 - HTTPS only
 - No sensitive data in logs
@@ -685,6 +726,7 @@ CREATE POLICY "Cobradores see only their data"
 ## Deployment Strategy
 
 ### CI/CD Pipeline
+
 ```
 1. Push to Git
 2. GitHub Actions triggers
@@ -696,12 +738,13 @@ CREATE POLICY "Cobradores see only their data"
 ```
 
 ### Environments
+
 - **Development**: Local + Supabase dev project
 - **Staging**: Vercel preview + Supabase staging
 - **Production**: Vercel production + Supabase production
 
 ### Rollback Strategy
+
 - Vercel instant rollback
 - Database migrations are forward-only
 - Feature flags for gradual rollout
-

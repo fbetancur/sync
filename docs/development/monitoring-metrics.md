@@ -4,7 +4,8 @@ Esta guía describe el sistema de monitoreo y métricas implementado en el monor
 
 ## 📊 Visión General
 
-El sistema de monitoreo recolecta y analiza métricas clave del desarrollo y performance del monorepo:
+El sistema de monitoreo recolecta y analiza métricas clave del desarrollo y performance del
+monorepo:
 
 - **Performance Metrics**: Tiempos de build, test, instalación y linting
 - **Bundle Analysis**: Tamaño de bundles y análisis de assets
@@ -207,15 +208,15 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
-      
+
       - run: pnpm install
       - run: pnpm build
-      
+
       # Recolectar métricas
       - run: pnpm performance-monitor:all
       - run: pnpm bundle-analyzer:all
       - run: pnpm metrics-dashboard:export
-      
+
       # Subir reportes como artifacts
       - uses: actions/upload-artifact@v3
         with:
@@ -240,29 +241,32 @@ El sistema se integra automáticamente con pre-commit hooks:
 
 El sistema define umbrales automáticos:
 
-| Métrica | Bueno | Warning | Error |
-|---------|-------|---------|-------|
-| Build Time | < 30s | 30s-2m | > 2m |
-| Test Time | < 15s | 15s-1m | > 1m |
-| Install Time | < 1m | 1m-3m | > 3m |
-| Bundle Size | < 500KB | 500KB-1MB | > 1MB |
+| Métrica      | Bueno   | Warning   | Error |
+| ------------ | ------- | --------- | ----- |
+| Build Time   | < 30s   | 30s-2m    | > 2m  |
+| Test Time    | < 15s   | 15s-1m    | > 1m  |
+| Install Time | < 1m    | 1m-3m     | > 3m  |
+| Bundle Size  | < 500KB | 500KB-1MB | > 1MB |
 
 ### Recomendaciones Automáticas
 
 El sistema proporciona recomendaciones basadas en métricas:
 
 **Build Performance:**
+
 - Paralelización de builds
 - Optimización de TypeScript config
 - Cache de dependencias
 
 **Bundle Size:**
+
 - Code splitting
 - Tree shaking
 - Lazy loading
 - Dependency analysis
 
 **Test Performance:**
+
 - Paralelización de tests
 - Test filtering
 - Mock optimization
@@ -329,12 +333,12 @@ Editar `tools/scripts/performance-monitor.js`:
 // Personalizar umbrales de warning
 const THRESHOLDS = {
   build: {
-    warning: 60000,  // 1 minuto
-    error: 180000    // 3 minutos
+    warning: 60000, // 1 minuto
+    error: 180000 // 3 minutos
   },
   test: {
-    warning: 30000,  // 30 segundos
-    error: 120000    // 2 minutos
+    warning: 30000, // 30 segundos
+    error: 120000 // 2 minutos
   }
 };
 ```
@@ -390,6 +394,7 @@ pnpm metrics-dashboard:export
 ### Problemas Comunes
 
 **Error: "No build directory found"**
+
 ```bash
 # Construir antes de analizar
 pnpm build:credisync
@@ -397,6 +402,7 @@ pnpm bundle-analyzer credisync
 ```
 
 **Dashboard no carga métricas**
+
 ```bash
 # Generar métricas primero
 pnpm performance-monitor:all
@@ -405,6 +411,7 @@ pnpm metrics-dashboard
 ```
 
 **Métricas inconsistentes**
+
 ```bash
 # Limpiar y regenerar
 pnpm clean
@@ -421,4 +428,5 @@ pnpm performance-monitor:all
 4. **Benchmarking**: Comparar con proyectos similares
 5. **Optimización**: Usar métricas para guiar optimizaciones
 
-El sistema de monitoreo te ayudará a mantener el monorepo optimizado y detectar problemas de performance temprano. ¡Úsalo regularmente para mantener la calidad del código! 🚀
+El sistema de monitoreo te ayudará a mantener el monorepo optimizado y detectar problemas de
+performance temprano. ¡Úsalo regularmente para mantener la calidad del código! 🚀

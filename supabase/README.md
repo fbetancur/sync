@@ -17,7 +17,8 @@
 3. Copia y pega el contenido de `01-schema-only.sql`
 4. Ejecuta la query (Run)
 5. Verifica que todas las tablas se crearon correctamente en **Table Editor**
-6. Deberías ver 8 tablas: tenants, users, rutas, productos_credito, clientes, creditos, cuotas, pagos
+6. Deberías ver 8 tablas: tenants, users, rutas, productos_credito, clientes, creditos, cuotas,
+   pagos
 
 ## Paso 3: Configurar Storage para Imágenes
 
@@ -55,6 +56,7 @@ USING (
 ## Paso 5: Configurar Variables de Entorno
 
 1. En el proyecto, copia `.env.example` a `.env.local`:
+
    ```bash
    cp .env.example .env.local
    ```
@@ -102,7 +104,8 @@ VALUES (
 );
 ```
 
-7. Opcionalmente, ejecuta `02-seed-data.sql` para crear rutas, productos y clientes de prueba (recuerda reemplazar los UUIDs)
+7. Opcionalmente, ejecuta `02-seed-data.sql` para crear rutas, productos y clientes de prueba
+   (recuerda reemplazar los UUIDs)
 
 ## Paso 8: Generar TypeScript Types (Opcional)
 
@@ -134,14 +137,17 @@ Para verificar que todo está configurado correctamente:
 ## Troubleshooting
 
 ### Error: "relation does not exist"
+
 - Asegúrate de haber ejecutado el schema.sql completo
 - Verifica que estás conectado al proyecto correcto
 
 ### Error: "new row violates row-level security policy"
+
 - Verifica que las políticas RLS están configuradas correctamente
 - Asegúrate de que el usuario está autenticado
 
 ### Error: "permission denied for table"
+
 - Verifica que el usuario tiene los permisos correctos
 - Revisa las políticas RLS
 

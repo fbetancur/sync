@@ -9,7 +9,8 @@
 
 ### Task 14: Sync Manager (Orquestador Principal de Sincronización)
 
-El **SyncManager** es el cerebro del sistema de sincronización. Coordina todos los componentes de sincronización que hemos construido en las tareas anteriores.
+El **SyncManager** es el cerebro del sistema de sincronización. Coordina todos los componentes de
+sincronización que hemos construido en las tareas anteriores.
 
 #### Componentes implementados:
 
@@ -61,10 +62,12 @@ El **SyncManager** es el cerebro del sistema de sincronización. Coordina todos 
 ## 🔧 Archivos creados/modificados
 
 ### Nuevos archivos:
+
 1. `src/lib/sync/sync-manager.ts` - Implementación del SyncManager
 2. `src/lib/sync/sync-manager.test.ts` - Tests completos
 
 ### Archivos modificados:
+
 - Ninguno (implementación standalone)
 
 ---
@@ -74,6 +77,7 @@ El **SyncManager** es el cerebro del sistema de sincronización. Coordina todos 
 La siguiente tarea recomendada es:
 
 **Task 15: Implement Background Sync API integration**
+
 - Registrar eventos de sincronización con el Service Worker
 - Implementar handler de sincronización en el Service Worker
 - Manejar éxito y fallo de sincronización
@@ -93,7 +97,7 @@ const syncManager = new SyncManager();
 if (syncManager.isOnline()) {
   // Sincronizar con reporte de progreso
   const result = await syncManager.sync({
-    onProgress: (progress) => {
+    onProgress: progress => {
       console.log(`${progress.phase}: ${progress.current}/${progress.total}`);
       console.log(progress.message);
     }

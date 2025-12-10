@@ -1,6 +1,6 @@
 /**
  * Unit tests for SyncQueue
- * 
+ *
  * Tests:
  * - Adding operations to queue
  * - Priority-based ordering
@@ -24,7 +24,7 @@ describe('SyncQueue', () => {
   describe('addToQueue', () => {
     it('should add operation to queue with default priority', async () => {
       const id = await syncQueue.addToQueue('pagos', 'pago-1', 'INSERT');
-      
+
       const item = await db.sync_queue.get(id);
       expect(item).toBeDefined();
       expect(item!.table_name).toBe('pagos');
@@ -37,9 +37,9 @@ describe('SyncQueue', () => {
 
     it('should use custom priority when provided', async () => {
       const id = await syncQueue.addToQueue('clientes', 'cliente-1', 'UPDATE', {
-        priority: 5,
+        priority: 5
       });
-      
+
       const item = await db.sync_queue.get(id);
       expect(item!.priority).toBe(5);
     });
@@ -64,7 +64,7 @@ describe('SyncQueue', () => {
     it('should store data when provided', async () => {
       const data = { monto: 1000, cliente_id: 'c1' };
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT', { data });
-      
+
       const item = await db.sync_queue.get(id);
       expect(item!.data).toEqual(data);
     });
@@ -75,12 +75,20 @@ describe('SyncQueue', () => {
       // Add operations with different priorities
       // Use addToQueue with explicit priorities to ensure correct assignment
       const baseTime = Date.now();
-      
-      const id1 = await syncQueue.addToQueue('clientes', 'c1', 'INSERT', { priority: 3 });
-      const id2 = await syncQueue.addToQueue('pagos', 'p1', 'INSERT', { priority: 1 });
-      const id3 = await syncQueue.addToQueue('creditos', 'cr1', 'INSERT', { priority: 2 });
-      const id4 = await syncQueue.addToQueue('pagos', 'p2', 'INSERT', { priority: 1 });
-      
+
+      const id1 = await syncQueue.addToQueue('clientes', 'c1', 'INSERT', {
+        priority: 3
+      });
+      const id2 = await syncQueue.addToQueue('pagos', 'p1', 'INSERT', {
+        priority: 1
+      });
+      const id3 = await syncQueue.addToQueue('creditos', 'cr1', 'INSERT', {
+        priority: 2
+      });
+      const id4 = await syncQueue.addToQueue('pagos', 'p2', 'INSERT', {
+        priority: 1
+      });
+
       // Update timestamps to ensure proper ordering
       await db.sync_queue.update(id1, { timestamp: baseTime });
       await db.sync_queue.update(id2, { timestamp: baseTime + 100 });
@@ -88,9 +96,9 @@ describe('SyncQueue', () => {
       await db.sync_queue.update(id4, { timestamp: baseTime + 300 });
 
       const pending = await syncQueue.getPendingOperations();
-      
+
       expect(pending).toHaveLength(4);
-      
+
       // Priority 1 items first (pagos), ordered by timestamp
       expect(pending[0].priority).toBe(1);
       expect(pending[0].record_id).toBe('p1');
@@ -107,7 +115,7 @@ describe('SyncQueue', () => {
     it('should not return synced operations', async () => {
       const id1 = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
       await syncQueue.addToQueue('pagos', 'p2', 'INSERT');
-      
+
       await syncQueue.markAsSynced(id1);
 
       const pending = await syncQueue.getPendingOperations();
@@ -117,7 +125,7 @@ describe('SyncQueue', () => {
 
     it('should not return operations that exceeded max attempts', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       // Fail 10 times (max attempts)
       for (let i = 0; i < 10; i++) {
         await syncQueue.markAsFailed(id, 'Network error');
@@ -138,7 +146,7 @@ describe('SyncQueue', () => {
 
     it('should not return operations in backoff period', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       // Fail once (backoff = 1 second)
       await syncQueue.markAsFailed(id, 'Network error');
 
@@ -172,7 +180,7 @@ describe('SyncQueue', () => {
 
     it('should increment attempts on multiple failures', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       await syncQueue.markAsFailed(id, 'Error 1');
       await syncQueue.markAsFailed(id, 'Error 2');
       await syncQueue.markAsFailed(id, 'Error 3');
@@ -188,9 +196,9 @@ describe('SyncQueue', () => {
       const id1 = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
       const id2 = await syncQueue.addToQueue('pagos', 'p2', 'INSERT');
       const id3 = await syncQueue.addToQueue('pagos', 'p3', 'INSERT');
-      
+
       await syncQueue.markAsSynced(id1);
-      
+
       // Fail id3 10 times
       for (let i = 0; i < 10; i++) {
         await syncQueue.markAsFailed(id3, 'Error');
@@ -215,7 +223,7 @@ describe('SyncQueue', () => {
       await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
       await syncQueue.addToQueue('pagos', 'p2', 'INSERT');
       const id3 = await syncQueue.addToQueue('pagos', 'p3', 'INSERT');
-      
+
       await syncQueue.markAsSynced(id3);
 
       const size = await syncQueue.getQueueSize();
@@ -227,7 +235,7 @@ describe('SyncQueue', () => {
     it('should return operations that exceeded max attempts', async () => {
       const id1 = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
       await syncQueue.addToQueue('pagos', 'p2', 'INSERT');
-      
+
       // Fail p1 10 times
       for (let i = 0; i < 10; i++) {
         await syncQueue.markAsFailed(id1, 'Error');
@@ -242,7 +250,7 @@ describe('SyncQueue', () => {
   describe('retryFailedOperation', () => {
     it('should reset attempts for failed operation', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       // Fail 10 times
       for (let i = 0; i < 10; i++) {
         await syncQueue.markAsFailed(id, 'Error');
@@ -261,13 +269,13 @@ describe('SyncQueue', () => {
     it('should clear synced operations older than specified days', async () => {
       const id1 = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
       const id2 = await syncQueue.addToQueue('pagos', 'p2', 'INSERT');
-      
+
       await syncQueue.markAsSynced(id1);
       await syncQueue.markAsSynced(id2);
 
       // Manually set old timestamp
       await db.sync_queue.update(id1, {
-        timestamp: Date.now() - 10 * 24 * 60 * 60 * 1000, // 10 days ago
+        timestamp: Date.now() - 10 * 24 * 60 * 60 * 1000 // 10 days ago
       });
 
       const cleared = await syncQueue.clearOldSyncedOperations(7);
@@ -302,7 +310,7 @@ describe('SyncQueue', () => {
 
     it('should return null for operations exceeding max attempts', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       for (let i = 0; i < 10; i++) {
         await syncQueue.markAsFailed(id, 'Error');
       }
@@ -314,7 +322,7 @@ describe('SyncQueue', () => {
 
     it('should calculate exponential backoff correctly', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       await syncQueue.markAsFailed(id, 'Error');
       let item = await db.sync_queue.get(id);
       let nextRetry = syncQueue.getNextRetryTime(item!);
@@ -347,7 +355,7 @@ describe('SyncQueue', () => {
 
     it('should return false for operations exceeding max attempts', async () => {
       const id = await syncQueue.addToQueue('pagos', 'p1', 'INSERT');
-      
+
       for (let i = 0; i < 10; i++) {
         await syncQueue.markAsFailed(id, 'Error');
       }
