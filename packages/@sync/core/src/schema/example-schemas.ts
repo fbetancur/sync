@@ -1,0 +1,338 @@
+/**
+ * Example Schema Configurations
+ * 
+ * These examples demonstrate how to define database schemas
+ * using the Universal Schema Engine configuration format.
+ */
+
+import type { DatabaseConfig, AppSchemaConfig } from '@sync/types';
+
+/**
+ * CrediSync (Microcréditos) Schema Configuration
+ * This is the existing microcréditos schema converted to the new format
+ */
+export const crediSyncSchema: DatabaseConfig = {
+  name: 'credisync_db',
+  multiTenant: true,
+  tables: {
+    tenants: {
+      fields: ['nombre', 'usuarios_contratados', 'usuarios_activos', 'activo'],
+      indexes: ['nombre', 'activo'],
+      required: ['nombre', 'usuarios_contratados', 'usuarios_activos'],
+      fieldTypes: {
+        nombre: 'string',
+        usuarios_contratados: 'number',
+        usuarios_activos: 'number',
+        activo: 'boolean'
+      }
+    },
+    users: {
+      fields: ['email', 'nombre', 'rol', 'activo'],
+      indexes: ['email', '[tenant_id+activo]'],
+      required: ['email', 'nombre', 'rol'],
+      unique: ['email'],
+      fieldTypes: {
+        email: 'email',
+        nombre: 'string',
+        rol: 'string',
+        activo: 'boolean'
+      }
+    },
+    rutas: {
+      fields: ['nombre', 'descripcion', 'activa'],
+      indexes: ['nombre', 'activa', '[tenant_id+activa]'],
+      required: ['nombre'],
+      fieldTypes: {
+        nombre: 'string',
+        descripcion: 'text',
+        activa: 'boolean'
+      }
+    },
+    productos_credito: {
+      fields: [
+        'nombre', 'interes_porcentaje', 'plazo_minimo', 'plazo_maximo',
+        'monto_minimo', 'monto_maximo', 'frecuencia_pago', 'activo'
+      ],
+      indexes: ['activo', '[tenant_id+activo]'],
+      required: ['nombre', 'interes_porcentaje', 'plazo_minimo', 'plazo_maximo'],
+      fieldTypes: {
+        nombre: 'string',
+        interes_porcentaje: 'number',
+        plazo_minimo: 'number',
+        plazo_maximo: 'number',
+        monto_minimo: 'number',
+        monto_maximo: 'number',
+        frecuencia_pago: 'string',
+        activo: 'boolean'
+      }
+    },
+    clientes: {
+      fields: [
+        'nombre', 'numero_documento', 'telefono', 'direccion', 'ruta_id',
+        'tipo_documento', 'telefono_2', 'barrio', 'referencia',
+        'latitud', 'longitud', 'nombre_fiador', 'telefono_fiador',
+        'creditos_activos', 'saldo_total', 'dias_atraso_max', 'estado', 'score'
+      ],
+      indexes: [
+        'ruta_id', 'numero_documento', 'estado',
+        '[tenant_id+ruta_id]', '[tenant_id+estado]', '[tenant_id+numero_documento]'
+      ],
+      relationships: {
+        ruta_id: 'rutas.id'
+      },
+      required: ['nombre', 'numero_documento', 'telefono', 'direccion'],
+      unique: ['numero_documento'],
+      fieldTypes: {
+        nombre: 'string',
+        numero_documento: 'string',
+        telefono: 'phone',
+        direccion: 'text',
+        ruta_id: 'string',
+        tipo_documento: 'string',
+        telefono_2: 'phone',
+        barrio: 'string',
+        referencia: 'text',
+        latitud: 'number',
+        longitud: 'number',
+        nombre_fiador: 'string',
+        telefono_fiador: 'phone',
+        creditos_activos: 'number',
+        saldo_total: 'number',
+        dias_atraso_max: 'number',
+        estado: 'string',
+        score: 'number'
+      }
+    },
+    creditos: {
+      fields: [
+        'cliente_id', 'producto_id', 'cobrador_id', 'ruta_id',
+        'monto_original', 'interes_porcentaje', 'total_a_pagar',
+        'numero_cuotas', 'valor_cuota', 'frecuencia',
+        'fecha_desembolso', 'fecha_primera_cuota', 'fecha_ultima_cuota',
+        'estado', 'saldo_pendiente', 'cuotas_pagadas', 'dias_atraso',
+        'excluir_domingos'
+      ],
+      indexes: [
+        'cliente_id', 'cobrador_id', 'ruta_id', 'estado',
+        '[tenant_id+estado]', '[cliente_id+estado]',
+        '[cobrador_id+estado]', '[tenant_id+ruta_id+estado]'
+      ],
+      relationships: {
+        cliente_id: 'clientes.id',
+        producto_id: 'productos_credito.id',
+        cobrador_id: 'users.id',
+        ruta_id: 'rutas.id'
+      },
+      required: ['cliente_id', 'producto_id', 'monto_original', 'numero_cuotas'],
+      fieldTypes: {
+        cliente_id: 'string',
+        producto_id: 'string',
+        cobrador_id: 'string',
+        ruta_id: 'string',
+        monto_original: 'number',
+        interes_porcentaje: 'number',
+        total_a_pagar: 'number',
+        numero_cuotas: 'number',
+        valor_cuota: 'number',
+        frecuencia: 'string',
+        fecha_desembolso: 'number',
+        fecha_primera_cuota: 'number',
+        fecha_ultima_cuota: 'number',
+        estado: 'string',
+        saldo_pendiente: 'number',
+        cuotas_pagadas: 'number',
+        dias_atraso: 'number',
+        excluir_domingos: 'boolean'
+      }
+    },
+    cuotas: {
+      fields: [
+        'credito_id', 'numero', 'valor', 'fecha_programada',
+        'fecha_pago', 'monto_pagado', 'estado'
+      ],
+      indexes: [
+        'credito_id', 'numero', 'estado', 'fecha_programada',
+        '[credito_id+numero]', '[credito_id+estado]',
+        '[tenant_id+estado+fecha_programada]'
+      ],
+      relationships: {
+        credito_id: 'creditos.id'
+      },
+      required: ['credito_id', 'numero', 'valor', 'fecha_programada'],
+      fieldTypes: {
+        credito_id: 'string',
+        numero: 'number',
+        valor: 'number',
+        fecha_programada: 'number',
+        fecha_pago: 'number',
+        monto_pagado: 'number',
+        estado: 'string'
+      }
+    },
+    pagos: {
+      fields: [
+        'credito_id', 'cliente_id', 'cobrador_id', 'monto', 'fecha',
+        'latitud', 'longitud', 'observaciones', 'device_id',
+        'app_version', 'connection_type', 'battery_level',
+        'sync_attempts', 'last_sync_attempt', 'sync_error',
+        'comprobante_foto_url'
+      ],
+      indexes: [
+        'credito_id', 'cliente_id', 'cobrador_id', 'fecha',
+        '[tenant_id+fecha]', '[credito_id+fecha]',
+        '[cobrador_id+fecha]', '[synced+fecha]'
+      ],
+      relationships: {
+        credito_id: 'creditos.id',
+        cliente_id: 'clientes.id',
+        cobrador_id: 'users.id'
+      },
+      required: ['credito_id', 'cliente_id', 'cobrador_id', 'monto', 'fecha'],
+      fieldTypes: {
+        credito_id: 'string',
+        cliente_id: 'string',
+        cobrador_id: 'string',
+        monto: 'number',
+        fecha: 'number',
+        latitud: 'number',
+        longitud: 'number',
+        observaciones: 'text',
+        device_id: 'string',
+        app_version: 'string',
+        connection_type: 'string',
+        battery_level: 'number',
+        sync_attempts: 'number',
+        last_sync_attempt: 'number',
+        sync_error: 'text',
+        comprobante_foto_url: 'url'
+      }
+    }
+  }
+};
+
+/**
+ * HealthSync (Salud) Schema Configuration
+ * Example schema for a healthcare application
+ */
+export const healthSyncSchema: DatabaseConfig = {
+  name: 'healthsync_db',
+  multiTenant: true,
+  tables: {
+    zonas: {
+      fields: ['nombre', 'descripcion', 'activa'],
+      indexes: ['nombre', 'activa', '[tenant_id+activa]'],
+      required: ['nombre'],
+      fieldTypes: {
+        nombre: 'string',
+        descripcion: 'text',
+        activa: 'boolean'
+      }
+    },
+    pacientes: {
+      fields: [
+        'nombre', 'historia', 'telefono', 'direccion', 'zona_id',
+        'fecha_nacimiento', 'genero', 'tipo_documento', 'numero_documento',
+        'email', 'contacto_emergencia', 'telefono_emergencia',
+        'alergias', 'medicamentos_actuales', 'estado'
+      ],
+      indexes: [
+        'historia', 'telefono', 'zona_id', 'numero_documento',
+        '[tenant_id+historia]', '[tenant_id+telefono]', '[tenant_id+zona_id]'
+      ],
+      relationships: {
+        zona_id: 'zonas.id'
+      },
+      required: ['nombre', 'historia', 'telefono'],
+      unique: ['historia', 'numero_documento'],
+      fieldTypes: {
+        nombre: 'string',
+        historia: 'string',
+        telefono: 'phone',
+        direccion: 'text',
+        zona_id: 'string',
+        fecha_nacimiento: 'date',
+        genero: 'string',
+        tipo_documento: 'string',
+        numero_documento: 'string',
+        email: 'email',
+        contacto_emergencia: 'string',
+        telefono_emergencia: 'phone',
+        alergias: 'text',
+        medicamentos_actuales: 'text',
+        estado: 'string'
+      }
+    },
+    consultas: {
+      fields: [
+        'paciente_id', 'medico_id', 'fecha', 'hora', 'tipo_consulta',
+        'motivo_consulta', 'diagnostico', 'tratamiento', 'observaciones',
+        'proxima_cita', 'estado'
+      ],
+      indexes: [
+        'paciente_id', 'medico_id', 'fecha', 'estado',
+        '[tenant_id+paciente_id]', '[tenant_id+fecha]', '[paciente_id+fecha]'
+      ],
+      relationships: {
+        paciente_id: 'pacientes.id',
+        medico_id: 'users.id'
+      },
+      required: ['paciente_id', 'medico_id', 'fecha', 'motivo_consulta'],
+      fieldTypes: {
+        paciente_id: 'string',
+        medico_id: 'string',
+        fecha: 'date',
+        hora: 'string',
+        tipo_consulta: 'string',
+        motivo_consulta: 'text',
+        diagnostico: 'text',
+        tratamiento: 'text',
+        observaciones: 'text',
+        proxima_cita: 'date',
+        estado: 'string'
+      }
+    },
+    tratamientos: {
+      fields: [
+        'consulta_id', 'paciente_id', 'medicamento', 'dosis',
+        'frecuencia', 'duracion', 'fecha_inicio', 'fecha_fin',
+        'instrucciones', 'estado'
+      ],
+      indexes: [
+        'consulta_id', 'paciente_id', 'fecha_inicio', 'estado',
+        '[tenant_id+paciente_id]', '[paciente_id+estado]'
+      ],
+      relationships: {
+        consulta_id: 'consultas.id',
+        paciente_id: 'pacientes.id'
+      },
+      required: ['consulta_id', 'paciente_id', 'medicamento', 'dosis'],
+      fieldTypes: {
+        consulta_id: 'string',
+        paciente_id: 'string',
+        medicamento: 'string',
+        dosis: 'string',
+        frecuencia: 'string',
+        duracion: 'string',
+        fecha_inicio: 'date',
+        fecha_fin: 'date',
+        instrucciones: 'text',
+        estado: 'string'
+      }
+    }
+  }
+};
+
+/**
+ * Complete app configurations with schema
+ */
+export const crediSyncAppConfig: AppSchemaConfig = {
+  appName: 'CrediSync',
+  version: '1.0.0',
+  database: crediSyncSchema
+};
+
+export const healthSyncAppConfig: AppSchemaConfig = {
+  appName: 'HealthSync',
+  version: '1.0.0',
+  database: healthSyncSchema
+};

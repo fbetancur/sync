@@ -212,7 +212,9 @@ export class StorageManager {
       throw new Error(`Tabla ${tableName} no encontrada en IndexedDB`);
     }
 
-    await table.put({ ...data, id: recordId });
+    // Use the data as-is if it already has an id, otherwise add the recordId
+    const recordToSave = (data as any).id ? data : { ...data, id: recordId };
+    await table.put(recordToSave);
   }
 
   private async readFromIndexedDB<T>(

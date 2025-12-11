@@ -12,5 +12,8 @@
  * Requirements: 2.1, 2.7
  */
 
-export * from './database';
+// Export specific items to avoid conflicts
+export { MicrocreditosDB, createDatabase } from './database';
+export { UniversalDatabase, createUniversalDatabaseWithOptions } from './universal-database';
+export { DatabaseFactory, createUniversalDatabase, isUniversalDatabase, isLegacyDatabase } from './database-factory';
 export type * from './types';

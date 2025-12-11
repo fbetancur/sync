@@ -23,6 +23,9 @@ export interface FieldVersion {
   node_id: string;
 }
 
+// Re-export schema types for internal use
+export type * from './schema/types';
+
 // Placeholder - will be populated as we extract modules
 export type CoreTypes = {
   // Database types will be added here

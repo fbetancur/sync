@@ -3,12 +3,21 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { user, loading, auth } from '$lib/stores/auth';
+	import { initializeCrediSync } from '$lib/app-config';
 	import '../app.css';
 
 	// Rutas que no requieren autenticación
 	const publicRoutes = ['/login', '/'];
 
 	onMount(async () => {
+		// Inicializar CrediSync explícitamente
+		try {
+			await initializeCrediSync();
+			console.log('✅ CrediSync inicializado en layout principal');
+		} catch (error) {
+			console.error('❌ Error inicializando CrediSync:', error);
+		}
+		
 		// Inicializar autenticación si no está inicializada
 		await auth.initialize();
 		

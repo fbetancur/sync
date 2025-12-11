@@ -11,6 +11,9 @@ export * from './api';
 export * from './business';
 export * from './ui';
 
+// Schema engine types
+export type * from './schema';
+
 // Common base types
 export interface BaseEntity {
   id: string;

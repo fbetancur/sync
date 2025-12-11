@@ -8,8 +8,14 @@
 // Core types and interfaces (solo tipos TypeScript, no runtime exports)
 export type * from './types';
 
+// Schema engine types and utilities
+export type * from './schema/types';
+export * from './schema';
+
 // Database layer
-export { createDatabase, MicrocreditosDB } from './db';
+export { createDatabase, MicrocreditosDB } from './db/database';
+export { UniversalDatabase, createUniversalDatabaseWithOptions } from './db/universal-database';
+export { DatabaseFactory, createUniversalDatabase, isUniversalDatabase, isLegacyDatabase } from './db/database-factory';
 // Alias para compatibilidad
 export { MicrocreditosDB as SyncDB } from './db';
 

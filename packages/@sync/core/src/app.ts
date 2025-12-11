@@ -8,6 +8,7 @@
  */
 
 import { createDatabase, type MicrocreditosDB } from './db/database';
+import { DatabaseFactory } from './db/database-factory';
 import { ChecksumService } from './utils/checksum';
 import { SyncManager } from './sync/sync-manager';
 import { SyncQueue } from './sync/sync-queue';
@@ -24,6 +25,7 @@ import { AuthService } from './auth/auth-service';
 
 export interface SyncAppConfig {
   appName: string;
+  version?: string;
   supabase?: {
     url: string;
     anonKey: string;
@@ -35,6 +37,10 @@ export interface SyncAppConfig {
   syncInterval?: number;
   databaseName?: string;
   logLevel?: 'debug' | 'info' | 'warn' | 'error';
+  // NUEVO: Configuración de esquema de base de datos
+  databaseSchema?: import('@sync/types').DatabaseConfig;
+  // NUEVO: Opciones de generación de esquema
+  schemaOptions?: import('@sync/types').SchemaGenerationOptions;
   offline?: {
     enabled: boolean;
     syncInterval: number;
@@ -55,7 +61,7 @@ export interface SyncAppConfig {
 }
 
 export interface SyncAppServices {
-  db: MicrocreditosDB;
+  db: MicrocreditosDB | import('./db/universal-database').UniversalDatabase;
   checksum: ChecksumService;
   sync: SyncManager;
   syncQueue: SyncQueue;
@@ -119,8 +125,16 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
     ...config
   };
 
-  // Crear instancias de servicios
-  const db = createDatabase(finalConfig.databaseName);
+  // Detectar tipo de base de datos y crear instancia apropiada
+  const dbInfo = getDatabaseInfo(finalConfig);
+  console.log(`🗄️ Usando base de datos ${dbInfo.type}: ${dbInfo.name} (${dbInfo.reason})`);
+  
+  const db = DatabaseFactory.create({
+    schema: finalConfig.databaseSchema,
+    schemaOptions: finalConfig.schemaOptions,
+    databaseName: finalConfig.databaseName,
+    useLegacy: dbInfo.type === 'legacy'
+  });
   const checksumService = new ChecksumService();
   const syncQueue = new SyncQueue(db);
   const conflictResolver = new ConflictResolver();
@@ -310,11 +324,57 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
 // ============================================================================
 
 /**
+ * Detectar automáticamente el tipo de base de datos a usar
+ */
+function shouldUseLegacyDatabase(config: SyncAppConfig): boolean {
+  // Forzar legacy para CrediSync si no tiene esquema explícito
+  if (config.appName === 'CrediSync' && !config.databaseSchema) {
+    return true;
+  }
+  
+  // Usar universal si hay esquema definido
+  if (config.databaseSchema) {
+    return false;
+  }
+  
+  // Por defecto usar legacy para compatibilidad
+  return true;
+}
+
+/**
+ * Obtener información del tipo de base de datos
+ */
+export function getDatabaseInfo(config: SyncAppConfig): {
+  type: 'legacy' | 'universal';
+  name: string;
+  reason: string;
+} {
+  const useLegacy = shouldUseLegacyDatabase(config);
+  
+  if (useLegacy) {
+    return {
+      type: 'legacy',
+      name: config.databaseName || 'microcreditos_db',
+      reason: config.appName === 'CrediSync' 
+        ? 'CrediSync usa base de datos legacy por compatibilidad'
+        : 'No hay esquema definido, usando base de datos legacy'
+    };
+  } else {
+    return {
+      type: 'universal',
+      name: config.databaseSchema!.name,
+      reason: 'Esquema definido, usando base de datos universal'
+    };
+  }
+}
+
+/**
  * Crear configuración por defecto para una aplicación
  */
 export function createDefaultConfig(appName: string): SyncAppConfig {
   return {
     appName,
+    version: '1.0.0',
     encryptionEnabled: true,
     auditEnabled: true,
     syncInterval: 30000,
@@ -348,5 +408,51 @@ export function createProdConfig(
     supabaseKey,
     logLevel: 'warn',
     syncInterval: 60000 // Sync menos frecuente en producción
+  };
+}
+
+/**
+ * Crear configuración universal con esquema
+ */
+export function createUniversalConfig(
+  appName: string,
+  databaseSchema: import('@sync/types').DatabaseConfig,
+  options?: {
+    supabaseUrl?: string;
+    supabaseKey?: string;
+    schemaOptions?: import('@sync/types').SchemaGenerationOptions;
+  }
+): SyncAppConfig {
+  return {
+    ...createDefaultConfig(appName),
+    databaseSchema,
+    schemaOptions: options?.schemaOptions,
+    supabaseUrl: options?.supabaseUrl,
+    supabaseKey: options?.supabaseKey
+  };
+}
+
+/**
+ * Crear configuración desde archivo de esquema JSON
+ */
+export function createConfigFromSchema(
+  schemaConfig: import('@sync/types').AppSchemaConfig,
+  options?: {
+    supabaseUrl?: string;
+    supabaseKey?: string;
+    schemaOptions?: import('@sync/types').SchemaGenerationOptions;
+  }
+): SyncAppConfig {
+  return {
+    appName: schemaConfig.appName,
+    version: schemaConfig.version,
+    databaseSchema: schemaConfig.database,
+    schemaOptions: options?.schemaOptions,
+    supabaseUrl: options?.supabaseUrl,
+    supabaseKey: options?.supabaseKey,
+    encryptionEnabled: true,
+    auditEnabled: true,
+    syncInterval: 30000,
+    logLevel: 'info'
   };
 }

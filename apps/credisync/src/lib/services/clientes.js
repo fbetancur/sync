@@ -107,7 +107,7 @@ export async function createCliente(clienteData) {
 		try {
 			// Usar StorageManager REAL para escritura atómica en 3 capas
 			const storageResult = await crediSyncApp.services.storage.writeAtomic(cliente, {
-				tableName: 'credisync_clientes',
+				tableName: 'clientes', // Usar nombre correcto de tabla universal
 				recordId: clienteId,
 				skipBackup: false // Incluir todas las capas para datos críticos
 			});
@@ -146,7 +146,7 @@ export async function createCliente(clienteData) {
 		// 7. COLA DE SINCRONIZACIÓN CON PRIORIDADES
 		console.log('🔄 [CLIENTE] Agregando a cola de sincronización...');
 		await crediSyncApp.services.syncQueue.addToQueue(
-			'credisync_clientes',
+			'clientes',
 			clienteId,
 			'INSERT',
 			{
@@ -176,7 +176,7 @@ export async function createCliente(clienteData) {
 		
 		// Leer usando StorageManager REAL con fallback automático
 		const readResult = await crediSyncApp.services.storage.readWithFallback({
-			tableName: 'credisync_clientes',
+			tableName: 'clientes',
 			recordId: clienteId
 		});
 		
@@ -193,7 +193,7 @@ export async function createCliente(clienteData) {
 			
 			// Actualizar el cliente con el checksum calculado si no lo tiene
 			if (!savedCliente.checksum) {
-				await crediSyncApp.services.db.credisync_clientes.update(clienteId, { checksum: calculatedChecksum });
+				await crediSyncApp.services.db.clientes.update(clienteId, { checksum: calculatedChecksum });
 				savedCliente.checksum = calculatedChecksum;
 				console.log('✅ [CLIENTE] Checksum calculado y guardado');
 			} else if (calculatedChecksum !== savedCliente.checksum) {
@@ -276,7 +276,7 @@ export async function getClientes() {
 		
 		try {
 			// Usar IndexedDB directamente (principal) - nueva estructura universal
-			clientes = await crediSyncApp.services.db.credisync_clientes
+			clientes = await crediSyncApp.services.db.clientes
 				.where('tenant_id')
 				.equals(tenantId)
 				.toArray();
@@ -309,7 +309,7 @@ export async function getClientes() {
 						// Reparación automática: recalcular y actualizar checksum
 						try {
 							const repairedCliente = { ...cliente, checksum: calculatedChecksum };
-							await crediSyncApp.services.db.credisync_clientes.update(cliente.id, { checksum: calculatedChecksum });
+							await crediSyncApp.services.db.clientes.update(cliente.id, { checksum: calculatedChecksum });
 							clientesVerificados.push(repairedCliente);
 							repairedCount++;
 							console.log(`✅ [CLIENTES] Cliente ${cliente.id} reparado automáticamente`);
@@ -323,7 +323,7 @@ export async function getClientes() {
 					// Cliente sin checksum: calcular y guardar
 					try {
 						const newChecksum = await crediSyncApp.services.checksum.calculateChecksum(cliente);
-						await crediSyncApp.services.db.credisync_clientes.update(cliente.id, { checksum: newChecksum });
+						await crediSyncApp.services.db.clientes.update(cliente.id, { checksum: newChecksum });
 						clientesVerificados.push({ ...cliente, checksum: newChecksum });
 						repairedCount++;
 					} catch (checksumError) {
@@ -374,7 +374,7 @@ export async function getClienteById(id) {
 		
 		// Usar StorageManager REAL con fallback automático a 3 capas
 		const readResult = await crediSyncApp.services.storage.readWithFallback({
-			tableName: 'credisync_clientes',
+			tableName: 'clientes',
 			recordId: id
 		});
 		
@@ -395,7 +395,7 @@ export async function getClienteById(id) {
 					
 					// Reparación automática
 					const repairedCliente = { ...cliente, checksum: calculatedChecksum };
-					await crediSyncApp.services.db.credisync_clientes.update(id, { checksum: calculatedChecksum });
+					await crediSyncApp.services.db.clientes.update(id, { checksum: calculatedChecksum });
 					
 					console.log(`✅ [CLIENTE] Cliente ${id} reparado automáticamente`);
 					return repairedCliente;
@@ -409,7 +409,7 @@ export async function getClienteById(id) {
 			// Cliente sin checksum: calcular y guardar
 			try {
 				const newChecksum = await crediSyncApp.services.checksum.calculateChecksum(cliente);
-				await crediSyncApp.services.db.credisync_clientes.update(id, { checksum: newChecksum });
+				await crediSyncApp.services.db.clientes.update(id, { checksum: newChecksum });
 				cliente.checksum = newChecksum;
 				console.log(`✅ [CLIENTE] Checksum calculado para ${id}`);
 			} catch (checksumError) {
@@ -495,7 +495,7 @@ export async function updateCliente(id, updates) {
 		try {
 			// Usar StorageManager REAL para escritura atómica en 3 capas
 			const storageResult = await crediSyncApp.services.storage.writeAtomic(updatedCliente, {
-				tableName: 'credisync_clientes',
+				tableName: 'clientes',
 				recordId: id,
 				skipBackup: false // Incluir todas las capas para datos críticos
 			});
@@ -529,7 +529,7 @@ export async function updateCliente(id, updates) {
 		
 		// Cola de sincronización usando SyncQueue REAL
 		await crediSyncApp.services.syncQueue.addToQueue(
-			'credisync_clientes',
+			'clientes',
 			id,
 			'UPDATE',
 			{
@@ -567,7 +567,7 @@ async function repairClienteData(clienteId) {
 		
 		// Usar StorageManager REAL para obtener datos con fallback automático
 		const readResult = await crediSyncApp.services.storage.readWithFallback({
-			tableName: 'credisync_clientes',
+			tableName: 'clientes',
 			recordId: clienteId
 		});
 		
@@ -586,7 +586,7 @@ async function repairClienteData(clienteId) {
 			
 			// Guardar usando StorageManager REAL (escritura atómica en 3 capas)
 			await crediSyncApp.services.storage.writeAtomic(repairedCliente, {
-				tableName: 'credisync_clientes',
+				tableName: 'clientes',
 				recordId: clienteId,
 				skipBackup: false
 			});
@@ -683,7 +683,7 @@ export async function limpiarDatos() {
 		}
 		
 		// Limpiar IndexedDB (principal) - nueva estructura universal
-		await crediSyncApp.services.db.credisync_clientes.clear();
+		await crediSyncApp.services.db.clientes.clear();
 		console.log('✅ [CLIENTES] IndexedDB limpiado');
 		
 		// Limpiar capas de backup usando StorageManager REAL
@@ -710,7 +710,7 @@ export async function getClientesStats() {
 		const currentUser = await crediSyncApp.services.auth.getCurrentUser();
 		const tenantId = currentUser?.tenant_id || '00000000-0000-0000-0000-000000000001';
 		
-		const clientes = await crediSyncApp.services.db.credisync_clientes
+		const clientes = await crediSyncApp.services.db.clientes
 			.where('tenant_id')
 			.equals(tenantId)
 			.toArray();
