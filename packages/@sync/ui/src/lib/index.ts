@@ -14,6 +14,11 @@ export { default as Input } from './components/Input.svelte';
 export { default as SearchInput } from './components/SearchInput.svelte';
 export { default as StatCard } from './components/StatCard.svelte';
 
+// New Universal Components
+export { default as CountrySelector } from './components/CountrySelector.svelte';
+export { default as EntityForm } from './components/EntityForm.svelte';
+export { default as LocationCapture } from './components/LocationCapture.svelte';
+
 // Svelte Stores
 export { authStore } from './stores/auth.js';
 export { syncStore } from './stores/sync.js';

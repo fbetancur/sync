@@ -44,6 +44,33 @@ export * from './business';
 // Utility functions
 export { ChecksumService } from './utils';
 
+// Context services
+export { ContextService } from './context/context-service';
+export type { 
+  LocationResult, 
+  DeviceInfo, 
+  OperationContext, 
+  LocationOptions 
+} from './context/context-service';
+
+// Validation services
+export { PhoneService } from './validation/phone-service';
+export type { 
+  CountryConfig, 
+  PhoneValidationResult, 
+  CountryDetectionResult 
+} from './validation/phone-service';
+
+// Entity services
+export { EntityService } from './entities/entity-service';
+export type { 
+  ValidationResult, 
+  EntityBase, 
+  CreateEntityOptions, 
+  UpdateEntityOptions, 
+  EntityServiceConfig 
+} from './entities/entity-service';
+
 // Main factory function
 export {
   createSyncApp,

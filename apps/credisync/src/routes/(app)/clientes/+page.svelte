@@ -160,6 +160,10 @@
 		goto('/clientes/nuevo');
 	}
 	
+	function crearClienteRefactorizado() {
+		goto('/clientes/nuevo-refactored');
+	}
+	
 	function verDetalle(clienteId) {
 		goto(`/clientes/${clienteId}`);
 	}
@@ -179,11 +183,16 @@
 				class="search-input"
 			/>
 		</div>
-		<button onclick={crearCliente} class="add-btn" title="Nuevo cliente">
-			<svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-			</svg>
-		</button>
+		<div class="action-buttons">
+			<button onclick={crearCliente} class="add-btn" title="Nuevo cliente">
+				<svg class="add-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+				</svg>
+			</button>
+			<button onclick={crearClienteRefactorizado} class="add-btn refactored" title="Nuevo cliente (Refactorizado)">
+				🚀
+			</button>
+		</div>
 	</div>
 	
 	{#if error}
@@ -331,6 +340,45 @@
 		width: 22px;
 		height: 22px;
 		stroke-width: 2.5;
+	}
+	
+	.action-buttons {
+		display: flex;
+		gap: 0.5rem;
+		align-items: center;
+	}
+	
+	.add-btn.refactored {
+		background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+		box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+		font-size: 1.2rem;
+		position: relative;
+	}
+	
+	.add-btn.refactored:hover {
+		box-shadow: 0 6px 16px rgba(16, 185, 129, 0.5);
+		transform: translateY(-2px);
+	}
+	
+	.add-btn.refactored::after {
+		content: 'Refactorizado';
+		position: absolute;
+		top: -30px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: #1f2937;
+		color: white;
+		padding: 0.25rem 0.5rem;
+		border-radius: 4px;
+		font-size: 0.75rem;
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.2s;
+	}
+	
+	.add-btn.refactored:hover::after {
+		opacity: 1;
 	}
 	
 	.clientes-list {

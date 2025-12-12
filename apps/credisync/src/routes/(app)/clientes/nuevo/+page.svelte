@@ -20,7 +20,8 @@
 		nombre_fiador: '',
 		telefono_fiador: '',
 		latitud: null,
-		longitud: null
+		longitud: null,
+		observaciones: ''
 	});
 	
 	// País seleccionado (se detectará automáticamente)
@@ -70,7 +71,8 @@
 				telefono_fiador: formData.telefono_fiador?.trim() || '',
 				latitud: formData.latitud,
 				longitud: formData.longitud,
-				pais: selectedCountry // Agregar país para WhatsApp futuro
+				pais: selectedCountry, // Agregar país para WhatsApp futuro
+				observaciones: formData.observaciones?.trim() || ''
 			};
 			
 			// USAR UNIVERSAL INFRASTRUCTURE REAL
@@ -334,7 +336,25 @@
 						</div>
 					</div>
 				</div>
-
+				<!-- Observaciones -->
+				<div>
+					<h2 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b-2 border-blue-600">
+						📝 Observaciones
+					</h2>
+					
+					<div>
+						<label for="observaciones" class="block text-sm font-semibold text-gray-700 mb-2">
+							Notas Adicionales (Opcional)
+						</label>
+						<textarea
+							id="observaciones"
+							bind:value={formData.observaciones}
+							rows="3"
+							class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+							placeholder="Información adicional sobre el cliente..."
+						></textarea>
+					</div>
+				</div>
 
 
 				<!-- Mensajes -->

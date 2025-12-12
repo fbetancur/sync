@@ -1,10 +1,10 @@
 /**
- * Validation schemas exports
- *
- * This module will contain the extracted validation functionality
- * from apps/credisync/src/lib/validation/
+ * Validation module - Servicios de validación
  */
 
-// Placeholder - will be populated during extraction
-export const VALIDATION_PLACEHOLDER =
-  'Validation module will be extracted here';
+export { PhoneService } from './phone-service';
+export type { 
+  CountryConfig, 
+  PhoneValidationResult, 
+  CountryDetectionResult 
+} from './phone-service';

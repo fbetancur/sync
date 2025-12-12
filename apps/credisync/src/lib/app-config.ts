@@ -62,7 +62,8 @@ const crediSyncSchema = {
         'nombre', 'numero_documento', 'telefono', 'direccion', 'ruta_id',
         'tipo_documento', 'telefono_2', 'barrio', 'referencia',
         'latitud', 'longitud', 'nombre_fiador', 'telefono_fiador',
-        'creditos_activos', 'saldo_total', 'dias_atraso_max', 'estado', 'score'
+        'creditos_activos', 'saldo_total', 'dias_atraso_max', 'estado', 'score',
+        'observaciones'
       ],
       indexes: [
         'ruta_id', 'numero_documento', 'estado',
@@ -91,7 +92,8 @@ const crediSyncSchema = {
         saldo_total: 'number',
         dias_atraso_max: 'number',
         estado: 'string',
-        score: 'number'
+        score: 'number',
+        observaciones: 'text'
       }
     },
     creditos: {

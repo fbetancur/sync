@@ -3,6 +3,7 @@
 	"/": [],
 	"/(app)/balance": [],
 	"/(app)/clientes": [],
+	"/(app)/clientes/nuevo-refactored": [],
 	"/(app)/clientes/nuevo": [],
 	"/(app)/clientes/[id]": [],
 	"/(app)/configuracion": [],

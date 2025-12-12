@@ -18,6 +18,8 @@ import { StorageManager } from './storage/storage-manager';
 import { AuditLogger } from './audit/audit-logger';
 import { EncryptionService } from './security/encryption-service';
 import { AuthService } from './auth/auth-service';
+import { ContextService } from './context/context-service';
+import { PhoneService } from './validation/phone-service';
 
 // ============================================================================
 // INTERFACES DE CONFIGURACIÓN
@@ -38,9 +40,9 @@ export interface SyncAppConfig {
   databaseName?: string;
   logLevel?: 'debug' | 'info' | 'warn' | 'error';
   // NUEVO: Configuración de esquema de base de datos
-  databaseSchema?: import('@sync/types').DatabaseConfig;
+  databaseSchema?: any; // Temporal - será tipado correctamente después
   // NUEVO: Opciones de generación de esquema
-  schemaOptions?: import('@sync/types').SchemaGenerationOptions;
+  schemaOptions?: any; // Temporal - será tipado correctamente después
   offline?: {
     enabled: boolean;
     syncInterval: number;
@@ -71,6 +73,8 @@ export interface SyncAppServices {
   audit: AuditLogger;
   encryption: EncryptionService;
   auth: AuthService;
+  context: ContextService;
+  phone: PhoneService;
 }
 
 export interface SyncApp {
@@ -160,6 +164,10 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
     throw new Error('Configuración de Supabase requerida para el servicio de autenticación');
   }
 
+  // Crear servicios de contexto y validación
+  const contextService = new ContextService(authService);
+  const phoneService = PhoneService.getInstance();
+
   // Configurar dependencias
   syncManager.setDatabase(db);
   storageManager.setDatabase(db);
@@ -175,7 +183,9 @@ export function createSyncApp(config: SyncAppConfig): SyncApp {
     storage: storageManager,
     audit: auditLogger,
     encryption: encryptionService,
-    auth: authService
+    auth: authService,
+    context: contextService,
+    phone: phoneService
   };
 
   let isStarted = false;
@@ -416,11 +426,11 @@ export function createProdConfig(
  */
 export function createUniversalConfig(
   appName: string,
-  databaseSchema: import('@sync/types').DatabaseConfig,
+  databaseSchema: any, // Temporal
   options?: {
     supabaseUrl?: string;
     supabaseKey?: string;
-    schemaOptions?: import('@sync/types').SchemaGenerationOptions;
+    schemaOptions?: any; // Temporal
   }
 ): SyncAppConfig {
   return {
@@ -436,11 +446,11 @@ export function createUniversalConfig(
  * Crear configuración desde archivo de esquema JSON
  */
 export function createConfigFromSchema(
-  schemaConfig: import('@sync/types').AppSchemaConfig,
+  schemaConfig: any, // Temporal
   options?: {
     supabaseUrl?: string;
     supabaseKey?: string;
-    schemaOptions?: import('@sync/types').SchemaGenerationOptions;
+    schemaOptions?: any; // Temporal
   }
 ): SyncAppConfig {
   return {
