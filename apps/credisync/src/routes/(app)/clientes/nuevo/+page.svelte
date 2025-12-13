@@ -1,11 +1,13 @@
-<script>
+<script lang="ts">
 	import { goto } from '$app/navigation';
-	import { user } from '$lib/stores/auth.js';
 	import { isOnline } from '$lib/stores/sync.js';
-	import { crediSyncApp } from '$lib/app-config.js';
-	import { createCliente } from '$lib/services/clientes.js';
+	import { createClienteWithAutoCountry } from '$lib/services/clientes-refactored';
 	import CountrySelector from '$lib/components/CountrySelector.svelte';
-	import { validatePhone, formatPhone, getCountryConfig } from '$lib/utils/countries.js';
+	import { PhoneService, ContextService } from '@sync/core';
+	
+	// Instanciar servicios centralizados
+	const phoneService = PhoneService.getInstance();
+	const contextService = new ContextService();
 	
 	// Datos del formulario
 	let formData = $state({
@@ -19,8 +21,8 @@
 		referencia: '',
 		nombre_fiador: '',
 		telefono_fiador: '',
-		latitud: null,
-		longitud: null,
+		latitud: null as number | null,
+		longitud: null as number | null,
 		observaciones: ''
 	});
 	
@@ -28,17 +30,17 @@
 	let selectedCountry = $state('MX');
 	
 	// Configuración del país actual
-	let countryConfig = $derived(getCountryConfig(selectedCountry));
+	let countryConfig = $derived(phoneService.getCountryConfig(selectedCountry));
 	
 	// Validación de teléfono en tiempo real
-	let phoneValidation = $derived(validatePhone(formData.telefono, selectedCountry));
-	let phoneFormatted = $derived(formatPhone(formData.telefono, selectedCountry));
+	let phoneValidation = $derived(phoneService.validatePhone(formData.telefono, selectedCountry));
+	let phoneFormatted = $derived(phoneService.formatPhone(formData.telefono, selectedCountry));
 	
 	let loading = $state(false);
 	let error = $state('');
 	let success = $state(false);
 	
-	async function handleSubmit(e) {
+	async function handleSubmit(e: SubmitEvent) {
 		e.preventDefault();
 		
 		if (!formData.nombre.trim()) {
@@ -78,8 +80,8 @@
 			// USAR UNIVERSAL INFRASTRUCTURE REAL
 			console.log('📝 [NUEVO-CLIENTE] Guardando cliente con Universal Infrastructure:', clienteData);
 			
-			// Crear cliente usando @sync/core con toda la infraestructura empresarial
-			const clienteCreado = await createCliente(clienteData);
+			// Crear cliente usando @sync/core con toda la infraestructura empresarial y detección automática de país
+			const clienteCreado = await createClienteWithAutoCountry(clienteData);
 			
 			console.log('✅ [NUEVO-CLIENTE] Cliente creado exitosamente:', clienteCreado.id);
 			
@@ -90,7 +92,7 @@
 				goto('/clientes');
 			}, 1500);
 			
-		} catch (err) {
+		} catch (err: any) {
 			error = err.message || 'Error al guardar el cliente';
 			console.error('Error guardando cliente:', err);
 		} finally {
@@ -103,19 +105,21 @@
 	}
 	
 	async function obtenerUbicacion() {
-		if ('geolocation' in navigator) {
-			try {
-				const position = await new Promise((resolve, reject) => {
-					navigator.geolocation.getCurrentPosition(resolve, reject);
-				});
-				
-				formData.latitud = position.coords.latitude;
-				formData.longitud = position.coords.longitude;
-			} catch (err) {
-				error = 'No se pudo obtener la ubicación';
+		try {
+			console.log('📍 [NUEVO-CLIENTE] Capturando ubicación con ContextService...');
+			const locationResult = await contextService.captureLocationWithFallback();
+			
+			if (locationResult.location) {
+				formData.latitud = locationResult.location.latitude;
+				formData.longitud = locationResult.location.longitude;
+				console.log('✅ [NUEVO-CLIENTE] Ubicación capturada exitosamente');
+			} else {
+				error = locationResult.error || 'No se pudo obtener la ubicación';
+				console.warn('⚠️ [NUEVO-CLIENTE] Error capturando ubicación:', locationResult.error);
 			}
-		} else {
-			error = 'Tu dispositivo no soporta geolocalización';
+		} catch (err: any) {
+			error = err.message || 'Error al obtener la ubicación';
+			console.error('❌ [NUEVO-CLIENTE] Error en obtenerUbicacion:', err);
 		}
 	}
 </script>

@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Core offline-first infrastructure for Sync Platform",
   "type": "module",
-  "main": "dist/index-simple.js",
-  "types": "dist/index-simple.d.ts",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "exports": {
     ".": {
-      "import": "./dist/index-simple.js",
-      "types": "./dist/index-simple.d.ts"
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
     }
   },
   "scripts": {

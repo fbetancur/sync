@@ -9,21 +9,6 @@
 			],
 			"$app/types": [
 				"./types/index.d.ts"
-			],
-			"$app/navigation": [
-				"./types/index.d.ts"
-			],
-			"$app/stores": [
-				"./types/index.d.ts"
-			],
-			"$app/environment": [
-				"./types/index.d.ts"
-			],
-			"$app/paths": [
-				"./types/index.d.ts"
-			],
-			"$service-worker": [
-				"./types/index.d.ts"
 			]
 		},
 		"rootDirs": [

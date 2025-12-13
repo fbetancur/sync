@@ -10,8 +10,6 @@ import type {
   EntityServiceConfig 
 } from '@sync/core';
 import { crediSyncApp } from '$lib/app-config.js';
-import { z } from 'zod';
-
 // ============================================================================
 // TIPOS Y ESQUEMAS
 // ============================================================================
@@ -40,42 +38,6 @@ export interface Cliente extends EntityBase {
   };
 }
 
-// Esquema de validación con Zod
-const clienteSchema = z.object({
-  nombre: z.string()
-    .min(2, 'El nombre debe tener al menos 2 caracteres')
-    .max(100, 'El nombre no puede exceder 100 caracteres')
-    .trim(),
-  
-  numero_documento: z.string()
-    .min(5, 'El documento debe tener al menos 5 caracteres')
-    .max(20, 'El documento no puede exceder 20 caracteres')
-    .trim(),
-  
-  telefono: z.string()
-    .min(7, 'El teléfono debe tener al menos 7 dígitos')
-    .max(15, 'El teléfono no puede exceder 15 dígitos')
-    .regex(/^[\d\s\-\+\(\)]+$/, 'El teléfono solo puede contener números y símbolos válidos')
-    .trim(),
-  
-  direccion: z.string()
-    .min(5, 'La dirección debe tener al menos 5 caracteres')
-    .max(200, 'La dirección no puede exceder 200 caracteres')
-    .trim(),
-  
-  email: z.string()
-    .email('Email inválido')
-    .optional()
-    .or(z.literal('')),
-  
-  fecha_nacimiento: z.string()
-    .optional()
-    .or(z.literal('')),
-  
-  pais: z.string().optional(),
-  ciudad: z.string().optional()
-});
-
 // ============================================================================
 // SERVICIO DE CLIENTES
 // ============================================================================
@@ -101,28 +63,43 @@ class ClienteService extends EntityService<Cliente> {
   }
 
   /**
-   * Validar datos del cliente
+   * Validar datos del cliente - Validación simple sin Zod
    */
   protected validateData(data: Partial<Cliente>): ValidationResult<Cliente> {
     try {
-      console.log('🔍 [CLIENTE] Validando datos con Zod...');
+      console.log('🔍 [CLIENTE] Validando datos con validación simple...');
       
-      // Validación con Zod
-      const result = clienteSchema.safeParse(data);
-      
-      if (!result.success) {
-        const errors = result.error.errors.map(err => 
-          `${err.path.join('.')}: ${err.message}`
-        );
-        
+      // Validación simple de campos requeridos
+      if (!data.nombre || data.nombre.trim().length < 2) {
         return {
           success: false,
-          error: `Errores de validación: ${errors.join(', ')}`,
-          errors
+          error: 'El nombre es requerido y debe tener al menos 2 caracteres'
+        };
+      }
+
+      if (!data.numero_documento || data.numero_documento.trim().length < 5) {
+        return {
+          success: false,
+          error: 'El número de documento es requerido y debe tener al menos 5 caracteres'
+        };
+      }
+
+      if (!data.telefono || data.telefono.trim().length < 7) {
+        return {
+          success: false,
+          error: 'El teléfono es requerido y debe tener al menos 7 dígitos'
+        };
+      }
+
+      if (!data.direccion || data.direccion.trim().length < 5) {
+        return {
+          success: false,
+          error: 'La dirección es requerida y debe tener al menos 5 caracteres'
         };
       }
 
       // Validación adicional de teléfono si hay país
+      let telefonoFormateado = data.telefono.trim();
       if (data.telefono && data.pais) {
         const phoneValidation = this.phoneService.validatePhone(data.telefono, data.pais);
         if (!phoneValidation.valid) {
@@ -131,23 +108,33 @@ class ClienteService extends EntityService<Cliente> {
             error: `Teléfono inválido: ${phoneValidation.error}`
           };
         }
-        
-        // Formatear teléfono
-        result.data.telefono = phoneValidation.formatted!;
+        telefonoFormateado = phoneValidation.formatted!;
       }
 
       console.log('✅ [CLIENTE] Validación exitosa');
       
+      // Preparar datos limpios
+      const cleanData: Cliente = {
+        nombre: data.nombre.trim(),
+        numero_documento: data.numero_documento.trim(),
+        telefono: telefonoFormateado,
+        direccion: data.direccion.trim(),
+        email: data.email?.trim() || '',
+        fecha_nacimiento: data.fecha_nacimiento?.trim() || '',
+        pais: data.pais || 'MX',
+        ciudad: data.ciudad?.trim() || '',
+        coordenadas: data.coordenadas || undefined,
+        
+        // Campos calculados iniciales
+        creditos_activos: 0,
+        saldo_total: 0,
+        dias_atraso_max: 0,
+        estado: 'activo' as const
+      } as Cliente;
+      
       return {
         success: true,
-        data: {
-          ...result.data,
-          // Campos calculados iniciales
-          creditos_activos: 0,
-          saldo_total: 0,
-          dias_atraso_max: 0,
-          estado: 'activo' as const
-        } as Cliente
+        data: cleanData
       };
 
     } catch (error: any) {
@@ -379,6 +366,5 @@ export const searchClientes = (query: string) => clienteService.searchClientes(q
 export const getClientesStats = () => clienteService.getStats();
 export const generateClientesReport = () => clienteService.generateReport();
 
-// Exportar servicio para uso avanzado
-export { clienteService };
+// Exportar tipo para uso avanzado
 export type { Cliente };
